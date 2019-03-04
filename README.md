@@ -1,2 +1,2 @@
 # praktikum2
-vjezbe iz rp2
+Prve vjezbe iz racunarskog praktikuma 2.
