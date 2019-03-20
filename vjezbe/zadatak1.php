@@ -16,7 +16,7 @@
   elseif ($_GET["bojaSelect"] )
   {
     if(preg_match('/^[a-z]{1,20}$/',$_GET['bojaSelect']))
-    $bojaPozadine = $_GET["bojaSelect"];
+    $bojaPozadine = htmlentities($_GET["bojaSelect"]);
     else $error = "Krivi unos u select.<br/>";
   }
   elseif(isset($_COOKIE['bojaPozadine']))
