@@ -8,7 +8,7 @@
 
   if(isset($_GET["bojaText"]) && $_GET["bojaText"] !== '')
   {
-    if(preg_match('/^(#[0-9a-f]{3})|(#[0-9a-f]{6})$/',$_GET['bojaText']))
+    if(preg_match('/^((#[0-9a-f]{3})|(#[0-9a-f]{6}))$/',$_GET['bojaText']))
     $bojaPozadine = htmlentities($_GET["bojaText"]);
     else $error = "Krivi unos u textbox.<br/>";
 
