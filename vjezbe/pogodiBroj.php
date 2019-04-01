@@ -86,6 +86,7 @@ else
   <?php
     }
     else {
+      //$broj_pokusaja = 0;
       session_unset();
       session_destroy();
     }
