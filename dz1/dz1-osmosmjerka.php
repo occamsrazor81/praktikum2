@@ -118,7 +118,7 @@
 
             $red = $_POST['red'];
             $stup = $_POST['stup'];
-
+            
 
             if( $slova[0] == $_SESSION['osmosmjerka'][$red][$stup])
             {

@@ -15,4 +15,6 @@
          " Ime = ".$row['Ime'].
          " Prezime = ".$row['Prezime']."<br />\n";
        }
+       //fetch radi samo jednom, ako zelimo ponovno
+       //proci elemente spremimo kod prvog fetcha u polje
 ?>
