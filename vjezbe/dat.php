@@ -43,12 +43,13 @@ function dohvatiNovoIme()
 {
   $novo = $_POST['novo_ime'];
   return $novo;
-}
+}r-x
 
 
 
 function dodajNovoImeUPopis($novoIme,$imena)
 {
+  //chmod for writing...(npr 766)
   $imena[] = $novoIme; //na kraj stavlja $novoIme
   if(count($imena) > 5)
     unset($imena[0]); //brisemo na indeksu 0 pa $imena pocinje s indeksom 1
@@ -77,7 +78,7 @@ function ispisiNoviPopis($imena)
 
   <BODY>
 
-    <form action = "dat.php" method = "POST">
+    <form action = "dat.php" method = "POST" enctype="multipart/form-data">
     Unesi ime: <input type="text" name="novo_ime"/>
       <br/><br/>
       <input type="submit" value="Posalji" />

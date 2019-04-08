@@ -77,7 +77,7 @@ else
     if(!$gameOver)
     {
       ?>
-  <form action="zadatak3_pogodi.php" method="POST"/>
+  <form action="pogodiBroj.php" method="POST"/>
     Pokusaj = <input type="text" name="pokusaj" />
     <br/><br/>
     <input type="submit" name="posalji" value="Pogodi"/>
@@ -92,6 +92,6 @@ else
     }
 
 ?>
-<a href="https://rp2.studenti.math.hr/~knivan/praktikum2/vjezbe/zadatak3_index.php">Zapocni novu igru</a>
+<a href="https://rp2.studenti.math.hr/~knivan/praktikum2/vjezbe/igraBrojeva.php">Zapocni novu igru</a>
 </body>
 </html>

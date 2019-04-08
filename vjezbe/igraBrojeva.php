@@ -28,7 +28,7 @@
   <meta charset="utf-8">
 </head>
 <body>
-  <form action = "zadatak3_pogodi.php" method = "POST" />
+  <form action = "pogodiBroj.php" method = "POST" />
   Username = <input type="text" name="user" />
   <br/><br/>
   <input type="submit" value="Posalji" />
