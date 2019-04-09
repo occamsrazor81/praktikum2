@@ -1,7 +1,8 @@
 <?php
   session_start();
 
-    
+
+
 
   if(isset($_POST['reset']))
   {
@@ -27,6 +28,10 @@
 
 
    </form>
+<?php
+  if(isset($_SESSION['poruka1']))
+  echo $_SESSION['poruka1'];
+ ?>
 
 
 
