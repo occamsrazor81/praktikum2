@@ -17,8 +17,11 @@
 
 
 
+     if(!$_SESSION['gameOver'])
+      crtajPlocu();
 
-     crtajPlocu();
+    else
+      crtajCestitku();
 
 
 
@@ -110,49 +113,60 @@
 
 
 
+
         foreach ($_SESSION['sve_rijeci'] as $key)
         {
           //provjeravamo ima li te rijeci
+
+          echo $key. " ";
+
           if(strcmp($rijec,$key) == 0) //ako je ima gledamo poziciju
           {
 
             $red = $_POST['red'];
             $stup = $_POST['stup'];
-            
+            // echo $red;
+            // echo $stup;
+            //echo $slova[0];
+            echo $_SESSION['osmosmjerka'][$red-1][$stup-1]."\n";
 
-            if( $slova[0] == $_SESSION['osmosmjerka'][$red][$stup])
+
+
+            if( $slova[0] == $_SESSION['osmosmjerka'][$red - 1][$stup - 1])
             {
               array_push($_SESSION['nadene_rijeci'],$rijec);
               $_SESSION['zadnja_rijec'] = $rijec;
+              echo "Nadena rijec ".$slova[0];
               break;
               //provjera postoji li u jednom smjeru ta rijec
 
 
             }
 
-            else
-            {
-              $poruka = "Što ima dva oka, a ne vidi?";
-              break;
-            }
-
-
-
-
-
-
-
-
-            // array_push($_SESSION['nadene_rijeci'],$rijec);
-            // $_SESSION['zadnja_rijec'] = $rijec;
-          }
-
-          else
-          {
-            //$poruka = "Što ima dva oka, a ne vidi?";
-            $poruka = "Što ima dva oka, a ne vidi?";
-            break;
-          }
+          //   else
+          //   {
+          //     $poruka = "Što ima dva oka, a ne vidi?";
+          //     break;
+          //   }
+          //
+          //
+          //
+          //
+          //
+          //
+          //
+          //
+          //   // array_push($_SESSION['nadene_rijeci'],$rijec);
+          //   // $_SESSION['zadnja_rijec'] = $rijec;
+          // }
+          //
+          // else
+          // {
+          //   //$poruka = "Što ima dva oka, a ne vidi?";
+          //   $poruka = "Što ima dva oka, a ne vidi?";
+          //   break;
+          // }
+        }
 
 
         }
@@ -205,7 +219,7 @@
             tr,td {border: solid 0.5px; text-align: center;}
             #patka {background-color: green; text-decoration-line: line-through;}
          </style>
-         <title>Osmosmjerka-prijava</title>
+         <title>Osmosmjerka</title>
        </HEAD>
 
        <BODY>
@@ -280,12 +294,13 @@
         </form>
         <br/>
 
-      <?php  if($_SESSION['gameOver'] == 1)
-        {
-          echo "Čestitke, riješili ste.";
-          session_unset();
-          session_destroy();
-        }
+      <?php
+      // if($_SESSION['gameOver'] == 1)
+      //   {
+      //     echo "Čestitke, riješili ste.";
+      //     session_unset();
+      //     session_destroy();
+      //   }
 
         ?>
 
@@ -294,6 +309,42 @@
 
 
 
+
+
+
+      <?php
+
+    }
+
+    function crtajCestitku()
+    {
+      echo "<br/>";
+      echo "Čestitke, riješili ste osmosmjerku.";
+      session_unset();
+      session_destroy();
+
+      ?>
+
+      <HTML lang = "hr">
+      <HEAD>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+           table {border: solid 2px;}
+           tr,td {border: solid 0.5px; text-align: center;}
+           #patka {background-color: green; text-decoration-line: line-through;}
+        </style>
+        <title>Osmosmjerka-Čestitka</title>
+      </HEAD>
+
+      <BODY>
+
+      <form action="dz1-login.php" method="post">
+        <input type="submit" name="reset" value="Resetiraj.">
+      </form>
+      <br/>
+
+    </BODY>
+    </HTML>
 
 
 
