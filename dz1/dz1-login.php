@@ -25,9 +25,25 @@
      <br/><br/>
      <input type="submit" value="Započni igru !"/>
 
+  </form>
 
 
-   </form>
+
+
+<br/>
+
+
+  <form method="post" action="dz1-osmosmjerka2.php">
+    Unesi svoje ime: <input type="text" name="ime" />
+    <br/><br/>
+    <input type="submit" value="Započni igru 2!"/>
+
+ </form>
+
+
+
+
+
 <?php
   if(isset($_SESSION['poruka1']))
   echo $_SESSION['poruka1'];

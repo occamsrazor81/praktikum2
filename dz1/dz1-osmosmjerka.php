@@ -3,8 +3,10 @@
     session_start();
 
 
+
+
     inicijaliziraj();
-  $dir = odigrajPotez();
+    odigrajPotez();
 
     if(count($_SESSION['nadene_rijeci']) === count($_SESSION['sve_rijeci']))
       $_SESSION['gameOver'] = 1;
@@ -141,8 +143,8 @@
               $dolje_lijevo = 1;
               $gore_desno = 1;
               $gore_lijevo = 1;
-              // $dir =  array(0,0,0,0,0,0,0,0);
-              // print_r($dir);
+              // $_SESSION['dir'] =  array(0,0,0,0,0,0,0,0);
+              // print_r($_SESSION['dir']);
               //echo "\n\n";
               //echo count($slova)."\n";
 
@@ -213,23 +215,45 @@
 
                    //echo "Nadena rijec ".$slova[0]."\n";
 
+                   // if($gore) $_SESSION['dir'] = 1;
+                   // elseif($dolje) $_SESSION['dir'] = 2;
+                   // elseif($lijevo) $_SESSION['dir'] = 3;
+                   // elseif($desno) $_SESSION['dir'] = 4;
+                   // elseif($dolje_desno) $_SESSION['dir'] = 5;
+                   // elseif($dolje_lijevo) $_SESSION['dir'] = 6;
+                   // elseif($gore_desno) $_SESSION['dir'] = 7;
+                   // elseif($gore_lijevo) $_SESSION['dir'] = 8;
+
+                   $_SESSION['provjera'] = 0;
+
                    break;
                   }
 
-                  if($gore) return 1;
-                  elseif($dolje) return 2;
-                  elseif($lijevo) return 3;
-                  elseif($desno) return 4;
-                  elseif($dolje_desno) return 5;
-                  elseif($dolje_lijevo) return 6;
-                  elseif($gore_desno) return 7;
-                  elseif($gore_lijevo) return 8;
+
+
 
 
 
             } // kraj if( $slova[0] == $_SESSION['osmosmjerka'][$red - 1][$stup - 1])
+
+            else
+            {
+              $_SESSION['poruka3'] = "Što ima dva oka, a ne vidi ?";
+              $_SESSION['provjera'] = 1;
+
+            }
+
+
+
             } // kraj if(strcmp($rijec,$key) == 0)
-          } // kraj foreach
+
+          else
+          {
+            $_SESSION['poruka3'] = "Što ima dva oka, a ne vidi ?";
+            $_SESSION['provjera'] = 1;
+
+          }
+        } // kraj foreach
 
       } // kraj if(isset($_POST['word']) && preg_match('/^[a-zA-Z]{1,5}$/',$_POST['word']))
 
@@ -237,7 +261,7 @@
       else
       {
         $_SESSION['poruka2'] = "Što ima dva oka, a ne vidi da su samo velika slova ?";
-        return 0;
+
 
       }
 
@@ -253,206 +277,6 @@
 
   function crtajPlocu()
   {
-    //   if(isset($_SESSION['zadnja_rijec']))
-    //   {
-    //     $slova2 = str_split($_SESSION['zadnja_rijec']);
-    //     echo $slova2[0];
-    //   }
-    //
-    //   //gore
-    // if(isset($dir))
-    // {
-    //   if($dir == 1)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1-$i).'_'.($stup-1));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //   //dolje
-    //   elseif($dir == 2)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1+$i).'_'.($stup-1));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //   //lijevo
-    //   elseif($dir == 3)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1-$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //
-    //   //desno
-    //   elseif($dir == 4)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1+$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //   //dolje_desno
-    //   elseif($dir == 5)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1+$i).'_'.($stup-1+$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //   //dolje_lijevo
-    //   elseif($dir == 6)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1+$i).'_'.($stup-1-$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //
-    //   //gore_desno
-    //   elseif($dir == 7)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1-$i).'_'.($stup-1+$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    //   //gore_lijevo
-    //   elseif($dir == 8)
-    //   {
-    //     if(isset($red) && isset($stup))
-    //     {
-    //       array_push($_SESSION['bojaj'],'p'.($red-1).'_'.($stup-1));
-    //       $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //
-    //       for($i = 1; $i < count($_SESSION['zadnja_rijec']); ++$i)
-    //       {
-    //         array_push($_SESSION['bojaj'],'p'.($red-1-$i).'_'.($stup-1-$i));
-    //         $_SESSION['bojaj'] = array_unique($_SESSION['bojaj']);
-    //       }
-    //
-    //       $_SESSION['bojaj_tablicu'] = implode(",#",$_SESSION['bojaj']);
-    //
-    //
-    //       //ovi unsetovi nakraju
-    //       unset($red);
-    //       unset($stup);
-    //
-    //     }
-    //   }
-    // }
 
 
 
@@ -559,6 +383,14 @@
         {
           echo $_SESSION['poruka2']."<br/>";
           unset($_SESSION['poruka2']);
+        }
+
+        elseif (isset($_SESSION['poruka3']) && isset($_SESSION['provjera'])
+                && $_SESSION['provjera'] === 1)
+        {
+          echo $_SESSION['poruka3']."<br/>";
+          unset($_SESSION['poruka3']);
+
         }
 
          ?>
