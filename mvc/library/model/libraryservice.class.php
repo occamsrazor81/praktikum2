@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__. '/user.class.php';
+require_once __DIR__. '/book.class.php';
+
 require_once __DIR__. '/db.class.php';
 
 class LibraryService
@@ -25,6 +27,32 @@ class LibraryService
     return $users;
 
   }
+
+
+  //----------------
+
+  function getAllBooks()
+  {
+    $books =  array();
+
+    $db = DB::getConnection();
+
+    try
+    {
+      $st = $db->prepare( 'SELECT id,author,title FROM books ');
+      $st->execute();
+    }catch( PDOException $e ) { echo "Greska ". $e->getMessage(); }
+
+    while ($row = $st->fetch())
+        $books[] = new Book($row['id'], $row['author'], $row['title']);
+
+
+
+    return $books;
+
+  }
+
+
 
 
 }
