@@ -37,9 +37,11 @@
             $_SESSION['poruka1'] = "Samo slova za ime korisnika, velika ili mala.\n";
             break;
           }
-        else
+      //  else  {header('Location: https://rp2.studenti.math.hr/~knivan/praktikum2/dz1/dz1-login.php'); break;}
+
         $_SESSION['ime'] = $_POST['ime'];
       }
+      else
 
 
       $_SESSION['gameOver'] = 0;
@@ -65,6 +67,18 @@
           ['S','L','O','V','O'],
 
         ];
+
+        // $_SESSION['boje'] =
+        // [
+        //   ['0','0','0','0','0'],
+        //   ['0','0','0','0','0'],
+        //   ['0','0','0','0','0'],
+        //   ['0','0','0','0','0'],
+        //   ['0','0','0','0','0'],
+        //
+        // ];
+
+
 
         $_SESSION['nadene_rijeci'] = array();
         $_SESSION['bojaj'] = array();
@@ -308,7 +322,8 @@
          <h2>Osmosmjerka!</h2>
          <hr/>
 
-         <?php echo "Igrač : ".$_SESSION['ime']."<br/>"; ?>
+         <?php if(isset($_SESSION['ime'])) echo "Igrač : ".$_SESSION['ime']."<br/>";
+              else header('Location: https://rp2.studenti.math.hr/~knivan/praktikum2/dz1/dz1-login.php');?>
          <?php echo "Broj pokušaja : ".$_SESSION['br']."<br/>"; ?>
 
         <br/><br/>
