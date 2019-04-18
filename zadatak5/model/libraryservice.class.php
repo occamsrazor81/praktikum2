@@ -4,6 +4,8 @@ require_once 'db.class.php';
 require_once 'user.class.php';
 require_once 'book.class.php';
 
+require_once __DIR__.'/loan.class.php';
+
 class LibraryService
 {
 	function getUserById( $id )
@@ -122,6 +124,58 @@ class LibraryService
 		return $arr;
 
 	}
+
+
+	function getAllLoans()
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id, id_user, id_book, lease_end from loans');
+			$st->execute();
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while($row = $st->fetch())
+		{
+			$arr[] = new Loan($row['id'], $row['id_user'], $row['id_book'], $row['lease_end']);
+		}
+
+		return $arr;
+
+	}
+
+	function getLoansByLeaseEnd($lease_end)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id,id_user,id_book,lease_end from
+													loans where lease_end=:lease_end');
+			$st->execute(array('lease_end' => $lease_end));
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while($row = $st->fetch())
+		{
+			$arr[] = new Loan($row['id'],$row['id_user'],$row['id_book'],$row['lease_end']);
+		}
+
+		return $arr;
+
+	}
+
+
+
+
+
+
+
+
 
 };
 
