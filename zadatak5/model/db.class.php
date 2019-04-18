@@ -9,14 +9,14 @@ class DB
 	private function __construct() { }
 	private function __clone() { }
 
-	public static function getConnection() 
+	public static function getConnection()
 	{
 		if( DB::$db === null )
 	    {
 	    	try
 	    	{
 	    		// Unesi ispravni HOSTNAME, DATABASE, USERNAME i PASSWORD
-		    	DB::$db = new PDO( "mysql: host=HOSTNAME; dbname=DATABASE; charset=utf8", 'USERNAME', 'PASSWORD' );
+		    	DB::$db = new PDO( "mysql: host=rp2.studenti.math.hr; dbname=knezic; charset=utf8", 'student', 'pass.mysql' );
 		    	DB::$db-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		    }
 		    catch( PDOException $e ) { exit( 'PDO Error: ' . $e->getMessage() ); }

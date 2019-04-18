@@ -13,6 +13,6 @@
 			<li><a href="index.php?rt=users">Popis svih korisnika</a></li>
 			<li><a href="index.php?rt=books">Popis svih knjiga</a></li>
 			<li><a href="index.php?rt=books/search">Tražilica knjiga po autoru</a></li>
+			<li><a href="index.php?rt=books/find">Nađi autora</a></li>
 		</ul>
 	</nav>
-	

@@ -100,7 +100,29 @@ class LibraryService
 		return $arr;
 	}
 
+
+
+	function getAuthorByBook($title)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id,author,title from books where title=:title');
+			$st->execute(array('title' => $title));
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while( $row = $st->fetch() )
+		{
+			$arr[] = new Book( $row['id'], $row['author'], $row['title'] );
+		}
+
+		return $arr;
+
+	}
+
 };
 
 ?>
-

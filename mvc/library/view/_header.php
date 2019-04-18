@@ -1,6 +1,4 @@
-<?php
 
- ?>
 <!DOCTYPE html>
 <html>
  <head>
@@ -14,8 +12,8 @@
   <h1>Knjižnica</h1>
   <hr/>
   <ul>
-    <li><a href="index.php?rt=users/index">Popis svih korisnika</a></li>
-    <li><a href="index.php?rt=books/index">Popis svih knjiga</a></li>
+    <li><a href="index.php?rt=users">Popis svih korisnika</a></li>
+    <li><a href="index.php?rt=books">Popis svih knjiga</a></li>
     <li><a href="index.php?rt=books/search">Pretraživanje po autoru</a></li>
   </ul>
 

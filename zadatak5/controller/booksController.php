@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 require_once 'model/libraryservice.class.php';
 
 class BooksController
 {
-	public function index() 
+	public function index()
 	{
 		$ls = new LibraryService();
 
@@ -15,14 +15,14 @@ class BooksController
 	}
 
 
-	public function search() 
+	public function search()
 	{
 		$title = 'Pretraži knjige po autoru';
 
 		require_once 'view/books_search.php';
 	}
 
-	public function searchResults() 
+	public function searchResults()
 	{
 		$ls = new LibraryService();
 
@@ -38,6 +38,36 @@ class BooksController
 
 		require_once 'view/books_index.php';
 	}
-}; 
+
+
+	public function find()
+	{
+		$title = 'Pronađi pisca:';
+
+		require_once __DIR__ .'/../view/books_find.php';
+	}
+
+	public function findAuthor()
+	{
+
+		$ls = new LibraryService();
+		if(!isset($_POST['title']) || !preg_match( "/^[a-zA-Z0-9 ,-.:']+$/", $_POST['title']))
+		{
+			header('Location: index.php?rt=books/find');
+			exit();
+		}
+
+		$title = 'Autor knjige '.$_POST['title'];
+		$bookList = $ls->getAuthorByBook($_POST['title']);
+
+		require_once __DIR__.'/../view/books_index.php';
+	}
+
+
+
+
+
+
+};
 
 ?>

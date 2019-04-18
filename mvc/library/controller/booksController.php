@@ -36,7 +36,7 @@ class BooksController
   {
     $ls = new LibraryService();
 
-    if(isset($_POST['author']) && preg_match('/^[a-zA-Z0-9 .,]+$/'),$_POST['author'])
+    if(isset($_POST['author']) && preg_match('/^[a-zA-Z0-9 .-,]+$/',$_POST['author']))
     {
       $title = 'Knjige autora'.$_POST['author'];
       $bookList = $ls->getBooksByAuthor($_POST['author']);
@@ -48,6 +48,7 @@ class BooksController
 
     else
     {
+      header('Location: index.php?rt=books/search');
       $title = 'Greska';
       $error = 'Krivi unos';
     }
