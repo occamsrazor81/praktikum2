@@ -43,7 +43,7 @@ function dohvatiNovoIme()
 {
   $novo = $_POST['novo_ime'];
   return $novo;
-}r-x
+}
 
 
 
