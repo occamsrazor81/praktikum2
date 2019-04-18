@@ -16,6 +16,7 @@
 			<li><a href="index.php?rt=books/search">Tražilica knjiga po autoru</a></li>
 			<li><a href="index.php?rt=books/find">Nađi autora</a></li>
 			<li><a href="index.php?rt=loans/search">Nađi posudbu po danu završetka</a></li>
+			<li><a href="index.php?rt=loans/findBookLoan">Nađi Knjigu</a></li>
 
 		</ul>
 	</nav>

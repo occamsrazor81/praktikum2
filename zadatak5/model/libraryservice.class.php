@@ -8,6 +8,8 @@ require_once __DIR__.'/loan.class.php';
 
 class LibraryService
 {
+	//---------------------------------------------------------------
+	//users
 	function getUserById( $id )
 	{
 		try
@@ -45,7 +47,8 @@ class LibraryService
 		return $arr;
 	}
 
-
+//------------------------------------------------------------------------------
+//books
 	function getBookById( $id )
 	{
 		try
@@ -124,7 +127,8 @@ class LibraryService
 		return $arr;
 
 	}
-
+//-------------------------------------------------------------------------
+//loans
 
 	function getAllLoans()
 	{
@@ -166,6 +170,29 @@ class LibraryService
 		}
 
 		return $arr;
+
+	}
+
+	function getBookLocation($id_book)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id,id_user,id_book,lease_end
+									from loans where id_book=:id_book');
+			$st->execute(array('id_book' => $id_book));
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while($row = $st->fetch())
+		{
+			$arr[] = new Loan($row['id'],$row['id_user'],$row['id_book'],$row['lease_end']);
+		}
+
+		return $arr;
+
 
 	}
 

@@ -39,6 +39,36 @@ class LoansController
 
   }
 
+  public function findBookLoan()
+  {
+    $title = 'Nađi knjigu';
+
+    require_once __DIR__.'/../view/loans_findBookLoan.php';
+  }
+
+  public function findBookResults()
+  {
+
+    if(!isset($_POST['id_book']) || !preg_match('/^[1-9][0-9]*$/',$_POST['id_book']))
+    {
+      header('Location: index.php?rt=loans/findBookLoan');
+      exit();
+    }
+
+    $title = 'Tražena knjiga';
+    $ls = new LibraryService();
+
+    $loanList = $ls->getBookLocation($_POST['id_book']);
+
+    require_once __DIR__.'/../view/loans_index.php';
+  }
+
+  //----------------------------------------------------------------------
+  //naci knjigu koja je posudena na lease_end (kombinacija tablica)
+  //mozda i autora koji je je posudio
+
+
+
 };
 
 
