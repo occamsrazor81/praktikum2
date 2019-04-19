@@ -25,6 +25,28 @@ class StudentService
 
   }
 
+  function getStudentsByOcjena($ocjena)
+  {
+
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT JMBAG,Ime,Prezime,Ocjena from Studenti
+                          where Ocjena=:ocjena');
+      $st->execute(array('ocjena' => $ocjena));
+
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+    $arr[] = new Student($row['JMBAG'], $row['Ime'], $row['Prezime'], $row['Ocjena']);
+
+    return $arr;
+
+  }
+
 };
 
  ?>
