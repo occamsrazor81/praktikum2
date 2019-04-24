@@ -1,5 +1,8 @@
 <?php
 
+//fetch radi samo jednom, ako zelimo ponovno
+//proci elemente spremimo kod prvog fetcha u polje
+
 if(isset($_POST['ocjena'])){
   crtaj_html_header();
   crtajPopis();

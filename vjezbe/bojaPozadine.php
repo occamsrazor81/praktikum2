@@ -49,7 +49,7 @@
 
 <body>
 
-<form action = "zadatak1.php" method = "GET">
+<form action = "bojaPozadine.php" method = "GET">
   Boja Select: <select name = "bojaSelect">
     <option value = "yellow">Zuta</option>
     <option value = "red">Crvena</option>
