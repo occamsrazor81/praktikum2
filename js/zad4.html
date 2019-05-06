@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Zad4</title>
+  </head>
+  <body>
+
+
+
+
+
+    <script type="text/javascript">
+
+    var ret = prompt('Unesi string.');
+
+    var f = function(ret)
+    {
+      for(var i = 0; i <= ret.length; i++)
+        for(var j = 0; j <= ret.length-i; j++)
+        document.write(ret.substr(i,j) + '<br>');
+    }
+
+    f(ret);
+
+//////////////////////////////
+
+
+
+    var rek = function(ret,rijec,dubina)
+    {
+      if(dubina === ret.length)
+      {
+        document.write(rijec  + '<br>');
+        return;
+      }
+
+      //dodaj slovo od str[dubina] na kraj rijeci i gledaj sljedece slovo
+      rek(ret,rijec+ret[dubina],dubina+1);
+
+      //ne dodaj slovo str[dubina]
+      rek(ret,rijec,dudina+1);
+
+    }
+
+      rek(ret,'',0);
+
+    </script>
+
+  </body>
+</html>
