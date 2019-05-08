@@ -19,7 +19,7 @@ class ProjectsController
 			$user = $ps->getUserById($project->id_user);
 			if( $user === null )
 					exit( 'There is no user with id = ' . $project->id_user );
-			$projectList[] = array('author' => $user->username,
+			$projectList[] = array('id' => $project->id,'author' => $user->username,
 			'title' => $project->title, 'status' => $project->status);
 
 
@@ -47,7 +47,7 @@ class ProjectsController
 			$user = $ps->getUserById($project->id_user);
 			if( $user === null )
 					exit( 'There is no user with id = ' . $project->id_user );
-			$projectList[] = array('author' => $user->username,
+			$projectList[] = array('id' => $project->id,'author' => $user->username,
 			'title' => $project->title, 'status' => $project->status);
 
 
@@ -73,7 +73,7 @@ class ProjectsController
 
 		if(!isset($_SESSION['id_user']))
 		{
-			header('Location: index.php?rt=projects/newProject ');
+			header('Location: index.php?rt=projects/newProject');
 			exit();
 		}
 
@@ -94,13 +94,61 @@ class ProjectsController
 
 		$ps->createProject($id_user,$projectName,$projectDescription,$projectNumber);
 
-		header('Location: index.php?rt=projects/newProject ');
+		header('Location: index.php?rt=projects/newProject');
 		exit();
 
+	}
 
+
+	public function findProjectDetails()
+	{
+		$ps = new ProjectService();
+
+
+		if(!isset($_POST['project_id']))
+		{
+			header('Location: index.php?rt=projects/newProject');
+			exit();
+		}
+
+		$title = 'Project description';
+
+		$project_id = (int)$_POST['project_id'];
+
+		$targetProject = $ps->getProjectById($project_id);
+
+		//sad imamo naslov, description
+		//trebamo se dokopati authora i membera
+
+		$author_id = $targetProject->id_user;
+		$author = $ps->getUserById($author_id);
+		$author_username = $author->username;
+
+		//jos samo ostale members (iz zadnje tablice)
+
+		$targetUsers = $ps->getUsersFromMembersByProjectId($project_id);
+
+		$userNames = array();
+		foreach($targetUsers as $tUser)
+		{
+			if($tUser->id != $author_id)
+			$userNames[] = $tUser->username;
+
+		}
+
+		$projectDescriptionList = array('author' => $author_username,
+		'title' => $targetProject->title, 'description' => $targetProject->abstract,
+	'members' => $userNames);
+
+	
+		require_once __DIR__.'/../view/projects_showDescription.php';
 
 
 	}
+
+
+
+
 
 
 };

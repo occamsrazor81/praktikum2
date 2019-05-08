@@ -98,6 +98,32 @@ class ProjectService
 	////////////////////////////////////////////////////////////////
 	//projects
 
+
+	function getProjectById($id)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id,id_user,title,abstract,number_of_members,status
+				FROM dz2_projects where id=:id' );
+
+			$st->execute(array('id' => $id));
+
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if($row === false)
+			return null;
+
+		else
+			return new Project($row['id'], $row['id_user'], $row['title'],
+			 $row['abstract'], $row['number_of_members'], $row['status']);
+
+	}
+
+
+
 	function getAllProjects()
 	{
 
@@ -167,6 +193,41 @@ class ProjectService
 
 
 	}
+
+	function getUsersFromMembersByProjectId($project_id)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id, username, password_hash, email,
+				 registration_sequence, has_registered from dz2_users where id in
+				(SELECT id_user from dz2_members where id_project=:project_id)' );
+
+			$st->execute(array('project_id' => $project_id));
+
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while( $row = $st->fetch() )
+		{
+			$arr[] = new User( $row['id'], $row['username'], $row['password_hash'], $row['email'], $row['registration_sequence'], $row['has_registered'] );
+		}
+
+		return $arr;
+
+
+
+
+
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	//members
+
+
 
 
 
