@@ -19,13 +19,6 @@ foreach($projectInvites as $invites)
       '<li><button type="submit" name="id_project_reject" value="'.$invites['id_project'].'">'.
        'Reject Invitation!</button></li>';
 
-
-      // if(strcmp($apps['application'],'accepted') == 0)
-      // echo '<li>Your application has been accepted.</li>';
-      //
-      // else
-      // echo '<li>Your application is  still pending.</li>';
-
     echo '<hr>';
 
 }

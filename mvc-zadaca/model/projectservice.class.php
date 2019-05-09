@@ -31,6 +31,28 @@ class ProjectService
 
 	}
 
+	function getUserByName($name)
+	{
+
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id, username, password_hash, email,
+				 registration_sequence, has_registered FROM dz2_users where username=:username' );
+			$st->execute(array('username' => $name));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if($row === false)
+			return null;
+
+		else
+			return new User($row['id'], $row['username'], $row['password_hash'],
+			$row['email'], $row['registration_sequence'], $row['has_registered'] );
+
+	}
+
 
 	function getAllUsers( )
 	{
@@ -172,6 +194,90 @@ class ProjectService
 
 
 	}
+
+
+
+	function getAllMyProjects($id_user)
+	{
+
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id,id_user,title, abstract,
+				number_of_members,status FROM dz2_projects where id
+				in (SELECT id_project from dz2_members where id_user=:id_user
+				and member_type in (:member_member, :application_accepted, :invitation_accepted))' );
+
+
+			$st->execute(array('id_user' => $id_user, 'member_member' => 'member',
+		'application_accepted' => 'application_accepted', 'invitation_accepted' => 'invitation_accepted'));
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr = array();
+		while( $row = $st->fetch() )
+		{
+			$arr[] = new Project( $row['id'], $row['id_user'], $row['title'],
+			 $row['abstract'], $row['number_of_members'], $row['status'] );
+		}
+
+		return $arr;
+
+	}
+
+
+	function getMyLastAddedProject($id_user)
+	{
+
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id,id_user,title,abstract,number_of_members,status FROM dz2_projects
+				where id = (SELECT MAX(id) from dz2_projects where id_user =:id_user)' );
+
+			$st->execute(array('id_user' => $id_user));
+
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if($row === false)
+			return null;
+
+		else
+			return new Project($row['id'], $row['id_user'], $row['title'],
+			 $row['abstract'], $row['number_of_members'], $row['status']);
+
+
+	}
+
+	function initializeProject($id_project, $id_user)
+	{
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'INSERT into dz2_members(id_project,id_user,member_type)
+			values (:id_project, :id_user, :member_type)' );
+
+			$st->execute(array('id_project' => $id_project, 'id_user' => $id_user, 'member_type' => 'member' ));
+
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	}
+
+
+
+
+
+
+
+
+
+
+
 
 	function createProject($id_user,$projectName,$projectDescription,$projectNumber)
 	{

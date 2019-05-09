@@ -36,7 +36,10 @@ class ProjectsController
     $ps = new ProjectService();
 
     $title = 'My projects';
-  	$idProjectList = $ps->getMyProjects($_SESSION['id_user']);
+  	//$idProjectList = $ps->getMyProjects($_SESSION['id_user']);
+
+		$idProjectList = $ps->getAllMyProjects($_SESSION['id_user']);
+
 
 
 		//trebamo jos izvuc ime za projectList
@@ -89,7 +92,7 @@ class ProjectsController
 ////////////////////////
 		if(!isset($_POST['projectName']) || !isset($_POST['projectDescription'])
 		|| !isset($_POST['projectNumber'])
-		|| !preg_match('/^[a-zA-Z0-9]+$/',$_POST['projectName'])
+		|| !preg_match('/^[a-zA-Z0-9 ,.]+$/',$_POST['projectName'])
 		|| !preg_match('/^[1-9][0-9]*$/',(int)$_POST['projectNumber']))
 		{
 			header('Location: index.php?rt=projects/newProject ');
@@ -103,6 +106,12 @@ class ProjectsController
 		$projectNumber = (int)$_POST['projectNumber'];
 
 		$ps->createProject($id_user,$projectName,$projectDescription,$projectNumber);
+
+		// dodaj ga u svoj projekt kao membera
+
+		$targetProject = $ps->getMyLastAddedProject($id_user);
+
+		$ps->initializeProject($targetProject->id,$id_user);
 
 		header('Location: index.php?rt=projects/newProject');
 		exit();
@@ -247,7 +256,7 @@ class ProjectsController
 
 			foreach($pendingProjects as $pending)
 			{
-				$author = $ps->getUserById($pending->id);
+				$author = $ps->getUserById($pending->id_user);
 				$author_username = $author->username;
 
 				$projectApps[] = array('author' => $author_username, 'status' => $pending->status,
@@ -257,7 +266,7 @@ class ProjectsController
 
 			foreach($acceptedProjects as $accepted)
 			{
-				$author = $ps->getUserById($accepted->id);
+				$author = $ps->getUserById($accepted->id_user);
 				$author_username = $author->username;
 
 				$projectApps[] = array('author' => $author_username, 'status' => $accepted->status,
@@ -438,10 +447,6 @@ class ProjectsController
 					header('Location: index.php?rt=projects/myProjects');
 					exit();
 
-
-
-
-
 			}
 
 
@@ -468,26 +473,34 @@ class ProjectsController
 
 			$ps = new ProjectService();
 
+
 			if(!isset($_POST['id_project_invite']))
 			{
 				header('Location: index.php?rt=projects/showDescription');
 				exit();
 			}
 
-			elseif (!isset($_POST['invite_name']) || !preg_match('/^[a-zA-Z]{1,20}$/',$_POST['invite_name']))
+			elseif (!isset($_POST['invite_name'])
+			|| !preg_match('/^[a-zA-Z]{1,20}$/',$_POST['invite_name']))
 			{
+
 				header('Location: index.php?rt=projects/showDescription');
 				exit();
 			}
 
 			$title = 'Project invitation';
-
 			$id_project = $_POST['id_project_invite'];
 			$user_name = $_POST['invite_name'];
 
-			$user = $ps->getUserByName($user_name);
+			echo "id_project = ".$id_project."username = ".$user_name;
+
+
 
 			//moramo provjeriti postoji li taj user
+
+			$user = $ps->getUserByName($user_name);
+			if( $user === null )
+					exit( 'There is no user with name = ' . $user_name );
 
 
 

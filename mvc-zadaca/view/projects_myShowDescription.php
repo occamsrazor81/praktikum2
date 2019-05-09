@@ -27,19 +27,18 @@
 
 				echo '<br>';
 
-				//$nm = count($projectDescriptionList['members']) + 1;
-				//echo '<li>'.$nm .'</li>';
 
-				//treba dodat i da nije member vec
 				if((count($projectDescriptionList['members']) + 1 < (int)$projectDescriptionList['targetSize'])
-				&& $_SESSION['name'] != $projectDescriptionList['author'] && $provjera == 0 &&
+				&& strcmp($_SESSION['name'],$projectDescriptionList['author']) != 0 && $provjera == 0 &&
 				$projectDescriptionList['status'] != 'closed')
 				echo '<li><button type="submit" name="id_project_apply" value="'.$projectDescriptionList['id_project'].'">'.
 				'Apply for this project!</button></li>';
 
+				if(strcmp($projectDescriptionList['status'],'closed') !== 0 &&
+				strcmp($_SESSION['name'], $projectDescriptionList['author']) === 0)
         echo '<li>Send invitation to: '.
         '<input type="text" name="invite_name" >'.
-        '<button type="submit" name="id_project_invite value="'.$projectDescriptionList['id_project'].'">'.
+        '<button type="submit" name="id_project_invite" value="'.$projectDescriptionList['id_project'].'">'.
         'Invite</button> </li>';
 
 
