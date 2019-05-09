@@ -84,14 +84,19 @@ class ProjectsController
 
 		$id_user = $_SESSION['id_user'];
 
-		// if(!isset($_POST['projectName']) || !isset($_POST['projectDescription'])
-		// || !isset($_POST['projectNumber'])
-		// || !preg_match('/^[a-zA-Z0-9]+$/',$_POST['projectName'])
-		// || !preg_match('/^[a-zA-Z0-9]+$/',$_POST['projectDescription']))
-		// {
-		// 	header('Location: index.php?rt=projects/newProject ');
-		// 	exit();
-		// }
+
+
+////////////////////////
+		if(!isset($_POST['projectName']) || !isset($_POST['projectDescription'])
+		|| !isset($_POST['projectNumber'])
+		|| !preg_match('/^[a-zA-Z0-9]+$/',$_POST['projectName'])
+		|| !preg_match('/^[1-9][0-9]*$/',(int)$_POST['projectNumber']))
+		{
+			header('Location: index.php?rt=projects/newProject ');
+			exit();
+		}
+
+		//////////////////////////////////
 
 		$projectName = $_POST['projectName'];
 		$projectDescription = $_POST['projectDescription'];
@@ -268,7 +273,7 @@ class ProjectsController
 		}
 
 
-
+//++++++++++++++++++++++++++++++++++++++++++++++++++
 		public function acceptOrRejectApplicants()
 		{
 			$ps = new ProjectService();
@@ -305,7 +310,9 @@ class ProjectsController
 				'targetSize' => $targetProject->number_of_members,'members' => $userNames , 'status' => $targetProject->status);
 
 
-				require_once __DIR__.'/../view/projects_showDescription.php';
+
+
+				require_once __DIR__.'/../view/projects_myShowDescription.php';
 			}
 
 			elseif (isset($_POST['accept']))
@@ -329,9 +336,10 @@ class ProjectsController
 				if(count($targetUsers) == (int)$targetProject->number_of_members)
 					$ps->setStatusToClosed($id_project);
 
-				require_once __DIR__.'/../view/projects_showDescription.php';
+					header('Location: index.php?rt=projects/myProjects');
+					exit();
 
-			}
+				}
 
 			elseif (isset($_POST['reject']))
 			{
@@ -343,7 +351,8 @@ class ProjectsController
 
 				$ps->setApplicationRejected($id_project, $id_user);
 
-				require_once __DIR__.'/../view/projects_showDescription.php';
+				header('Location: index.php?rt=projects/myProjects');
+				exit();
 
 			}
 
@@ -361,8 +370,139 @@ class ProjectsController
 		{
 			$ps = new ProjectService();
 
-			//zelimo skupiti sve
+			//zelimo skupiti sve pozivnice gdje smo mi pozvani
 			$title = 'Pending Invitations';
+
+			$id_user = $_SESSION['id_user'];
+
+			$pendingProjects = $ps->getInvitationPendingProjectsByUserId($id_user);
+			$acceptedProjects = $ps->getInvitationAcceptedProjectsByUserId($id_user);
+
+			$projectInvites = array();
+
+
+			foreach($pendingProjects as $pending)
+			{
+				$author = $ps->getUserById($pending->id);
+				$author_username = $author->username;
+
+				$projectInvites[] = array('id_project' => $pending->id,'author' => $author_username, 'status' => $pending->status,
+			 	'title' => $pending->title, 'application' => 'pending');
+
+			}
+
+			// foreach($acceptedProjects as $accepted)
+			// {
+			// 	$author = $ps->getUserById($accepted->id);
+			// 	$author_username = $author->username;
+			//
+			// 	$projectInvites[] = array('id_project' => $pending->id, 'author' => $author_username, 'status' => $accepted->status,
+			//  	'title' => $accepted->title, 'application' => 'accepted');
+			//
+			// }
+
+
+
+
+			require_once __DIR__.'/../view/projects_pendingInvites.php';
+
+
+
+		}
+
+
+		public function acceptOrRejectInvitations()
+		{
+
+			$ps = new ProjectService();
+
+			//zelimo ovisno o stisnutom gumbu podesiti podatke u bazi
+
+
+			if(isset($_POST['id_project_accept']))
+			{
+				$title = 'Invite accepted';
+
+				$id_user = $_SESSION['id_user'];
+				$id_project = $_POST['id_project_accept'];
+
+				$ps->setInvitationAccepted($id_project, $id_user);
+
+
+				$targetUsers = $ps->getUsersFromMembersByProjectId($id_project);
+				$targetProject = $ps->getProjectById($id_project);
+
+				if(count($targetUsers) == (int)$targetProject->number_of_members)
+					$ps->setStatusToClosed($id_project);
+
+					header('Location: index.php?rt=projects/myProjects');
+					exit();
+
+
+
+
+
+			}
+
+
+			elseif(isset($_POST['id_project_reject']))
+			{
+				$title = 'Invite rejected';
+
+				$id_user = $_SESSION['id_user'];
+				$id_project = $_POST['id_project_reject'];
+
+				$ps->setInvitationRejected($id_project, $id_user);
+
+				header('Location: index.php?rt=projects/myProjects');
+				exit();
+
+			}
+
+
+		}
+
+
+		public function inviteSomeone()
+		{
+
+			$ps = new ProjectService();
+
+			if(!isset($_POST['id_project_invite']))
+			{
+				header('Location: index.php?rt=projects/showDescription');
+				exit();
+			}
+
+			elseif (!isset($_POST['invite_name']) || !preg_match('/^[a-zA-Z]{1,20}$/',$_POST['invite_name']))
+			{
+				header('Location: index.php?rt=projects/showDescription');
+				exit();
+			}
+
+			$title = 'Project invitation';
+
+			$id_project = $_POST['id_project_invite'];
+			$user_name = $_POST['invite_name'];
+
+			$user = $ps->getUserByName($user_name);
+
+			//moramo provjeriti postoji li taj user
+
+
+
+			$ps->sendInvitation($id_project, $user->id);
+
+			// $targetUsers = $ps->getUsersFromMembersByProjectId($id_project);
+			// $targetProject = $ps->getProjectById($id_project);
+			//
+			// if(count($targetUsers) == (int)$targetProject->number_of_members)
+			// 	$ps->setStatusToClosed($id_project);
+
+
+
+			header('Location: index.php?rt=projects/pendingApps');
+			exit();
 
 		}
 
