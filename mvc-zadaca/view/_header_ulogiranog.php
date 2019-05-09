@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta charset="utf8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ProjectsApp</title>
 
 	<style media="screen">
@@ -33,6 +33,8 @@
 			<li><a href="index.php?rt=projects">All projects</a></li>
 			<li><a href="index.php?rt=projects/myProjects">My projects</a></li>
       <li><a href="index.php?rt=projects/createNew">Create new project</a></li>
+			<li><a href="index.php?rt=projects/pendingApplications">Pending Applications</a></li>
+			<li><a href="index.php?rt=projects/pendingInvitations">Pending Invitations</a></li>
 		</ul>
 	</nav>
 

@@ -199,11 +199,18 @@ class ProjectService
 		try
 		{
 			$db = DB::getConnection();
+
+			// $st = $db->prepare( 'SELECT id, username, password_hash, email,
+			// 	 registration_sequence, has_registered from dz2_users where id in
+			// 	(SELECT id_user from dz2_members where id_project=:project_id)' );
+
 			$st = $db->prepare( 'SELECT id, username, password_hash, email,
 				 registration_sequence, has_registered from dz2_users where id in
-				(SELECT id_user from dz2_members where id_project=:project_id)' );
+				(SELECT id_user from dz2_members where id_project=:project_id
+				and member_type in (:member_member, :member_accepted, :invitation_accepted))' );
 
-			$st->execute(array('project_id' => $project_id));
+			$st->execute(array('project_id' => $project_id, 'member_member' => 'member',
+			 'member_accepted' => 'application_accepted','invitation_accepted' => 'invitation_accepted'));
 
 
 		}
@@ -254,6 +261,159 @@ function setStatusToClosed($id_project)
 	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
 }
+
+
+///////////////////////////////////
+
+
+function sendApplication($id_project, $id_user)
+{
+
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare('INSERT into dz2_members(id_project,id_user,member_type)
+		values (:id_project, :id_user, :member_type) ');
+
+		$st->execute(array('id_project' => $id_project, 'id_user' => $id_user, 'member_type' => 'application_pending' ));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+}
+
+
+function getApplicationPendingProjectsByUserId($id_user)
+{
+
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare(' SELECT id,id_user,title,abstract,number_of_members,status
+			from dz2_projects where id in
+			(SELECT id_project from dz2_members where id_user=:id_user and
+			member_type=:member_pending)');
+
+
+		$st->execute(array('id_user' => $id_user,'member_pending' => 'application_pending'));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	$arr = array();
+	while( $row = $st->fetch() )
+	{
+		$arr[] = new Project( $row['id'], $row['id_user'], $row['title'],
+		 $row['abstract'], $row['number_of_members'], $row['status'] );
+	}
+
+	return $arr;
+}
+
+
+
+function getApplicationAcceptedProjectsByUserId($id_user)
+{
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare(' SELECT id,id_user,title,abstract,number_of_members,status
+			from dz2_projects where id in
+			(SELECT id_project from dz2_members where id_user=:id_user and
+			member_type=:member_accepted)');
+
+
+		$st->execute(array('id_user' => $id_user,'member_accepted' => 'application_accepted'));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	$arr = array();
+	while( $row = $st->fetch() )
+	{
+		$arr[] = new Project( $row['id'], $row['id_user'], $row['title'],
+		 $row['abstract'], $row['number_of_members'], $row['status'] );
+	}
+
+	return $arr;
+
+}
+
+
+
+function getApplicantsViaProjectId($project_id)
+{
+
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare('SELECT id, username, password_hash, email,
+			registration_sequence, has_registered from dz2_users where id in
+			(SELECT id_user from dz2_members
+				where id_project=:project_id and member_type=:member_pending)');
+
+		$st->execute(array('project_id' => $project_id, 'member_pending' => 'application_pending'));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	$arr = array();
+	while( $row = $st->fetch() )
+	{
+		$arr[] = new User( $row['id'], $row['username'], $row['password_hash'], $row['email'], $row['registration_sequence'], $row['has_registered'] );
+	}
+
+	return $arr;
+
+
+}
+
+
+
+function setApplicationAccepted($id_project, $id_user)
+{
+
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare('UPDATE dz2_members set member_type=:member_accepted
+			where id_project=:id_project and id_user=:id_user ');
+
+		$st->execute(array('member_accepted' => 'application_accepted',
+	'id_project' => $id_project, 'id_user' => $id_user));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+}
+
+
+
+function setApplicationRejected($id_project, $id_user)
+{
+
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare('UPDATE dz2_members set member_type=:member_rejected
+			where id_project=:id_project and id_user=:id_user ');
+
+		$st->execute(array('member_rejected' => 'application_rejected',
+	'id_project' => $id_project, 'id_user' => $id_user));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+}
+
 
 
 
