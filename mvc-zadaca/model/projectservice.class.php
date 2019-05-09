@@ -117,6 +117,49 @@ class ProjectService
 	}
 
 
+
+////////////************************************************************
+
+
+
+	function registerUser($username, $hash, $email, $reg_seq, $has_registered)
+	{
+
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'INSERT into dz2_users
+				(username,password_hash,email,registration_sequence,has_registered)
+				values (:username,:hash,:email,:reg_seq,:has_registered) ' );
+
+			$st->execute(array('username' => $username, 'hash' => $hash,
+		'email' => $email, 'reg_seq' => $reg_seq, 'has_registered' => $has_registered));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	}
+
+	function sendConfirmationCode($email, $registration_sequence)
+	{
+		$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+		if(filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+			echo "Losa email adresa.";
+
+		else
+		{
+			$to = $email;
+			$subject = 'Confirmation Code For TeamUp';
+			$body = 'Copy this word  -> '.$registration_sequence.' <- into Confirmation textbox to confrim that it is really you.';
+			$header = 'Confirmation TeamUp email';
+
+			mail($to,$subject,$body,$header);
+
+		}
+
+
+	}
+
 	////////////////////////////////////////////////////////////////
 	//projects
 
