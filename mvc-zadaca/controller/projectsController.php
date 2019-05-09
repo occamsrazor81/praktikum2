@@ -136,12 +136,46 @@ class ProjectsController
 
 		}
 
-		$projectDescriptionList = array('author' => $author_username,
+		$projectDescriptionList = array('id_project' => $targetProject->id, 'author' => $author_username,
 		'title' => $targetProject->title, 'description' => $targetProject->abstract,
-	'members' => $userNames);
+		'targetSize' => $targetProject->number_of_members,'members' => $userNames , 'status' => $targetProject->status);
 
-	
+
 		require_once __DIR__.'/../view/projects_showDescription.php';
+
+
+	}
+
+
+	public function applyForProject()
+	{
+		$ps = new ProjectService();
+
+		if(!isset($_POST['id_project_apply']))
+		{
+			header('Location: index.php?rt=projects/showDescription');
+			exit();
+		}
+
+		$title = 'Project application';
+
+		$id_user = $_SESSION['id_user'];
+		$id_project = $_POST['id_project_apply'];
+
+		$ps->addNewMember($id_project, $id_user);
+
+		$targetUsers = $ps->getUsersFromMembersByProjectId($id_project);
+		$targetProject = $ps->getProjectById($id_project);
+
+		if(count($targetUsers) == (int)$targetProject->number_of_members)
+			$ps->setStatusToClosed($id_project);
+
+
+
+
+//promijeniti poslije
+		header('Location: index.php?rt=projects/newProject');
+		exit();
 
 
 	}

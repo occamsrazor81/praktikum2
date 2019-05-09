@@ -217,11 +217,50 @@ class ProjectService
 
 		return $arr;
 
+	}
 
 
+
+function addNewMember($id_project, $id_user)
+{
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare( 'INSERT into dz2_members(id_project,id_user,member_type)
+		values (:id_project, :id_user, :member_type)' );
+
+		$st->execute(array('id_project' => $id_project, 'id_user' => $id_user, 'member_type' => 'member' ));
 
 
 	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+}
+
+
+
+function setStatusToClosed($id_project)
+{
+	try
+	{
+		$db = DB::getConnection();
+		$st = $db->prepare('UPDATE dz2_projects set status=:status where id=:id_project');
+
+		$st->execute(array('status' => 'closed', 'id_project' => $id_project));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+}
+
+
+
+
+
+
+
 
 
 	//////////////////////////////////////////////////////////////////////////////
