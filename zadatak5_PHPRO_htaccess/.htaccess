@@ -1,7 +1,0 @@
-# Ovo je datoteka .htaccess unutar ~user/public_html
-RewriteEngine On
-RewriteBase /~zvonimir/rp2/07/zadatak5_PHPRO_htaccess/
-
-RewriteRule "^css/(.*)$" "css/$1" [L]
-RewriteRule "^app/boot/(.*)" "app/boot/$1" [L]
-RewriteRule "^(.*)$" "index.php?rt=$1" [L,QSA]
