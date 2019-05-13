@@ -1,0 +1,75 @@
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>Primjer 1</title>
+</head>
+<body>
+    <ul class="zivotinje">
+
+        <li class="velika">Velebiljka</li>
+          <li>Obiljka</li>
+        <li class="velika">Biljusina</li>
+    </ul>
+
+  </ul>
+
+
+  <ul class="biljke">
+      <li class="velika">Slon</li>
+      <li class="mala">Mrav</li>
+      <li class="velika">Kokoš</li>
+  </ul>
+
+    <ul class="zivotinje">
+        <li class="velika">Slon</li>
+        <li class="mala">Mrav</li>
+        <li class="velika">Kokoš</li>
+
+
+    <script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js">
+    $(document).ready(function()
+    {
+      var uls = $("ul.zivotinje");
+      var brojZivotinja = 0;
+
+      for( var i = 0; i < uls.length; ++i )
+      {
+        var ul = uls.eq(i);
+
+        var lis = ul.children();
+
+        brojZivotinja += lis.length;
+        for( var j = 0; j < lis.length; ++j )
+        {
+            // Dohvatimo j-to dijete od ul -- to je j-ti element tipa li unutar tog ul-a
+            var zivotinja = lis.eq(j);
+            console.log( "Hello, " + zivotinja.html() );
+
+            // Pogledamo klasu od tog li elementa. Što ako imamo <li class="velika opasna">Slon</li>?
+            if( zivotinja.hasClass('velika') )
+                zivotinja.css('font-size', '24pt');
+
+            var ime_zivotinje = zivotinja.html();
+            zivotinja.html(ime_zivotinje+"!");
+
+            var novi_ul = $('<ul></ul>');
+
+            var novi_li = $('<li>');
+            novi_li.html(ime_zivotinje);
+            novi_ul.append(novi_li);
+
+            $("body").append(novi_ul);
+
+
+
+
+        }
+    }
+    console.log( "Ukupno ima " + brojZivotinja + " životinja." );
+
+
+
+    });
+    </script>
+</body>
+</html>

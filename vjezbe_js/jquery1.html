@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>JQuery 1</title>
+  </head>
+  <body>
+
+<p>U ovom paragrafu sve crveno.</p>
+<p>Ovaj paragraf je žuto obojan.</p>
+<p>crveno je bilo more.</p>
+<p>žuto nije crveno jer nije.</p>
+<p>To nije crveno obojano.</p>
+<p>Svaki muto voli žuto.</p>
+<p>žuto more ima puno moruzgvi.</p>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js">
+
+$(document).ready(function()
+{
+  var povi = $("p");
+  for (var i = 0; i < povi.length; ++i)
+  {
+    var p = povi.eq(i);
+    var re_crveno = /crveno/;
+    var re_zuto = /žuto/;
+
+    if(re_crveno.test(p.html()))
+       p.css("color","red");
+
+    if(/žuto/.test(p.html()))
+      p.css("background-color","yellow");
+  }
+});
+
+</script>
+  </body>
+</html>
