@@ -174,6 +174,71 @@ class FantasyService
 
   }
 
+  function createLeague($id_user, $leagueName, $leagueNumber, $week, $day,
+    $trade_deadline, $leagueSelect, $status)
+  {
+
+    try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'INSERT into
+				project_leagues(id_user,title,number_of_members,week,day,
+          trade_deadline,league_type,status)
+				values (:id_user,:title,:number_of_members,:week,:day,
+          :trade_deadline,:league_type,:status)' );
+
+			$st->execute(array('id_user' => $id_user, 'title' => $leagueName,
+			 'number_of_members' => $leagueNumber, 'week' => $week, 'day' => $day,
+       'trade_deadline' => $trade_deadline, 'league_type' => $leagueSelect,
+		 		'status' => $status));
+
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+  function getMyLastAddedLeague($id_user)
+  {
+
+    try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id,id_user,title,number_of_members,
+        week,day,trade_deadline,league_type,status FROM project_leagues
+				where id = (SELECT MAX(id) from project_leagues where id_user =:id_user)' );
+
+			$st->execute(array('id_user' => $id_user));
+
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if($row === false)
+			return null;
+
+		else
+			return new League($row['id'], $row['id_user'], $row['title'],
+			  $row['number_of_members'], $row['week'], $row['day'],
+        $row['trade_deadline'], $row['league_type'], $row['status']);
+
+  }
+
+  function initializeLeague($id_league,$id_user)
+  {
+    try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'INSERT into project_members(id_league,id_user,member_type)
+			values (:id_league, :id_user, :member_type)' );
+
+			$st->execute(array('id_league' => $id_league, 'id_user' => $id_user, 'member_type' => 'admin' ));
+
+
+		}
+		catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
 
 
 

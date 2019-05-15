@@ -2,7 +2,7 @@
 <?php require_once __DIR__.'/_header_ulogiranog.php'; ?>
 
 <!-- ovo promijeniti -->
-<form  action="index.php?rt=projects/findProjectDetails" method="post">
+<form  action="index.php?rt=leagues/findLeagueDetails" method="post">
 
 <table>
 	<tr><th>Admin</th><th>Title</th><th>Type</th><th>Status</th></tr>

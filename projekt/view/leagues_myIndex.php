@@ -2,7 +2,7 @@
 <?php require_once __DIR__.'/_header_ulogiranog.php'; ?>
 
 
-<form  action="index.php?rt=projects/acceptOrRejectApplicants" method="post">
+<form  action="index.php?rt=leagues/acceptOrRejectApplicants" method="post">
 
 
 <table>
