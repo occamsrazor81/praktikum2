@@ -119,6 +119,96 @@ class LeaguesController
 
 	}
 
+	public function pendingApplications()
+	{
+		 	$fs = new FantasyService();
+
+			$title = 'Pending applications';
+
+			$id_user = $_SESSION['id_user'];
+
+			$pendingLeagues = $fs->getApplicationPendingLeaguesByUserId($id_user);
+			$acceptedLeagues = $fs->getApplicationAcceptedLeaguesByUserId($id_user);
+
+			$leagueApps = array();
+
+
+			foreach($pendingLeagues as $pending)
+			{
+				$admin = $fs->getUserById($pending->id_user);
+				$admin_username = $admin->username;
+
+				$leagueApps[] = array('admin' => $admin_username, 'status' => $pending->status,
+			 	'title' => $pending->title, 'application' => 'pending');
+
+			}
+
+			foreach($acceptedLeagues as $accepted)
+			{
+				$admin = $fs->getUserById($accepted->id_user);
+				$admin_username = $admin->username;
+
+				$leagueApps[] = array('admin' => $admin_username, 'status' => $accepted->status,
+			 	'title' => $accepted->title, 'application' => 'accepted');
+
+			}
+
+
+
+
+			require_once __DIR__.'/../view/leagues_pendingApps.php';
+
+	}
+
+
+
+	public function findLeagueDetails()
+	{
+		$fs = new FantasyService();
+
+
+		if(!isset($_POST['league_id']))
+		{
+			header('Location: index.php?rt=leagues/newLeague');
+			exit();
+		}
+
+		$title = 'League information';
+
+		$league_id = (int)$_POST['league_id'];
+
+		$targetLeague = $fs->getLeagueById($league_id);
+
+		//sad imamo naslov, description
+		//trebamo se dokopati authora i membera
+
+		$admin_id = $targetLeague->id_user;
+		$admin = $fs->getUserById($admin_id);
+		$admin_username = $admin->username;
+
+		//jos samo ostale members (iz zadnje tablice)
+
+//podesiti td vraca samo membere, ili application_accepted
+		$targetUsers = $fs->getUsersFromMembersByLeagueId($league_id);
+
+		$userNames = array();
+		foreach($targetUsers as $tUser)
+		{
+			if($tUser->id != $admin_id)
+			$userNames[] = $tUser->username;
+
+		}
+
+		$leagueInformationList = array('id_league' => $targetLeague->id, 'admin' => $admin_username,
+		'title' => $targetLeague->title, 'targetSize' => $targetLeague->number_of_members,
+		'members' => $userNames , 'status' => $targetLeague->status);
+
+
+		require_once __DIR__.'/../view/leagues_showInformation.php';
+
+
+	}
+
 
 
 

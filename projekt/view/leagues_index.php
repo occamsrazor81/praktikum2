@@ -13,7 +13,8 @@
       echo '<tr>';
 
       echo '<td>'.$league['admin'].'</td>';
-      echo '<td>'.$league['title'].'</td>';
+      echo '<td><button type="submit" name="league_id" value="'.
+			$league['id'].'">'.$league['title'].'</button></td>';
       echo '<td>'.$league['league_type'].'</td>';
       echo '<td>'.$league['status'].'</td>';
 
