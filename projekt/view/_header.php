@@ -16,7 +16,7 @@
 
 	<nav>
 		<ul>
-			<li><a href="index.php?rt=users">All users</a></li>
+			<!-- <li><a href="index.php?rt=users">All users</a></li> -->
 			<li><a href="index.php?rt=users/login">Login</a></li>
 			<li><a href="index.php?rt=users/register">Register</a></li>
 			<li><a href="index.php?rt=users/confirm">Confirm your registration</a></li>

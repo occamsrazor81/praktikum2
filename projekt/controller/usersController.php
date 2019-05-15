@@ -17,7 +17,18 @@ class UsersController
 
 	public function login()
 	{
+
 		$title = 'Login';
+
+		if(isset($_POST['logout']))
+		{
+			session_unset();
+			session_destroy();
+			require_once __DIR__.'/../view/users_login.php';
+
+		}
+
+
 
 		require_once __DIR__.'/../view/users_login.php';
 	}

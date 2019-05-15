@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>ProjectsApp</title>
+	<title>FantasyApp</title>
 
 	<style media="screen">
 	td { border: solid 2px; background-color: yellow;}
@@ -30,11 +30,11 @@
 
 	<nav>
 		<ul>
-			<li><a href="index.php?rt=projects">All Leagues</a></li>
-			<li><a href="index.php?rt=projects/myProjects">My Leagues</a></li>
-      <li><a href="index.php?rt=projects/createNew">Start new League</a></li>
-			<li><a href="index.php?rt=projects/pendingApplications">League Applications</a></li>
-			<li><a href="index.php?rt=projects/pendingInvitations">League Invitations</a></li>
+			<li><a href="index.php?rt=leagues">All Leagues</a></li>
+			<li><a href="index.php?rt=leagues/myLeagues">My Leagues</a></li>
+      <li><a href="index.php?rt=leagues/createNew">Start new League</a></li>
+			<li><a href="index.php?rt=leagues/pendingApplications">League Applications</a></li>
+			<li><a href="index.php?rt=leagues/pendingInvitations">League Invitations</a></li>
 		</ul>
 	</nav>
 

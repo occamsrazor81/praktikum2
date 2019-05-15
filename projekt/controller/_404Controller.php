@@ -1,6 +1,7 @@
 <?php
+session_start();
 
-require_once __DIR__.'/../model/projectservice.class.php';
+require_once __DIR__.'/../model/fantasyservice.class.php';
 
 class _404Controller
 {
@@ -8,7 +9,12 @@ class _404Controller
 	{
 		$title = 'Stranica nije pronađena.';
 
-		require_once 'view/404_index.php';
+		if(!isset($_SESSION['id_user']))
+			require_once 'view/users_login.php';
+
+		else
+			require_once 'view/users_ulogirani.php';
+
 	}
 };
 
