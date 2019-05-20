@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Zad3</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js">
+    </script>
+  </head>
+  <body>
+<img src="dolphins.jpg" id="slika">
+    <script>
+
+  $(window).on("load", function()
+  {
+
+    var orig_w = $("#slika").width(), smjer = "povecaj";
+    setInterval(f,100);
+
+    function f()
+    {
+      var w = $("#slika").width(), h = $("#slika").height();
+      if(strcmp(smjer,"povecaj") === 0)
+      {
+        ++w; ++h;
+
+      }
+
+      else {
+        --w; --h;
+      }
+
+      $("#slika").width(w);
+      $("#slika").height(h);
+
+      if(w > 2*orig_w)
+        smjer = "smanji";
+
+      else if (w < orig_w) {
+        smjer = "povecaj";
+
+      }
+    }
+
+  });
+
+
+
+    </script>
+
+  </body>
+</html>
