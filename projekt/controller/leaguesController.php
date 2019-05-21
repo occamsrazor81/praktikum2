@@ -350,6 +350,86 @@ class LeaguesController
 	}
 
 
+	public function pendingInvitations()
+	{
+		$fs = new FantasyService();
+
+		//zelimo skupiti sve pozivnice gdje smo mi pozvani
+		$title = 'Pending Invitations';
+
+		$id_user = $_SESSION['id_user'];
+
+		$pendingLeagues = $fs->getInvitationPendingLeaguesByUserId($id_user);
+		$acceptedLeagues = $fs->getInvitationAcceptedLeaguesByUserId($id_user);
+
+		$leagueInvites = array();
+
+
+		foreach($pendingLeagues as $pending)
+		{
+			$admin = $fs->getUserById($pending->id_user);
+			$admin_username = $admin->username;
+
+			$leagueInvites[] = array('id_league' => $pending->id,
+			'admin' => $admin_username, 'status' => $pending->status,
+			'title' => $pending->title,	 'application' => 'pending');
+
+		}
+
+
+		require_once __DIR__.'/../view/leagues_pendingInvites.php';
+
+	}
+
+
+	public function acceptOrRejectInvitations()
+	{
+
+		$fs = new FantasyService();
+
+			//zelimo ovisno o stisnutom gumbu podesiti podatke u bazi
+
+
+			if(isset($_POST['id_league_accept']))
+			{
+				$title = 'Invite accepted';
+
+				$id_user = $_SESSION['id_user'];
+				$id_league = $_POST['id_league_accept'];
+
+				$fs->setInvitationAccepted($id_league, $id_user);
+
+
+				$targetUsers = $fs->getUsersFromMembersByLeagueId($id_league);
+				$targetLeague = $fs->getLeagueById($id_league);
+
+				if(count($targetUsers) == (int)$targetLeague->number_of_members)
+					$fs->setStatusToClosed($id_league);
+
+					header('Location: index.php?rt=leagues/myLeagues');
+					exit();
+
+			}
+
+
+			elseif(isset($_POST['id_league_reject']))
+			{
+				$title = 'Invite rejected';
+
+				$id_user = $_SESSION['id_user'];
+				$id_league = $_POST['id_league_reject'];
+
+				$fs->setInvitationRejected($id_league, $id_user);
+
+				header('Location: index.php?rt=leagues/myLeagues');
+				exit();
+
+			}
+
+
+	}
+
+
 
 
 
