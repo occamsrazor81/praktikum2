@@ -108,7 +108,6 @@ class LeaguesController
 		$fs->createLeague($id_user, $leagueName, $leagueNumber, 1, 1,
 			$trade_deadline, $leagueSelect, 'open');
 
-		// dodaj ga u svoj projekt kao membera
 
 		$targetLeague = $fs->getMyLastAddedLeague($id_user);
 
@@ -179,16 +178,11 @@ class LeaguesController
 
 		$targetLeague = $fs->getLeagueById($league_id);
 
-		//sad imamo naslov, description
-		//trebamo se dokopati authora i membera
-
 		$admin_id = $targetLeague->id_user;
 		$admin = $fs->getUserById($admin_id);
 		$admin_username = $admin->username;
 
-		//jos samo ostale members (iz zadnje tablice)
 
-//podesiti td vraca samo membere, ili application_accepted
 		$targetUsers = $fs->getUsersFromMembersByLeagueId($league_id);
 
 		$userNames = array();
@@ -201,7 +195,7 @@ class LeaguesController
 
 		$leagueInformationList = array('id_league' => $targetLeague->id, 'admin' => $admin_username,
 		'title' => $targetLeague->title, 'targetSize' => $targetLeague->number_of_members,
-		'members' => $userNames , 'status' => $targetLeague->status);
+		'members' => $userNames , 'status' => $targetLeague->status, 'league_type' => $targetLeague->league_type);
 
 
 		require_once __DIR__.'/../view/leagues_showInformation.php';
@@ -284,27 +278,73 @@ class LeaguesController
 
 	}
 
-
+//podesiti automatski ulazak u public i paid_public
+//paziti da se ne ude ili prijavi ako si vec unutra
 	public function applyForLeague()
 	{
 		$fs = new FantasyService();
 
-		if(!isset($_POST['id_league_apply']))
+		if(!isset($_POST['id_league_apply']) && !isset($_POST['id_league_enter']))
 		{
 			header('Location: index.php?rt=leagues/showInformation');
 			exit();
 		}
 
-		$title = 'League application';
+		if(isset($_POST['id_league_apply']))
+		{
+			$title = 'League application';
 
-		$id_user = $_SESSION['id_user'];
-		$id_league = $_POST['id_league_apply'];
+			$id_user = $_SESSION['id_user'];
+			$id_league = $_POST['id_league_apply'];
 
-		$fs->sendApplication($id_league, $id_user);
+			//mozda ubaciti da se ne prijavljujem duplo u istu ligu
 
-		header('Location: index.php?rt=leagues/pendingApplications');
-	  exit();
+			$fs->sendApplication($id_league, $id_user);
 
+			header('Location: index.php?rt=leagues/pendingApplications');
+	  	exit();
+		}
+
+		elseif (isset($_POST['id_league_enter']))
+		{
+
+			$title = 'League enter';
+
+			$id_user = $_SESSION['id_user'];
+			$id_league = $_POST['id_league_enter'];
+
+			$targetLeague = $fs->getLeagueById($id_league);
+			$targetUser = $fs->getUserById($id_user);
+			$targetUsers = $fs->getUsersFromMembersByLeagueId($id_league);
+
+			//dodati provjeru stanja na racunu za proizvoljnu velicinu placanja
+			if(strcmp($targetLeague->status, 'closed') === 0 ||
+			count($targetUsers) == $targetLeague->number_of_members)
+			{
+				header('Location: index.php?rt=leagues/myLeagues');
+		  	exit();
+
+			}
+
+
+				$fs->enterLeague($id_league, $id_user);
+
+				$targetUsers = $fs->getUsersFromMembersByLeagueId($id_league);
+				$targetLeague = $fs->getLeagueById($id_league);
+
+
+				if(count($targetUsers) == $targetLeague->number_of_members)
+					$fs->setStatusToClosed($id_league);
+
+
+
+				header('Location: index.php?rt=leagues/myLeagues');
+		  	exit();
+
+
+
+
+		}
 
 
 	}

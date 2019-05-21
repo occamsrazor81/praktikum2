@@ -34,9 +34,20 @@
 				if((count($leagueInformationList['members']) + 1 < (int)$leagueInformationList['targetSize'])
 				&& $_SESSION['name'] != $leagueInformationList['admin'] && $provjera == 0 &&
 				$leagueInformationList['status'] != 'closed')
-				echo '<li><button type="submit" name="id_league_apply" value="'.$leagueInformationList['id_league'].'">'.
-				'Apply for this project!</button></li>';
+				{
+					if(strcmp($leagueInformationList['league_type'], 'private') === 0
+					|| strcmp($leagueInformationList['league_type'], 'paid_private') === 0)
+						echo '<li><button type="submit" name="id_league_apply" value="'.
+						$leagueInformationList['id_league'].'">'.
+						'Apply for this league!</button></li>';
 
+					elseif (strcmp($leagueInformationList['league_type'], 'public') === 0
+					|| strcmp($leagueInformationList['league_type'], 'paid_public') === 0)
+						echo '<li><button type="submit" name="id_league_enter" value="'.
+						$leagueInformationList['id_league'].'">'.
+						'Enter this league!</button></li>';
+
+				}
 
 
 

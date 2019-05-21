@@ -352,10 +352,11 @@ class FantasyService
 			$st = $db->prepare( 'SELECT id, username, password_hash, email,
 				 registration_sequence, has_registered, bank_account from project_users where id in
 				(SELECT id_user from project_members where id_league=:league_id
-				and member_type in (:member_member, :member_accepted, :invitation_accepted))' );
+				and member_type in (:member_member, :member_accepted, :invitation_accepted, :member_admin))' );
 
 			$st->execute(array('league_id' => $league_id, 'member_member' => 'member',
-			 'member_accepted' => 'application_accepted','invitation_accepted' => 'invitation_accepted'));
+			 'member_accepted' => 'application_accepted','invitation_accepted' => 'invitation_accepted',
+        'member_admin' => 'admin'));
 
 
 		}
@@ -444,6 +445,24 @@ class FantasyService
       'member_type' => 'application_pending' ));
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+  function enterLeague($id_league, $id_user)
+  {
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('INSERT into project_members
+        (id_league,id_user,member_type)
+        values (:id_league, :id_user, :member_type) ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user,
+      'member_type' => 'member' ));
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
 
   }
 
