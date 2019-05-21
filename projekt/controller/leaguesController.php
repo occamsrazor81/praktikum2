@@ -210,6 +210,106 @@ class LeaguesController
 	}
 
 
+	public function acceptOrRejectApplicants()
+	{
+		$fs = new FantasyService();
+
+		if(isset($_POST['league_id']))
+		{
+			$title = 'League information';
+
+			$league_id = (int)$_POST['league_id'];
+
+			$targetLeague = $fs->getLeagueById($league_id);
+
+			$admin_id = $targetLeague->id_user;
+			$admin = $fs->getUserById($admin_id);
+			$admin_username = $admin->username;
+
+			$targetUsers = $fs->getUsersFromMembersByLeagueId($league_id);
+
+			$userNames = array();
+			foreach($targetUsers as $tUser)
+			{
+				if($tUser->id != $admin_id)
+				$userNames[] = $tUser->username;
+
+			}
+
+			$leagueInformationList = array('id_league' => $targetLeague->id, 'admin' => $admin_username,
+			'title' => $targetLeague->title, 'targetSize' => $targetLeague->number_of_members,
+			'members' => $userNames , 'status' => $targetLeague->status);
+
+
+			require_once __DIR__.'/../view/leagues_showInformation.php';
+
+		}
+
+		elseif (isset($_POST['accept']))
+		{
+			$title = 'Accept application';
+
+			$id_league = substr($_POST['accept'], 0, strpos($_POST['accept'],'_'));
+		  $id_user = substr($_POST['accept'], strpos($_POST['accept'],'_') + 1);
+
+			$fs->setApplicationAccepted($id_league, $id_user);
+
+			$targetUsers = $fs->getUsersFromMembersByLeagueId($id_league);
+
+			$targetLeague = $fs->getLeagueById($id_league);
+
+			if(count($targetUsers) == (int)$targetLeague->number_of_members)
+				$fs->setStatusToClosed($id_league);
+
+
+			header('Location: index.php?rt=leagues/myLeagues');
+			exit();
+
+
+		}
+
+		elseif (isset($_POST['reject']))
+		{
+			$title = 'Reject application';
+
+			$id_league = substr($_POST['reject'], 0, strpos($_POST['reject'],'_'));
+		  $id_user = substr($_POST['reject'], strpos($_POST['reject'],'_') + 1);
+
+			$fs->setApplicationRejected($id_league, $id_user);
+
+			header('Location: index.php?rt=leagues/myLeagues');
+			exit();
+
+		}
+
+	}
+
+
+	public function applyForLeague()
+	{
+		$fs = new FantasyService();
+
+		if(!isset($_POST['id_league_apply']))
+		{
+			header('Location: index.php?rt=leagues/showInformation');
+			exit();
+		}
+
+		$title = 'League application';
+
+		$id_user = $_SESSION['id_user'];
+		$id_league = $_POST['id_league_apply'];
+
+		$fs->sendApplication($id_league, $id_user);
+
+		header('Location: index.php?rt=leagues/pendingApplications');
+	  exit();
+
+
+
+	}
+
+
 
 
 

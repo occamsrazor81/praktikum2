@@ -152,11 +152,19 @@ class FantasyService
     try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id, id_user, title, number_of_members,
-         week, day, trade_deadline, league_type, status FROM project_leagues
-         where id_user=:id_user' );
+			// $st = $db->prepare( 'SELECT id, id_user, title, number_of_members,
+      //    week, day, trade_deadline, league_type, status FROM project_leagues
+      //    where id_user=:id_user' );
 
-			$st->execute(array('id_user' => $id_user));
+      $st = $db->prepare( 'SELECT id,id_user,title,number_of_members,
+        week,day,trade_deadline,league_type,status FROM project_leagues
+        where id in (SELECT id_league from project_members
+        where id_user=:id_user and member_type in
+        (:member_member, :application_accepted, :invitation_accepted,:member_admin))' );
+
+			$st->execute(array('id_user' => $id_user, 'member_member' => 'member',
+      'application_accepted' => 'application_accepted', 'invitation_accepted' => 'invitation_accepted',
+      'member_admin' => 'admin'));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 
@@ -362,6 +370,80 @@ class FantasyService
 		}
 
 		return $arr;
+
+  }
+
+
+
+  function setApplicationAccepted($id_league, $id_user)
+  {
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_members set member_type=:member_accepted
+           where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('member_accepted' => 'application_accepted',
+       'id_league' => $id_league, 'id_user' => $id_user));
+
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+  function setApplicationRejected($id_league, $id_user)
+  {
+
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_members set member_type=:member_rejected
+           where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('member_rejected' => 'application_rejected',
+       'id_league' => $id_league, 'id_user' => $id_user));
+
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+  function setStatusToClosed($id_league)
+  {
+    try
+	  {
+      $db = DB::getConnection();
+		  $st = $db->prepare('UPDATE project_leagues set status=:status
+        where id=:id_league');
+
+		 $st->execute(array('status' => 'closed', 'id_league' => $id_league));
+
+
+	}
+	catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+  function sendApplication($id_league, $id_user)
+  {
+    try
+	  {
+      $db = DB::getConnection();
+		  $st = $db->prepare('INSERT into project_members
+        (id_league,id_user,member_type)
+		    values (:id_league, :id_user, :member_type) ');
+
+		  $st->execute(array('id_league' => $id_league, 'id_user' => $id_user,
+      'member_type' => 'application_pending' ));
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
   }
 
