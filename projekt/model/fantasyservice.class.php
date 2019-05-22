@@ -514,6 +514,26 @@ class FantasyService
   }
 
 
+
+  function setStatusToOpen($id_league)
+  {
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_leagues set status=:status
+        where id=:id_league');
+
+     $st->execute(array('status' => 'open', 'id_league' => $id_league));
+
+
+  }
+  catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+
   function sendApplication($id_league, $id_user)
   {
     try
@@ -689,6 +709,21 @@ class FantasyService
 	  }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
+
+  }
+
+  function leaveLeague($id_league, $id_user)
+  {
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('DELETE from project_members where
+      id_league=:id_league and id_user=:id_user');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() );  }
 
   }
 

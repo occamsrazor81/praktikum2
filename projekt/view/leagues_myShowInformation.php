@@ -28,11 +28,11 @@
 				echo '<br>';
 
 
-				if((count($leagueInformationList['members']) + 1 < (int)$leagueInformationList['targetSize'])
-				&& strcmp($_SESSION['name'],$leagueInformationList['admin']) != 0 && $provjera == 0 &&
-				$leagueInformationList['status'] != 'closed')
-				echo '<li><button type="submit" name="id_league_apply" value="'.$leagueInformationList['id_league'].'">'.
-				'Apply for this league!</button></li>';
+				// if((count($leagueInformationList['members']) + 1 < (int)$leagueInformationList['targetSize'])
+				// && strcmp($_SESSION['name'],$leagueInformationList['admin']) != 0 && $provjera == 0 &&
+				// $leagueInformationList['status'] != 'closed')
+				// echo '<li><button type="submit" name="id_league_apply" value="'.$leagueInformationList['id_league'].'">'.
+				// 'Apply for this league!</button></li>';
 
 				if(strcmp($leagueInformationList['status'],'closed') !== 0 &&
 				strcmp($_SESSION['name'], $leagueInformationList['admin']) === 0)
@@ -40,6 +40,12 @@
         '<input type="text" name="invite_name" >'.
         '<button type="submit" name="id_league_invite" value="'.$leagueInformationList['id_league'].'">'.
         'Invite</button> </li>';
+
+
+				if(strcmp($_SESSION['name'],$leagueInformationList['admin']) !== 0)
+				echo '<li><button type="submit" name="id_league_exit" value="'.
+				$leagueInformationList['id_league'].'">'.
+				'Leave league!</button></li>';
 
 
 

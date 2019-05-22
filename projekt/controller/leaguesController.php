@@ -441,39 +441,61 @@ class LeaguesController
 	 {
 		 $fs = new FantasyService();
 
-		 if(!isset($_POST['id_league_invite']))
+		 // if(!isset($_POST['id_league_invite']))
+		 // {
+			//  header('Location: index.php?rt=leagues/myLeagues');
+			//  exit();
+		 // }
+
+
+
+		 if(isset($_POST['id_league_invite']))
 		 {
-			 header('Location: index.php?rt=leagues/myLeagues');
-			 exit();
-		 }
+			 if(!isset($_POST['invite_name']) ||
+			 !preg_match('/^[a-zA-Z][a-zA-Z0-9]{1,20}$/',$_POST['invite_name']))
+			 {
+				 header('Location: index.php?rt=leagues/myLeagues');
+				 exit();
+			 }
 
-		 if(!isset($_POST['invite_name']) ||
-		 !preg_match('/^[a-zA-Z][a-zA-Z0-9]{1,20}$/',$_POST['invite_name']))
-		 {
-			 header('Location: index.php?rt=leagues/myLeagues');
-			 exit();
-		 }
+			  $title = 'Send invitation';
 
+		 	  $id_league = $_POST['id_league_invite'];
+		 		$user_name = $_POST['invite_name'];
 
-		 $title = 'Send invitation';
+		 	 if(strcmp($user_name, $_SESSION['name']) === 0)
+		 	{
+				 header('Location: index.php?rt=leagues/myLeagues');
+			 	exit();
+		 	}
 
-		 $id_league = $_POST['id_league_invite'];
-		 $user_name = $_POST['invite_name'];
-
-		 if(strcmp($user_name, $_SESSION['name']) === 0)
-		 {
-			 header('Location: index.php?rt=leagues/myLeagues');
-			 exit();
-		 }
-
-		 $user = $fs->getUserByName($user_name);
-		 if( $user === null )
+		 		$user = $fs->getUserByName($user_name);
+		 		if( $user === null )
 					exit( 'There is no user with name = ' . $user_name );
 
-		$fs->sendInvitation($id_league, $user->id);
+				$fs->sendInvitation($id_league, $user->id);
 
-		header('Location: index.php?rt=leagues/myLeagues');
-		exit();
+				header('Location: index.php?rt=leagues/myLeagues');
+				exit();
+			}
+
+
+			elseif (isset($_POST['id_league_exit']))
+			{
+				$title = 'League exit';
+
+				$id_league = (int)$_POST['id_league_exit'];
+				$id_user = $_SESSION['id_user'];
+
+
+				$fs->leaveLeague($id_league, $id_user);
+
+				$fs->setStatusToOpen($id_league);
+
+				header('Location: index.php?rt=leagues/myLeagues');
+				exit();
+
+			}
 
 
 	 }
