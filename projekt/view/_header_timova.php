@@ -7,6 +7,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>FantasyApp</title>
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
 	<style media="screen">
 	td { border: solid 2px; background-color: yellow;}
 	tr {background-color: yellow;}
@@ -25,6 +27,7 @@
 		<ul>
 			<li><a href="index.php?rt=leagues/myLeagues">Return to MyLeagues</a></li>
       <li><a href="index.php?rt=teams/usersInLeague">Users in League</a></li>
+			<li><a href="index.php?rt=teams/startDraft">Start Draft</a></li>
 		</ul>
 	</nav>
 

@@ -4,6 +4,7 @@ require_once __DIR__.'/db.class.php';
 require_once __DIR__.'/user.class.php';
 require_once __DIR__.'/league.class.php';
 require_once __DIR__.'/team.class.php';
+require_once __DIR__.'/player.class.php';
 
 
 class FantasyServiceTeams
@@ -35,7 +36,33 @@ class FantasyServiceTeams
 
   }
 
-  
+
+  function getAllPlayers()
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, name, position from project_players');
+
+      $st->execute();
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+
+
+  }
+
+
+
 
 
 

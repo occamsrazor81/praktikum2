@@ -2,15 +2,19 @@
 
 <ul>
 
-  <li><h2> <?php echo $_SESSION['league_title']; ?></h2></li>
+  <li><h2> <?php echo $_SESSION['league_title'].' ('.
+            $leagueUsers[0]['league_type'].')'; ?>
+          </h2></li>
 
   <?php
 
   foreach($leagueUsers as $lUser)
-    echo '<li>'.$lUser['username'].'</li>';
+  {
+      $league_type = $lUser['league_type'];
+      echo '<li>'.$lUser['username'].'</li>';
+  }
 
-
-   ?>
+    ?>
 
 
 </ul>
