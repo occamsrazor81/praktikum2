@@ -3,6 +3,7 @@
 require_once __DIR__.'/db.class.php';
 require_once __DIR__.'/user.class.php';
 require_once __DIR__.'/league.class.php';
+require_once __DIR__.'/team.class.php';
 
 class FantasyService
 {
@@ -73,7 +74,8 @@ class FantasyService
 		$arr = array();
 		while( $row = $st->fetch() )
 		{
-			$arr[] = new User( $row['id'], $row['username'], $row['password_hash'], $row['email'], $row['registration_sequence'], $row['has_registered'], $row['bank_account'] );
+			$arr[] = new User( $row['id'], $row['username'], $row['password_hash'], $row['email'],
+      $row['registration_sequence'], $row['has_registered'], $row['bank_account'] );
 		}
 
 		return $arr;

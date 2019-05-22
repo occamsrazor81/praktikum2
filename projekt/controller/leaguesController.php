@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__.'/../model/fantasyservice.class.php';
+require_once __DIR__.'/../model/fantasyserviceteams.class.php';
 
 class LeaguesController
 {
@@ -33,6 +34,13 @@ class LeaguesController
 	public function myLeagues()
   {
     $fs = new FantasyService();
+
+		if(isset($_SESSION['id_league']))
+		{
+			unset($_SESSION['id_league']);
+			unset($_SESSION['league_title']);
+
+		}
 
     $title = 'My leagues';
 
@@ -441,13 +449,6 @@ class LeaguesController
 	 {
 		 $fs = new FantasyService();
 
-		 // if(!isset($_POST['id_league_invite']))
-		 // {
-			//  header('Location: index.php?rt=leagues/myLeagues');
-			//  exit();
-		 // }
-
-
 
 		 if(isset($_POST['id_league_invite']))
 		 {
@@ -498,7 +499,49 @@ class LeaguesController
 			}
 
 
+			elseif (isset($_POST['id_league_start_draft']))
+			{
+
+				$fst = new FantasyServiceTeams();
+
+				$title = 'League page';
+
+				$id_league = $_POST['id_league_start_draft'];
+				$id_user = $_SESSION['id_user'];
+
+				//$oldLeagueUsers = $fst->getAllUsersInsideLeague($id_league);
+				$league = $fs->getLeagueById($id_league);
+
+				$_SESSION['id_league'] = $id_league;
+				$_SESSION['league_title'] = $league->title;
+
+				// $leagueUsers = array();
+				//
+				// foreach($oldLeagueUsers as $lUser)
+				// {
+				// 	$leagueUsers[] = array('id_league' => $id_league,
+				// 	'id_user' => $lUser->id, 'username' => $lUser->username,
+				// 	'league_title' => $league->title, 'league_type' => $league->league_type
+				// 	,'admin' => $_SESSION['username']	);
+				//
+				//
+				// }
+
+
+
+			}
+
+
+			require_once __DIR__.'/../view/teams_frontPage.php';
+
+
 	 }
+
+
+	 ///////////////////////////////////////////////////////////
+	 ///////////////////////////////////////////////////////////
+	 ///////////////////////////////////////////////////////////
+
 
 
 
