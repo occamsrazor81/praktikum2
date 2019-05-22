@@ -122,6 +122,62 @@ class FantasyService
 	}
 
 
+  function registerUser($username, $hash, $email, $registration_sequence,
+                        $has_registered, $bank_account)
+  {
+
+    try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'INSERT into project_users
+				(username,password_hash,email,registration_sequence,has_registered, bank_account)
+				values (:username,:hash,:email,:reg_seq,:has_registered, :bank_account) ' );
+
+			$st->execute(array('username' => $username, 'hash' => $hash,
+      'email' => $email, 'reg_seq' => $registration_sequence,
+      'has_registered' => $has_registered, 'bank_account' => $bank_account));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+  }
+
+
+
+  function sendConfirmationCode($email, $registration_sequence)
+  {
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+		if(filter_var($email, FILTER_VALIDATE_EMAIL) === false)
+			echo "Losa email adresa.";
+
+		else
+		{
+			$to = $email;
+			$subject = 'Confirmation Code For Fantasy';
+			$body = 'Copy this word  -> '.$registration_sequence.' <- into Confirmation textbox to confrim that it is really you.';
+			$header = 'Confirmation Fantasy email';
+
+			mail($to,$subject,$body,$header);
+   }
+ }
+
+
+ function setHasRegistered($id)
+ {
+
+   try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE project_users set has_registered=1 where id=:id' );
+			$st->execute(array('id' => $id));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+ }
+
+
+
   ////////////////////////////////////////////////////////////////////
   //leagues
 
