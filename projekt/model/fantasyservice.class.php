@@ -15,7 +15,8 @@ class FantasyService
 		{
 			$db = DB::getConnection();
 			$st = $db->prepare( 'SELECT id, username, password_hash, email,
-				registration_sequence, has_registered, bank_account FROM project_users where id=:id' );
+				registration_sequence, has_registered, bank_account
+         FROM project_users where id=:id' );
 			$st->execute(array('id' => $id));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -31,6 +32,31 @@ class FantasyService
 
 
 	}
+
+
+  function getUserByName($name)
+  {
+
+    try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT id, username, password_hash, email,
+				registration_sequence, has_registered, bank_account
+        FROM project_users where username=:username' );
+			$st->execute(array('username' => $name));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if($row === false)
+			return null;
+
+		else
+			return new User($row['id'], $row['username'], $row['password_hash'],
+			$row['email'], $row['registration_sequence'], $row['has_registered'],
+    $row['bank_account'] );
+
+  }
 
 
   function getAllUsers( )
@@ -566,6 +592,47 @@ class FantasyService
 
     }
     catch (PDOException $e) {  exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+  function sendInvitation($id_league, $id_user)
+  {
+
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('INSERT into project_members
+        (id_league,id_user,member_type)
+        values (:id_league, :id_user, :member_type) ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user,
+      'member_type' => 'invitation_pending' ));
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+  }
+
+  function setOtherInvitationsAndApplicationsRejected($id_league)
+  {
+
+    try
+	  {
+      $db = DB::getConnection();
+		  $st = $db->prepare('UPDATE project_members set member_type=:rejected
+        where id_league=:id_league and member_type not in
+        (:admin, :member, :application_accepted, :invitation_accepted)');
+
+		 $st->execute(array('rejected' => 'rejected', 'id_league' => $id_league,
+   'admin' => 'admin', 'member' => 'member',
+   'application_accepted' => 'application_accepted',
+    'invitation_accepted' => 'invitation_accepted' ));
+
+
+	  }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
 
   }
 

@@ -235,7 +235,7 @@ class LeaguesController
 			'members' => $userNames , 'status' => $targetLeague->status);
 
 
-			require_once __DIR__.'/../view/leagues_showInformation.php';
+			require_once __DIR__.'/../view/leagues_myShowInformation.php';
 
 		}
 
@@ -334,7 +334,10 @@ class LeaguesController
 
 
 				if(count($targetUsers) == $targetLeague->number_of_members)
+				{
 					$fs->setStatusToClosed($id_league);
+					$fs->setOtherInvitationsAndApplicationsRejected($id_league);
+				}
 
 
 
@@ -404,7 +407,11 @@ class LeaguesController
 				$targetLeague = $fs->getLeagueById($id_league);
 
 				if(count($targetUsers) == (int)$targetLeague->number_of_members)
+				{
 					$fs->setStatusToClosed($id_league);
+					$fs->setOtherInvitationsAndApplicationsRejected($id_league);
+				}
+
 
 					header('Location: index.php?rt=leagues/myLeagues');
 					exit();
@@ -427,7 +434,49 @@ class LeaguesController
 			}
 
 
-	}
+	 }
+
+
+	 public function inviteSomeone()
+	 {
+		 $fs = new FantasyService();
+
+		 if(!isset($_POST['id_league_invite']))
+		 {
+			 header('Location: index.php?rt=leagues/myLeagues');
+			 exit();
+		 }
+
+		 if(!isset($_POST['invite_name']) ||
+		 !preg_match('/^[a-zA-Z][a-zA-Z0-9]{1,20}$/',$_POST['invite_name']))
+		 {
+			 header('Location: index.php?rt=leagues/myLeagues');
+			 exit();
+		 }
+
+
+		 $title = 'Send invitation';
+
+		 $id_league = $_POST['id_league_invite'];
+		 $user_name = $_POST['invite_name'];
+
+		 if(strcmp($user_name, $_SESSION['name']) === 0)
+		 {
+			 header('Location: index.php?rt=leagues/myLeagues');
+			 exit();
+		 }
+
+		 $user = $fs->getUserByName($user_name);
+		 if( $user === null )
+					exit( 'There is no user with name = ' . $user_name );
+
+		$fs->sendInvitation($id_league, $user->id);
+
+		header('Location: index.php?rt=leagues/myLeagues');
+		exit();
+
+
+	 }
 
 
 
