@@ -27,7 +27,12 @@
 	<nav>
 		<ul>
 			<li><a href="index.php?rt=teams/myTeam">My Team</a></li>
+      <li><a href="index.php?rt=teams/myTeamStats">My Team Stats</a></li>
+      <li><a href="index.php?rt=teams/changeTeamName">Change Team Name</a></li>
 			<li><a href="index.php?rt=teams/proposeTrade">Propose Trade</a></li>
+      <li><a href="index.php?rt=teams/determineWeeklyMatchUp">Determine Weekly Matchup</a></li>
+
+
 		</ul>
 	</nav>
 

@@ -6,6 +6,7 @@ require_once __DIR__.'/league.class.php';
 require_once __DIR__.'/team.class.php';
 require_once __DIR__.'/player.class.php';
 require_once __DIR__.'/draft.class.php';
+require_once __DIR__.'/playerstats.class.php';
 
 class FantasyService
 {

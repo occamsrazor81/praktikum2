@@ -101,7 +101,6 @@ class TeamsController
     $team_name .= "'s team";
 
     //brojimo jesmo li na kraju ( ako svaki user ima 7 igraca )
-
     $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $user_na_redu_id);
     if($brojSelektiranihIgraca === 2)
     {
@@ -147,6 +146,60 @@ class TeamsController
 
   }
 
+  ///////////////////////////////////////////////////////////
+  ///POSLIJE DRAFTA
+
+  public function myTeam()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $title = 'My Team';
+
+    $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    require_once __DIR__.'/../view/teams_myTeam.php';
+
+  }
+
+
+  public function myTeamStats()
+  {
+    //svi igraci tima i njihovi statsi
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $title = 'My Team Stats';
+
+    $players = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    $myPlayers = array();
+
+    //za svakog igraca dohvati id, ime, poziciju i statse
+    foreach($players as $plr)
+    {
+     $plyr_stats = $fst->getPlayerStatsByPlayerId($plr->id);
+
+      //print_r($plyr_stats);
+
+     if(isset($plyr_stats->fgm))
+      $myPlayers[] = array(
+    'id_player' => $plr->id, 'player_name' => $plr->name,'position' => $plr->position,
+    'fgm' => $plyr_stats->fgm,
+    'fga' => $plyr_stats->fga, 'fg_perc' => $plyr_stats->fg_perc,
+    'ftm' => $plyr_stats->ftm, 'fta' => $plyr_stats->fta, 'ft_perc' => $plyr_stats->ft_perc,
+    'pts' => $plyr_stats->pts, 'reb' => $plyr_stats->reb, 'ast' => $plyr_stats->ast,
+    'st' => $plyr_stats->st, 'blk' => $plyr_stats->blk, 'tov' => $plyr_stats->tov  );
+
+    }
+
+
+
+    require_once __DIR__.'/../view/teams_myTeamStats.php';
+
+  }
 
 
 

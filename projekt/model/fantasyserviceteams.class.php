@@ -6,6 +6,7 @@ require_once __DIR__.'/league.class.php';
 require_once __DIR__.'/team.class.php';
 require_once __DIR__.'/player.class.php';
 require_once __DIR__.'/draft.class.php';
+require_once __DIR__.'/playerstats.class.php';
 
 
 class FantasyServiceTeams
@@ -304,7 +305,68 @@ class FantasyServiceTeams
 
 
 
+  ///////////////////////////////////////////
 
+
+
+
+  function getAllPlayersInMyTeam($id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, name, position from project_players
+        where id in (select id_player from project_teams
+          where id_league=:id_league and id_user=:id_user )');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+  }
+
+
+  function getPlayerStatsByPlayerId($id_plr)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, id_player, FGM, FGA, FG_PERC, FTM, FTA, FT_PERC,
+        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats
+        where id_player = (select id from project_players
+          where id=:id_plr )');
+
+      $st->execute(array('id_plr' => $id_plr));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    //$cnt = 0;
+    $arr = array();
+    while($row = $st->fetch())
+    {
+      $arr[] = new Stats($row['id'], $row['id_player']
+       ,$row['FGM']
+    ,$row['FGA'], $row['FG_PERC'], $row['FTM'], $row['FTA'], $row['FT_PERC'],
+    $row['3PTM'], $row['PTS'], $row['REB'], $row['AST'], $row['ST'],
+    $row['BLK'], $row['TOV'], $row['week'], $row['day']);
+    //$cnt++;
+  }
+
+    return $arr;
+
+
+  }
 
 };
 
