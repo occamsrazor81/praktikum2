@@ -42,13 +42,13 @@
         'Invite</button> </li>';
 
 
-				if(strcmp($_SESSION['name'],$leagueInformationList['admin']) !== 0)
+				if(strcmp($_SESSION['name'],$leagueInformationList['admin']) !== 0
+				&&  strcmp($leagueInformationList['status'], 'closed') !== 0)
 				echo '<li><button type="submit" name="id_league_exit" value="'.
 				$leagueInformationList['id_league'].'">'.
 				'Leave league!</button></li>';
 
-				if(strcmp($leagueInformationList['status'],'closed') === 0
-				&& strcmp($_SESSION['name'], $leagueInformationList['admin']) === 0)
+				if(strcmp($leagueInformationList['status'],'closed') === 0)
 				echo '<li><button type="submit" name="id_league_start_draft" value="'.
 				$leagueInformationList['id_league'].'">'.
 				'League Page!</button></li>';

@@ -48,6 +48,8 @@ class TeamsController
 
 
 
+
+
   public function startDraft()
   {
     $fs = new FantasyService();
@@ -55,12 +57,17 @@ class TeamsController
 
     $title = 'Draft';
 
+    if($fst->countSelectedPlayersByUserInLeague($_SESSION['id_league'], $_SESSION['id_user']) >= 2)
+    {
+      require_once __DIR__.'/../view/teams_endDraft.php';
+      exit();
+    }
+
     $players = $fst->getAllPlayers();
 
-    $oldLeagueUsers = $fst->getAllUsersInsideLeague($_SESSION['id_league']);
-    $_SESSION['redoslijed'] = $oldLeagueUsers;
+    $user = $fst->getMinimalCurrentUser();
 
-    shuffle($_SESSION['redoslijed']);
+    $_SESSION['na_redu'] = $user->username;
 
 
     require_once __DIR__.'/../view/teams_draftPage.php';
@@ -86,40 +93,56 @@ class TeamsController
     //odabrani igrac se dobije iz gumba
 
     $id_league = $_SESSION['id_league'];
-    $id_user = $_SESSION['redoslijed'][0]->id;
+    $user_na_redu = $fs->getUserByName($_SESSION['na_redu']);
+    $user_na_redu_id = $user_na_redu->id;
     $id_player = $_POST['player_id'];
-    $team_name = $_SESSION['redoslijed'][0]->username;
+    $team_name = $_SESSION['na_redu'];
 
     $team_name .= "'s team";
 
     //brojimo jesmo li na kraju ( ako svaki user ima 7 igraca )
 
-    $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $id_user);
-    if(count($brojSelektiranihIgraca) === 7)
-      require_once __DIR__.'/../view/teams_endDraft,php';
+    $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $user_na_redu_id);
+    if($brojSelektiranihIgraca === 2)
+    {
+      header( 'Location: index.php?rt=teams/endDraft' );
+      exit();
+    }
+
+      //oznaci da je sad taj igrac nedostupan
+      //-> to cemo napraviti tako da svaki put provjeravamo poklapa li se
+      //player_id sa nekim u tablici, pri cemu liga mora biti ista
+
+    $bool = $fst->checkPlayerAvailability($id_league, $id_player);
+
+    if($bool === 1)
+      $fst->addPlayerToTeam($team_name, $id_league, $user_na_redu_id, $id_player, 0);
+
+    else
+      {
+        header( 'Location: index.php?rt=teams/startDraft' );
+        exit();
+      }
+
+  //  brisemo iz tablice najmanji current i stavljamo ga na kraj sa brojem max()+1
+    $draft = $fst->getDraftByUserIdInLeague($id_league, $user_na_redu_id);
+    $starting = $draft->starting_number;
 
 
-    $fst->addPlayerToTeam($team_name, $id_league, $id_user, $id_player, 0);
+    $user = $fst->getMinimalCurrentUser();
+    $fst->deleteMinimalCurrent();
+    $fst->updateOtherCurrents();
 
-    //oznaci da je sad taj igrac nedostupan
-    //-> to cemo napraviti tako da svaki put provjeravamo poklapa li se
-    //player_id sa nekim u tablici, pri cemu liga mora biti ista
+    $current = $fst->getMaxCurrentDraft();
+    $current++;
+    $fst->pushBackCurrent($id_league, $user_na_redu->id, $current, $starting);
 
-    //$fst->checkPlayer($id_league, $id_player);
-
-    //moramo pop() prvi element $_SESSION['redoslijed'] i stavit ga na kraj
-
-    $first = array_shift($_SESSION['redoslijed']);
-    array_push($_SESSION['redoslijed'], $first);
+    //ovdje jos trebamo redoslijed 1,2,...n, n,...,2,1
 
 
 
-
-
-
-
-    //nastavi draft
-    require_once __DIR__.'/../view/teams_draftPage.php';
+  //  nastavi draft
+    header( 'Location: index.php?rt=teams/startDraft' );
 
 
   }

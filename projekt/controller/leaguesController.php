@@ -261,7 +261,32 @@ class LeaguesController
 			$targetLeague = $fs->getLeagueById($id_league);
 
 			if(count($targetUsers) == (int)$targetLeague->number_of_members)
+			{
+				$fst = new FantasyServiceTeams();
 				$fs->setStatusToClosed($id_league);
+
+				$oldLeagueUsers = $fst->getAllUsersInsideLeague($id_league);
+
+		    $newLeagueOrder = $oldLeagueUsers;
+		    shuffle($newLeagueOrder);
+
+
+		    $current = 1;
+
+		    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
+		    //startni broj isti kao current
+		    while(count($newLeagueOrder) > 0)
+		    {
+		      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
+		       $current, $current);
+		       $current++;
+
+		       $currentUser = array_shift($newLeagueOrder);
+
+		    }
+
+
+			}
 
 
 			header('Location: index.php?rt=leagues/myLeagues');
@@ -343,8 +368,31 @@ class LeaguesController
 
 				if(count($targetUsers) == $targetLeague->number_of_members)
 				{
+					$fst = new FantasyServiceTeams();
+
 					$fs->setStatusToClosed($id_league);
 					$fs->setOtherInvitationsAndApplicationsRejected($id_league);
+
+					$oldLeagueUsers = $fst->getAllUsersInsideLeague($id_league);
+
+			    $newLeagueOrder = $oldLeagueUsers;
+			    shuffle($newLeagueOrder);
+
+
+			    $current = 1;
+
+			    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
+			    //startni broj isti kao current
+			    while(count($newLeagueOrder) > 0)
+			    {
+			      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
+			       $current, $current);
+			       $current++;
+
+			       $currentUser = array_shift($newLeagueOrder);
+
+			    }
+
 				}
 
 
@@ -416,8 +464,31 @@ class LeaguesController
 
 				if(count($targetUsers) == (int)$targetLeague->number_of_members)
 				{
+					$fst = new FantasyServiceTeams();
+
 					$fs->setStatusToClosed($id_league);
 					$fs->setOtherInvitationsAndApplicationsRejected($id_league);
+
+
+					$oldLeagueUsers = $fst->getAllUsersInsideLeague($id_league);
+
+			    $newLeagueOrder = $oldLeagueUsers;
+			    shuffle($newLeagueOrder);
+
+			    $current = 1;
+
+			    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
+			    //startni broj isti kao current
+			    while(count($newLeagueOrder) > 0)
+			    {
+			      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
+			       $current, $current);
+			       $current++;
+
+			       $currentUser = array_shift($newLeagueOrder);
+
+			    }
+
 				}
 
 
@@ -492,6 +563,10 @@ class LeaguesController
 				$fs->leaveLeague($id_league, $id_user);
 
 				$fs->setStatusToOpen($id_league);
+
+				 $fst = new FantasyServiceTeams();
+
+				$fst->deleteDraftOrderForLeague($id_league);
 
 				header('Location: index.php?rt=leagues/myLeagues');
 				exit();

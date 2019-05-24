@@ -282,6 +282,31 @@ catch( PDOException $e ) { exit( "PDO error [create project_trades]: " . $e->get
 echo "Napravio tablicu project_trades.<br />";
 
 
+
+try
+{
+	$st = $db->prepare(
+		'CREATE TABLE IF NOT EXISTS project_draft (' .
+		'id int NOT NULL PRIMARY KEY AUTO_INCREMENT,' .
+		'id_league int NOT NULL,' .
+		'id_user int NOT NULL,' .
+		'current_number int NOT NULL,' .
+		'starting_number int NOT NULL)'
+	);
+
+	$st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error [create project_draft]: " . $e->getMessage() ); }
+
+echo "Napravio tablicu project_draft.<br />";
+
+
+
+
+
+
+
+
 // Ubaci neke korisnike unutra
 try
 {
