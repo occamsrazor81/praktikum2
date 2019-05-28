@@ -5,12 +5,13 @@
 <table>
 
 <tr><th>Player</th><th>Position</th>
-  <th>FGM</th><th>FGA</th><th>FG%</th><th>FTM</th><th>FTM</th><th>FT%</th>
+  <th>FGM</th><th>FGA</th><th>FG%</th><th>FTM</th><th>FTM</th><th>FT%</th><th>3PM</th>
   <th>PTS</th><th>REB</th><th>AST</th><th>ST</th><th>BLK</th><th>TOV</th>
 </tr>
 
   <?php
-echo count($myPlayers);
+
+  print_r($myPlayers);
   foreach($myPlayers as $player)
   {
     echo '<tr>'.
@@ -22,12 +23,15 @@ echo count($myPlayers);
     '<td>'.$player['ftm'].'</td>'.
     '<td>'.$player['fta'].'</td>'.
     '<td>'.$player['ft_perc'].'</td>'.
+    '<td>'.$player['tpm'].'</td>'.
     '<td>'.$player['pts'].'</td>'.
     '<td>'.$player['reb'].'</td>'.
     '<td>'.$player['ast'].'</td>'.
     '<td>'.$player['st'].'</td>'.
     '<td>'.$player['blk'].'</td>'.
     '<td>'.$player['tov'].'</td>';
+
+
 
     echo '</tr>';
   }

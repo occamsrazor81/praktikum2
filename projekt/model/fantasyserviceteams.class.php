@@ -64,6 +64,32 @@ class FantasyServiceTeams
   }
 
 
+  function getPlayerById($id_player)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, name, position from project_players
+      where id=:id_player');
+
+      $st->execute(array('id_player' => $id_player));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $row = $st->fetch();
+		if($row === false)
+			return null;
+
+    else return new Player($row['id'], $row['name'], $row['position']);
+
+
+  }
+
+
+
+
 
   function initializeDraftOrder($id_league, $id_user, $current, $starting)
   {
@@ -342,29 +368,143 @@ class FantasyServiceTeams
 
       $db = DB::getConnection();
       $st = $db->prepare('SELECT id, id_player, FGM, FGA, FG_PERC, FTM, FTA, FT_PERC,
-        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats
-        where id_player = (select id from project_players
-          where id=:id_plr )');
+        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats');
+        // where id_player in (select id from project_players
+        //   where id=:id_plr )');
 
       $st->execute(array('id_plr' => $id_plr));
 
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
-    //$cnt = 0;
+
     $arr = array();
     while($row = $st->fetch())
-    {
-      $arr[] = new Stats($row['id'], $row['id_player']
-       ,$row['FGM']
-    ,$row['FGA'], $row['FG_PERC'], $row['FTM'], $row['FTA'], $row['FT_PERC'],
+      $arr[] = new Stats($row['id'], $row['id_player'],
+       $row['FGM'] ,$row['FGA'], $row['FG_PERC'],
+        $row['FTM'], $row['FTA'], $row['FT_PERC'],
     $row['3PTM'], $row['PTS'], $row['REB'], $row['AST'], $row['ST'],
     $row['BLK'], $row['TOV'], $row['week'], $row['day']);
-    //$cnt++;
-  }
+
+
+
 
     return $arr;
 
+
+  }
+
+
+  function getTeamName($id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT team_name from project_teams
+        where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $row = $st->fetch();
+
+    if($row === false)
+      return null;
+
+    else
+    return $row['team_name'];
+
+
+  }
+
+
+
+  function changeTName($team_name, $id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_teams set team_name=:team_name
+        where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('team_name' => $team_name,
+      'id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+
+  function getAllFreeAgents($id_league)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_players
+      where id not in (SELECT id_player from project_teams
+      where id_league=:id_league)');
+
+      $st->execute(array('id_league' => $id_league));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row ['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+
+  }
+
+
+
+  function replacePlayerInTeam($id_league, $id_kicked, $id_new)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_teams set id_player=:id_new
+        where id_league=:id_league and id_player=:id_kicked ');
+
+      $st->execute(array('id_new' => $id_new,
+      'id_league' => $id_league, 'id_kicked' => $id_kicked));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+  function cutPlayerFromTeam($id_league, $id_kicked)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('DELETE from project_teams
+        where id_league=:id_league and  id_player=:id_kicked ');
+
+      $st->execute(array('id_league' => $id_league, 'id_kicked' => $id_kicked));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
   }
 

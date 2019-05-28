@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>Primjer 2</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+  <p>Neki tekst</p>
+    <canvas height="600" width="600" id="canvas"></canvas>
+
+    <script>
+$( document ).ready( crtaj );
+
+function crtaj()
+{
+
+
+
+  var stariX = null;
+  var stariY = null;
+
+
+  $("#canvas").on("click", function(event)
+  {
+
+    var ctx = this.getContext( "2d" );
+
+
+    var rect = this.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
+
+
+    ctx.strokeStyle = "rgb(150, 150, 150)"; ctx.lineWidth = 1;
+    ctx.beginPath();
+
+    ctx.moveTo(x - 5, y - 5);
+    ctx.lineTo(x + 5, y + 5);
+
+    ctx.moveTo(x - 5, y + 5);
+    ctx.lineTo(x + 5, y - 5);
+
+    ctx.stroke();
+
+    if(stariX === null)
+    {
+      stariX = x;
+      stariY = y;
+    }
+
+
+    else
+    {
+      console.log("helo");
+      ctx.beginPath();
+      ctx.moveTo(stariX, stariY);
+      ctx.lineTo(x,y);
+      ctx.stroke();
+
+      stariX = null;
+      stariY = null;
+
+    }
+
+
+
+
+
+    // if(brojKlikova % 2)
+    // {
+    //   ctx.moveTo(x, y);
+    //   ctx.lineTo(x + 5, y + 5);
+    //
+    //   ctx.moveTo(x, y);
+    //   ctx.lineTo(x + 5, y - 5);
+    //
+    //   ctx.moveTo(x, y);
+    //   ctx.lineTo(x - 5, y + 5);
+    //
+    //   ctx.moveTo(x, y);
+    //   ctx.lineTo(x - 5, y - 5);
+    //
+    //   ctx.stroke();
+    //
+    //
+    // }
+    //
+    //
+    // else
+    // {
+    //   ctx.moveTo(stariX, stariY);
+    //   ctx.lineTo(x,y);
+    //
+    //   ctx.stroke();
+    //
+    //
+    // }
+    //
+    // var stariX = x;
+    // var stariY = y;
+
+
+  });
+
+
+}
+    </script>
+</body>
+</html>

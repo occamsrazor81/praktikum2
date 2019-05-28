@@ -21,14 +21,17 @@
 
   <p>
     User: <?php if(isset($_SESSION['name'])) echo $_SESSION['name']; ?> <br>
-    League: <?php if(isset($_SESSION['league_title']) )  echo $_SESSION['league_title']; ?>
+    League: <?php if(isset($_SESSION['league_title']) )  echo $_SESSION['league_title']; ?><br>
+		
   </p>
 
 	<nav>
 		<ul>
+			<li><a href="index.php?rt=leagues/myLeagues">Return to MyLeagues</a></li>
 			<li><a href="index.php?rt=teams/myTeam">My Team</a></li>
       <li><a href="index.php?rt=teams/myTeamStats">My Team Stats</a></li>
       <li><a href="index.php?rt=teams/changeTeamName">Change Team Name</a></li>
+			<li><a href="index.php?rt=teams/addPlayer">Add player</a></li>
 			<li><a href="index.php?rt=teams/proposeTrade">Propose Trade</a></li>
       <li><a href="index.php?rt=teams/determineWeeklyMatchUp">Determine Weekly Matchup</a></li>
 

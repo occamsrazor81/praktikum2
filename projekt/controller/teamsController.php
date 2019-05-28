@@ -70,6 +70,7 @@ class TeamsController
     $_SESSION['na_redu'] = $user->username;
 
 
+
     require_once __DIR__.'/../view/teams_draftPage.php';
 
 
@@ -155,9 +156,11 @@ class TeamsController
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
-    $title = 'My Team';
+    $title = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
 
     $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    // print_r($myPlayers);
 
     require_once __DIR__.'/../view/teams_myTeam.php';
 
@@ -171,7 +174,7 @@ class TeamsController
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
-    $title = 'My Team Stats';
+    $title = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']). ' stats';
 
     $players = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
@@ -182,22 +185,246 @@ class TeamsController
     {
      $plyr_stats = $fst->getPlayerStatsByPlayerId($plr->id);
 
-      //print_r($plyr_stats);
+     //print_r($plyr_stats);
 
-     if(isset($plyr_stats->fgm))
+
+     if(isset($plr->id))
       $myPlayers[] = array(
     'id_player' => $plr->id, 'player_name' => $plr->name,'position' => $plr->position,
-    'fgm' => $plyr_stats->fgm,
-    'fga' => $plyr_stats->fga, 'fg_perc' => $plyr_stats->fg_perc,
+    'fgm' => $plyr_stats->fgm, 'fga' => $plyr_stats->fga, 'fg_perc' => $plyr_stats->fg_perc,
+    'tpm' => $plyr_stats->tpm,
     'ftm' => $plyr_stats->ftm, 'fta' => $plyr_stats->fta, 'ft_perc' => $plyr_stats->ft_perc,
     'pts' => $plyr_stats->pts, 'reb' => $plyr_stats->reb, 'ast' => $plyr_stats->ast,
     'st' => $plyr_stats->st, 'blk' => $plyr_stats->blk, 'tov' => $plyr_stats->tov  );
+
+    //echo $plr->id;
+    //print_r($myPlayers);
 
     }
 
 
 
     require_once __DIR__.'/../view/teams_myTeamStats.php';
+
+  }
+
+
+  public function changeTeamName()
+  {
+    $title = 'Change Team Name';
+
+    require_once __DIR__.'/../view/teams_change_team_name.php';
+
+  }
+
+  public function changeTeamNameResults()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    if(!isset($_POST['team_name']) || !preg_match('/^[a-zA-Z][a-zA-Z0-9,\' ]*$/',$_POST['team_name']))
+    {
+      header( 'Location: index.php?rt=teams/changeTeamName' );
+      exit();
+    }
+
+    $fst->changeTName($_POST['team_name'], $_SESSION['id_league'], $_SESSION['id_user']);
+
+    $title = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+
+    header('Location: index.php?rt=teams/myTeam');
+
+
+  }
+
+
+
+  public function addPlayer()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $title = 'Free agents';
+
+    $freeAgents = $fst->getAllFreeAgents($_SESSION['id_league']);
+
+    require_once __DIR__.'/../view/teams_freeAgents.php';
+
+  }
+
+
+  public function pickUpFreeAgent()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $myCurrentPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    //promijeniti u 7
+    if(count($myCurrentPlayers) == 2)
+    {
+      $_SESSION['new_player_id'] = $_POST['player_id'];
+      $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+      $title = 'Replace player from '.$team_name;
+      require_once __DIR__.'/../view/teams_kickFromTeam.php';
+      exit();
+    }
+
+    $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+    $title = 'Add player to '.$team_name;
+
+    $_SESSION['new_player_id'] = $_POST['player_id'];
+
+    $newPlayer = $fst->getPlayerById($_SESSION['new_player_id']);
+
+    // $fst->addPlayerToTeam($team_name, $_SESSION['id_league'], $_SESSION['id_user'], $_POST['player_id'], 0);
+    //
+    // header('Location: index.php?rt=teams/myTeam');
+
+    require_once __DIR__.'/../view/teams_confirmAddingPlayer.php';
+
+  }
+
+
+  public function kickPlayerFromTeam()
+  {
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+    $title = 'Replace player from '.$team_name;
+
+    if(!isset($_SESSION['new_player_id']))
+    {
+      header('Location: index.php?rt=teams/addPlayer');
+      exit();
+    }
+
+    $id_new = $_SESSION['new_player_id'];
+    $id_kicked = $_POST['player_id'];
+
+    $_SESSION['kicked_player_id'] = $id_kicked;
+
+    $newPlayer = $fst->getPlayerById($id_new);
+    $kickedPlayer = $fst->getPlayerById($id_kicked);
+
+
+    require_once __DIR__.'/../view/teams_rUSure.php';
+
+
+
+  }
+
+
+  public function confirmAddingFreeAgent()
+  {
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    if(isset($_POST['no']))
+    {
+      unset($_SESSION['new_player_id']);
+      unset($_SESSION['kicked_player_id']);
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+    }
+
+    else
+    {
+
+      $fst->replacePlayerInTeam($_SESSION['id_league'],
+      $_SESSION['kicked_player_id'], $_SESSION['new_player_id']);
+
+      unset($_SESSION['new_player_id']);
+      unset($_SESSION['kicked_player_id']);
+
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+
+    }
+
+
+  }
+
+
+  public function cutPlayer()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+    $title = 'Cut player from '.$team_name;
+
+    $id_kicked = $_POST['player_id'];
+    $_SESSION['kicked_player_id'] = $id_kicked;
+
+    $kickedPlayer = $fst->getPlayerById($id_kicked);
+
+//    $fst->cutPlayerFromTeam($_SESSION['id_league'], $_SESSION['kicked_player_id']);
+
+    require_once __DIR__.'/../view/teams_rUSure_cut.php';
+
+  }
+
+  public function confirmCuttingPlayer()
+  {
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+
+    if(isset($_POST['no']))
+    {
+      unset($_SESSION['kicked_player_id']);
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+
+    }
+
+    else
+    {
+      $fst->cutPlayerFromTeam($_SESSION['id_league'], $_SESSION['kicked_player_id']);
+
+      unset($_SESSION['kicked_player_id']);
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+
+
+    }
+  }
+
+
+
+  public function confirmAddingPlayer()
+  {
+
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
+
+    if(isset($_POST['no']))
+    {
+      unset($_SESSION['new_player_id']);
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+
+    }
+
+    else
+    {
+
+      $fst->addPlayerToTeam($team_name, $_SESSION['id_league'], $_SESSION['id_user'], $_SESSION['new_player_id'], 0);
+
+      unset($_SESSION['new_player_id']);
+      header('Location: index.php?rt=teams/myTeam');
+      exit();
+
+
+    }
 
   }
 

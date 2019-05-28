@@ -3,10 +3,10 @@
 class Stats
 {
 	protected $id, $id_player, $fgm, $fga, $fg_perc, $ftm, $fta, $ft_perc,
-   $pts, $reb, $ast, $st, $blk, $tov, $week, $day;
+	$tpm, $pts, $reb, $ast, $st, $blk, $tov, $week, $day;
 
 	function __construct( $id, $id_player, $fgm, $fga, $fg_perc, $ftm, $fta, $ft_perc,
-   $pts, $reb, $ast, $st, $blk, $tov, $week, $day )
+   $tpm, $pts, $reb, $ast, $st, $blk, $tov, $week, $day )
 	{
 		$this->id = $id;
     $this->id_player = $id_player;
@@ -16,6 +16,7 @@ class Stats
     $this->ftm = $ftm;
     $this->fta = $fta;
     $this->ft_perc = $ft_perc;
+		$this->tpm = $tpm;
     $this->pts = $pts;
     $this->reb = $reb;
     $this->ast = $ast;

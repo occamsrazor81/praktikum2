@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>Primjer 5 - WebStorage</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+  <input type="text" name="posao" id="tekst">
+  <button type="button" name="button" id="dodaj">Dodaj novi posao</button>
+
+  <div id="div_posao"></div>
+
+  <button type="button" name="obrisi" id="obrisi">Obrisi sve poslove.</button>
+
+    <script>
+$( document ).ready( function()
+{
+
+  var brojPoslova = dohvati_poslove();
+
+  $('#dodaj').on("click", function()
+  {
+
+    var ime_posla = $('#tekst').val();
+    key = 'posao_' + brojPoslova;
+    ++brojPoslova;
+    localStorage.setItem(key, ime_posla);
+
+    dohvati_poslove();
+
+
+  });
+
+
+  $('#obrisi').on("click", function()
+  {
+
+    localStorage.clear();
+    dohvati_poslove();
+
+
+  });
+
+  $("body").on("change", ".obavljen", function()
+{
+
+  var chkbox = $(this);
+  var span = $(this).parent();
+
+  if(chkbox.prop("checked"))
+  {
+    span.css('text-decoration', 'line-through');
+
+    var kljuc_posla = span.prop("id");
+    var ime_posla = localStorage.getItem(kljuc_posla);
+    localStorage.setItem(kljuc_posla + '.obavljen', "1");
+  }
+
+  else
+  {
+    span.css('text-decoration', 'none');
+    var kljuc_posla = span.prop("id");
+    var ime_posla = localStorage.getItem(kljuc_posla);
+    localStorage.setItem(kljuc_posla + '.obavljen', "0");
+  }
+
+});
+
+  function dohvati_poslove()
+  {
+
+    var brojPoslova = 0;
+
+    $('div_posao').html("");
+
+    while (1)
+    {
+
+      var ime_posla = localStorage.getItem('posao_' +  brojPoslova);
+      if(ime_posla === null)
+        break;
+
+      //ispisi posao u listi
+      var span = $('<span  id="posao_' + brojPoslova + '">');
+      var chkbox = $('input class="obavljen" type="checkbox" id="chk_' + brojPoslova + '">');
+      span.html("chkbox");
+      span.append(ime_posla);
+
+      $('#div_posao').append(span);
+      $('#div_posao').append('<br>');
+
+      ++brojPoslova;
+
+    }
+
+
+    return brojPoslova;
+  }
+
+});
+
+} );
+    </script>
+</body>
+</html>
