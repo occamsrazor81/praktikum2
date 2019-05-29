@@ -59,9 +59,12 @@ class TeamsController
 
     if($fst->countSelectedPlayersByUserInLeague($_SESSION['id_league'], $_SESSION['id_user']) >= 2)
     {
+
       require_once __DIR__.'/../view/teams_endDraft.php';
       exit();
     }
+
+    //postaviti mozda pomocu JSa localStorage
 
     $players = $fst->getAllPlayers();
 
@@ -429,6 +432,203 @@ class TeamsController
   }
 
 
+
+  public function proposeTrade()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'Propose Trade';
+
+    $otherTeamsInLeague = $fst->getOtherTeams($_SESSION['id_league'], $_SESSION['id_user']);
+
+    $otherTeams = array();
+
+    foreach($otherTeamsInLeague as $team)
+    {
+      $user = $fs->getUserById($team->id_user);
+
+      $otherTeams[] = array('id' => $team->id, 'id_user' => $user->id,
+      'id_league' => $team->id_league, 'username' => $user->username,
+      'team_name' => $team->team_name);
+
+    }
+
+
+    require_once __DIR__.'/../view/teams_otherTeams.php';
+
+
+  }
+
+
+  public function checkTeam()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $id_team = $_POST['team_id'];
+    $team = $fst->getTeamById($id_team);
+
+    $title = 'Propose Trade to '.$team->team_name;
+
+    $_SESSION['other_user_id'] = $team->id_user;
+
+    $playersFromSelectedTeam = $fst->getPlayersFromTeam($team->id_league, $team->id_user);
+
+
+    require_once __DIR__.'/../view/teams_checkTeam.php';
+
+  }
+
+
+  public function askForTrade()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'Trade from my Team';
+
+    $id_player = $_POST['player_id'];
+    $targetPlayer = $fst->getPlayerById($id_player);
+
+    $_SESSION['trade_player_id'] = $id_player;
+
+    $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    require_once __DIR__.'/../view/teams_whoFor.php';
+
+  }
+
+
+  public function confirmTradeRequest()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'Trade Request Confirmation';
+
+    if(isset($_POST['cancel']))
+    {
+
+      unset($_SESSION['other_user_id']);
+      unset($_SESSION['trade_player_id']);
+      header('Location: index.php?rt=teams/proposeTrade');
+      exit();
+    }
+
+    $myPlayerId = $_POST['player_id'];
+    $otherPlayerId = $_SESSION['trade_player_id'];
+
+    $_SESSION['my_player_id'] = $myPlayerId;
+
+    $myPlayer = $fst->getPlayerById($myPlayerId);
+    $otherPlayer = $fst->getPlayerById($otherPlayerId);
+
+
+    //$fst->requestTrade($_SESSION['id_league'], $myPlayerId, $otherPlayerId);
+
+    require_once __DIR__.'/../view/teams_rUSure_trade.php';
+
+  }
+
+
+
+  public function sendTradeRequest()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+
+    if(isset($_POST['no']))
+    {
+      $title = 'Canceled';
+
+      unset($_SESSION['other_user_id']);
+      unset($_SESSION['my_player_id']);
+      unset($_SESSION['trade_player_id']);
+      header('Location: index.php?rt=teams/proposeTrade');
+      exit();
+
+    }
+
+    else
+    {
+      $title = 'Trade Request Sent';
+
+      $myTeam = $fst->getTeamByUserAndLeague($_SESSION['id_league'], $_SESSION['id_user']);
+      $otherTeam = $fst->getTeamByUserAndLeague($_SESSION['id_league'], $_SESSION['other_user_id']);
+
+      $myTeamId = $myTeam->id;
+      $otherTeamId = $otherTeam->id;
+
+      $fst->requestTrade($_SESSION['id_league'], $myTeamId, $otherTeamId,
+      $_SESSION['my_player_id'], $_SESSION['trade_player_id'],
+      null, null, null, null); //ostali igraci nisu ukljuceni
+
+
+
+      unset($_SESSION['other_user_id']);
+      unset($_SESSION['my_player_id']);
+      unset($_SESSION['trade_player_id']);
+
+
+      // require_once __DIR__.'/../view/teams_myTrades.php';
+
+      header('Location: index.php?rt=teams/pendingTrades');
+
+
+    }
+
+  }
+
+
+
+  public function pendingTrades()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'My pending Trades';
+
+    $myTeamIds = $fst->getMyTeamIds($_SESSION['id_league'], $_SESSION['id_user']);
+
+    //print_r($myTeamIds);
+
+    $allMyTrades = array();
+    foreach($myTeamIds as $id_team)
+    {
+      //print_r($id_team);
+      $myTrades = $fst->getMyPendingTradesViaLeagueAndTeam($_SESSION['id_league'], $id_team);
+       //print_r($myTrades);
+
+      if(isset($myTrades))
+      foreach($myTrades as $trades)
+      {
+        //print_r($myTrades);
+        $allMyTrades[] = array('id_player1' => $trades->id_player1,
+      'id_player11' => $trades->id_player11,
+      'id_player12' => $trades->id_player12,
+      'id_player21' => $trades->id_player21,
+      'id_player22' => $trades->id_player22,
+      'id_player2' => $trades->id_player2,
+      'trade_status' => $trades->trade_status);
+
+
+      }
+
+      unset($myTrades);
+
+    }
+
+    require_once __DIR__.'/../view/teams_myTrades.php';
+
+  }
 
 
 

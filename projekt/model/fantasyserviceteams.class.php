@@ -7,6 +7,7 @@ require_once __DIR__.'/team.class.php';
 require_once __DIR__.'/player.class.php';
 require_once __DIR__.'/draft.class.php';
 require_once __DIR__.'/playerstats.class.php';
+require_once __DIR__.'/trade.class.php';
 
 
 class FantasyServiceTeams
@@ -507,6 +508,237 @@ class FantasyServiceTeams
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
   }
+
+
+
+  function getOtherTeams($id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_teams
+        where id_league=:id_league and id_user not in (:id_user)
+        group by id_user');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Team($row['id'], $row['team_name'], $row['id_league'],
+                      $row['id_user'], $row['id_player'], $row['points']);
+
+
+    return $arr;
+
+
+
+  }
+
+
+
+
+
+
+  function getTeamById($id_team)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_teams
+        where id=:id_team ');
+
+      $st->execute(array('id_team' => $id_team));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $row = $st->fetch();
+
+    if($row === false)
+      return null;
+
+    else
+      return new Team($row['id'], $row['team_name'], $row['id_league'],
+                    $row['id_user'], $row['id_player'], $row['points']);
+
+  }
+
+
+
+  function getPlayersFromTeam($id_league, $id_user)
+  {
+
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_players where id in
+        (select id_player from project_teams
+          where id_league=:id_league and id_user=:id_user) ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+
+  }
+
+
+
+  function getTeamByUserAndLeague($id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_teams
+        where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+    $row = $st->fetch();
+
+    if($row === false)
+      return null;
+
+    else
+      return new Team($row['id'], $row['team_name'], $row['id_league'],
+                    $row['id_user'], $row['id_player'], $row['points']);
+
+
+  }
+
+
+
+
+
+
+
+  function getMyTeamIds($id_league, $id_user)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id from project_teams
+        where id_league=:id_league and id_user=:id_user ');
+
+      $st->execute(array('id_league' => $id_league, 'id_user' => $id_user));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = $row['id'];
+
+
+    return $arr;
+
+
+
+  }
+
+
+
+
+
+  function requestTrade($id_league, $myTeamId, $otherTeamId,
+  $id_player1, $id_player2,
+  $id_player11, $id_player12, $id_player21, $id_player22)
+  {
+
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('INSERT into project_trades
+        (id_league, id_team1, id_team2,
+        id_player1, id_player11, id_player12,
+        id_player21, id_player22, id_player2, trade_status)
+        values (:id_league, :id_myTeam, :id_otherTeam,
+         :id_player1, :id_player11, :id_player12,
+         :id_player21, :id_player22, :id_player2,
+         :trade_status)');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_myTeam' => $myTeamId, 'id_otherTeam' => $otherTeamId,
+      'id_player1' => $id_player1, 'id_player11' => $id_player11,
+      'id_player12' => $id_player12, 'id_player21' => $id_player21,
+      'id_player22' => $id_player22, 'id_player2' => $id_player2,
+      'trade_status' => 'pending'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+
+
+  }
+
+
+
+  function getMyPendingTradesViaLeagueAndTeam($id_league, $id_team)
+  {
+
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_trades
+      where id_league=:id_league and id_team1=:id_team
+      and trade_status=:pending');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_team' => $id_team, 'pending' => 'pending'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+
+    while($row = $st->fetch())
+      $arr[] = new Trade($row['id'],  $row['id_league'],
+      $row['id_team1'], $row['id_team2'],
+    $row['id_player1'], $row['id_player11'], $row['id_player12'],
+    $row['id_player21'], $row['id_player22'], $row['id_player2'],
+    $row['trade_status']);
+
+    return $arr;
+
+  }
+
+
+
+
+
+
+
+
 
 };
 

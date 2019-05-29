@@ -17,7 +17,9 @@
 
     '<td><button type="submit" name="player_id" value="'.
     $player->id.'" id="'.$player->id.'">'.'Cut from Team</button></td>';
-  }
+
+    echo '</tr>';
+    }
 
 
    ?>

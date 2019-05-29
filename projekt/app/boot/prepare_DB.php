@@ -272,7 +272,8 @@ try
 		'id_player12 int,' .
 		'id_player21 int,' .
 		'id_player22 int NULL,' .
-		'id_player2 int NOT NULL)'
+		'id_player2 int NOT NULL,'.
+		'trade_status varchar(30) NOT NULL)'
 	);
 
 	$st->execute();
@@ -282,7 +283,7 @@ catch( PDOException $e ) { exit( "PDO error [create project_trades]: " . $e->get
 echo "Napravio tablicu project_trades.<br />";
 
 
-
+//project_draft
 try
 {
 	$st = $db->prepare(

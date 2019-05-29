@@ -22,7 +22,7 @@
   <p>
     User: <?php if(isset($_SESSION['name'])) echo $_SESSION['name']; ?> <br>
     League: <?php if(isset($_SESSION['league_title']) )  echo $_SESSION['league_title']; ?><br>
-		
+
   </p>
 
 	<nav>
@@ -33,6 +33,8 @@
       <li><a href="index.php?rt=teams/changeTeamName">Change Team Name</a></li>
 			<li><a href="index.php?rt=teams/addPlayer">Add player</a></li>
 			<li><a href="index.php?rt=teams/proposeTrade">Propose Trade</a></li>
+			<li><a href="index.php?rt=teams/myTradeRequests">Trade Requests</a></li>
+			<li><a href="index.php?rt=teams/pendingTrades">Pending Trades</a></li>
       <li><a href="index.php?rt=teams/determineWeeklyMatchUp">Determine Weekly Matchup</a></li>
 
 
