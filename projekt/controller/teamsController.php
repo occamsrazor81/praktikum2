@@ -341,6 +341,14 @@ class TeamsController
       $fst->replacePlayerInTeam($_SESSION['id_league'],
       $_SESSION['kicked_player_id'], $_SESSION['new_player_id']);
 
+      //dodati reject ostalima koji ga traze ili kojima ga nudim
+
+      $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $_SESSION['kicked_player_id']);
+      foreach($tradesRejected as $trades)
+      $fst->setTradeStatusRejected($trades->id);
+
+      //////////////////////////////////////
+
       unset($_SESSION['new_player_id']);
       unset($_SESSION['kicked_player_id']);
 
@@ -391,6 +399,14 @@ class TeamsController
     {
       $fst->cutPlayerFromTeam($_SESSION['id_league'], $_SESSION['kicked_player_id']);
 
+      //dodati reject ostalima koji ga traze ili kojima ga nudim
+
+      $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $_SESSION['kicked_player_id']);
+      foreach($tradesRejected as $trades)
+      $fst->setTradeStatusRejected($trades->id);
+
+      //////////////////////////////////////
+
       unset($_SESSION['kicked_player_id']);
       header('Location: index.php?rt=teams/myTeam');
       exit();
@@ -421,6 +437,7 @@ class TeamsController
     {
 
       $fst->addPlayerToTeam($team_name, $_SESSION['id_league'], $_SESSION['id_user'], $_SESSION['new_player_id'], 0);
+
 
       unset($_SESSION['new_player_id']);
       header('Location: index.php?rt=teams/myTeam');
@@ -854,20 +871,74 @@ class TeamsController
       // $fst->addPlayerToTeam($team1->team_name, $team1->id_league,
       // $team1->id_user, $id_player2, 0);
 
+
+
+
+      //dodati reject ostalima koji ga traze ili kojima ga nudim
+      //za sve od donjih igraca
+
       $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player2);
       $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player1);
 
+      $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player2);
+      foreach($tradesRejected as $trades)
+      if($trades->id != $id_trade)
+      $fst->setTradeStatusRejected($trades->id);
+      unset($tradesRejected);
+
+      $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player1);
+      foreach($tradesRejected as $trades)
+      if($trades->id != $id_trade)
+      $fst->setTradeStatusRejected($trades->id);
+      unset($tradesRejected);
+
       if($id_player11 !== null)
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player11);
+      {
+        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player11);
+
+        $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player11);
+        foreach($tradesRejected as $trades)
+        if($trades->id != $id_trade)
+        $fst->setTradeStatusRejected($trades->id);
+        unset($tradesRejected);
+
+      }
 
       if($id_player12 !== null)
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player12);
+      {
+        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player12);
+
+        $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player12);
+        foreach($tradesRejected as $trades)
+        if($trades->id != $id_trade)
+        $fst->setTradeStatusRejected($trades->id);
+        unset($tradesRejected);
+
+      }
 
       if($id_player21 !== null)
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player21);
+      {
+        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player21);
+
+        $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player21);
+        foreach($tradesRejected as $trades)
+        if($trades->id != $id_trade)
+        $fst->setTradeStatusRejected($trades->id);
+        unset($tradesRejected);
+
+      }
 
       if($id_player22 !== null)
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player22);
+      {
+        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player22);
+
+        $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player22);
+        foreach($tradesRejected as $trades)
+        if($trades->id != $id_trade)
+        $fst->setTradeStatusRejected($trades->id);
+        unset($tradesRejected);
+
+      }
 
       $fst->setTradeStatusAccepted($id_trade);
 

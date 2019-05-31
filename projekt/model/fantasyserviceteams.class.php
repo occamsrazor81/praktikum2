@@ -884,6 +884,32 @@ class FantasyServiceTeams
   }
 
 
+  function getAllTradesInvolvingPlayerInLeague($id_league, $id_player)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_trades
+        set trade_status=:rejected
+        where id_league=:id_league
+        and (id_player1=:id_player
+          or id_player11=:id_player
+          or id_player12=:id_player
+          or id_player21=:id_player
+          or id_player22=:id_player
+          or id_player2=:id_player)');
+
+      $st->execute(array('id_league' => $id_league, 'rejected' => 'rejected',
+    'id_player' => $id_player));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
 
 
 
