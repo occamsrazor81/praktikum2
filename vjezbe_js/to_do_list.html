@@ -7,7 +7,7 @@
 </head>
 <body>
   <input type="text" name="posao" id="tekst">
-  <button type="button" name="button" id="dodaj">Dodaj novi posao</button>
+  <button type="button" name="dodaj" id="dodaj">Dodaj novi posao</button>
 
   <div id="div_posao"></div>
 
@@ -83,8 +83,8 @@ $( document ).ready( function()
 
       //ispisi posao u listi
       var span = $('<span  id="posao_' + brojPoslova + '">');
-      var chkbox = $('input class="obavljen" type="checkbox" id="chk_' + brojPoslova + '">');
-      span.html("chkbox");
+      var chkbox = $('<input class="obavljen" type="checkbox" id="chk_' + brojPoslova + '">');
+      span.html(chkbox);
       span.append(ime_posla);
 
       $('#div_posao').append(span);
@@ -97,8 +97,6 @@ $( document ).ready( function()
 
     return brojPoslova;
   }
-
-});
 
 } );
     </script>
