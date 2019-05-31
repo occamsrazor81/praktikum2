@@ -594,7 +594,7 @@ class TeamsController
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
-    $title = 'My pending Trades';
+    $title = 'My Trades';
 
     $myTeamIds = $fst->getMyTeamIds($_SESSION['id_league'], $_SESSION['id_user']);
 
@@ -605,18 +605,63 @@ class TeamsController
     {
       //print_r($id_team);
       $myTrades = $fst->getMyPendingTradesViaLeagueAndTeam($_SESSION['id_league'], $id_team);
+      $myAcceptedTrades = $fst->getMyAcceptedTradesViaLeagueAndTeam($_SESSION['id_league'], $id_team);
+
        //print_r($myTrades);
 
       if(isset($myTrades))
       foreach($myTrades as $trades)
       {
-        //print_r($myTrades);
+        $player1 = $fst->getPlayerById($trades->id_player1);
+        $player11 = $fst->getPlayerById($trades->id_player11);
+        $player12 = $fst->getPlayerById($trades->id_player12);
+
+        $player21 = $fst->getPlayerById($trades->id_player21);
+        $player22 = $fst->getPlayerById($trades->id_player22);
+        $player2  = $fst->getPlayerById($trades->id_player2);
+
+        $team1 = $fst->getTeamById($trades->id_team1);
+        $team2 = $fst->getTeamById($trades->id_team2);
+
+        if($player11 === null)
+          $player11_name = null;
+
+        else $player11_name = $player11->name;
+
+
+        if($player12 === null)
+        $player12_name = null;
+
+        else $player12_name = $player12->name;
+
+
+        if($player21 === null)
+          $player21_name = null;
+
+        else $player21_name = $player21->name;
+
+
+
+        if($player22 === null)
+          $player22_name = null;
+
+        else $player22_name = $player22->name;
+
+
         $allMyTrades[] = array('id_player1' => $trades->id_player1,
       'id_player11' => $trades->id_player11,
       'id_player12' => $trades->id_player12,
       'id_player21' => $trades->id_player21,
       'id_player22' => $trades->id_player22,
       'id_player2' => $trades->id_player2,
+      'player1_name' => $player1->name,
+      'player11_name' => $player11_name,
+      'player12_name' => $player21_name,
+      'player21_name' => $player21_name,
+      'player22_name' => $player22_name,
+      'player2_name' => $player2->name,
+      'team1_name' => $team1->team_name,
+      'team2_name' => $team2->team_name,
       'trade_status' => $trades->trade_status);
 
 
@@ -624,9 +669,227 @@ class TeamsController
 
       unset($myTrades);
 
+
+      if(isset($myAcceptedTrades))
+      foreach($myAcceptedTrades as $trades)
+      {
+        $player1 = $fst->getPlayerById($trades->id_player1);
+        $player11 = $fst->getPlayerById($trades->id_player11);
+        $player12 = $fst->getPlayerById($trades->id_player12);
+
+        $player21 = $fst->getPlayerById($trades->id_player21);
+        $player22 = $fst->getPlayerById($trades->id_player22);
+        $player2  = $fst->getPlayerById($trades->id_player2);
+
+        $team1 = $fst->getTeamById($trades->id_team1);
+        $team2 = $fst->getTeamById($trades->id_team2);
+
+        if($player11 === null)
+          $player11_name = null;
+
+        else $player11_name = $player11->name;
+
+
+        if($player12 === null)
+        $player12_name = null;
+
+        else $player12_name = $player12->name;
+
+
+        if($player21 === null)
+          $player21_name = null;
+
+        else $player21_name = $player21->name;
+
+
+
+        if($player22 === null)
+          $player22_name = null;
+
+        else $player22_name = $player22->name;
+
+
+        $allMyTrades[] = array('id_player1' => $trades->id_player1,
+      'id_player11' => $trades->id_player11,
+      'id_player12' => $trades->id_player12,
+      'id_player21' => $trades->id_player21,
+      'id_player22' => $trades->id_player22,
+      'id_player2' => $trades->id_player2,
+      'player1_name' => $player1->name,
+      'player11_name' => $player11_name,
+      'player12_name' => $player21_name,
+      'player21_name' => $player21_name,
+      'player22_name' => $player22_name,
+      'player2_name' => $player2->name,
+      'team1_name' => $team1->team_name,
+      'team2_name' => $team2->team_name,
+      'trade_status' => $trades->trade_status);
+
+
+      }
+
+      unset($myAcceptedTrades);
+
     }
 
+
     require_once __DIR__.'/../view/teams_myTrades.php';
+
+  }
+
+
+
+  public function tradeRequests()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'Trade Requests';
+
+    $myTeamIds = $fst->getMyTeamIds($_SESSION['id_league'], $_SESSION['id_user']);
+
+    $allMyTrades = array();
+    foreach($myTeamIds as $id_team)
+    {
+      $myPendingTrades = $fst->getRecievedTradeRequestsViaLeagueAndTeam($_SESSION['id_league'], $id_team);
+
+      foreach($myPendingTrades as $trades)
+      {
+        $player1 = $fst->getPlayerById($trades->id_player1);
+        $player11 = $fst->getPlayerById($trades->id_player11);
+        $player12 = $fst->getPlayerById($trades->id_player12);
+
+        $player21 = $fst->getPlayerById($trades->id_player21);
+        $player22 = $fst->getPlayerById($trades->id_player22);
+        $player2  = $fst->getPlayerById($trades->id_player2);
+
+        $team1 = $fst->getTeamById($trades->id_team1);
+        $team2 = $fst->getTeamById($trades->id_team2);
+
+        if($player11 === null)
+          $player11_name = null;
+
+        else $player11_name = $player11->name;
+
+
+        if($player12 === null)
+        $player12_name = null;
+
+        else $player12_name = $player12->name;
+
+
+        if($player21 === null)
+          $player21_name = null;
+
+        else $player21_name = $player21->name;
+
+
+
+        if($player22 === null)
+          $player22_name = null;
+
+        else $player22_name = $player22->name;
+
+
+        $allMyTrades[] = array('id_trade' => $trades->id,
+        'id_player1' => $trades->id_player1,
+      'id_player11' => $trades->id_player11,
+      'id_player12' => $trades->id_player12,
+      'id_player21' => $trades->id_player21,
+      'id_player22' => $trades->id_player22,
+      'id_player2' => $trades->id_player2,
+      'player1_name' => $player1->name,
+      'player11_name' => $player11_name,
+      'player12_name' => $player21_name,
+      'player21_name' => $player21_name,
+      'player22_name' => $player22_name,
+      'player2_name' => $player2->name,
+      'id_team1' => $team1->id,
+      'id_team2' => $team2->id,
+      'team1_name' => $team1->team_name,
+      'team2_name' => $team2->team_name,
+      'trade_status' => $trades->trade_status);
+      }
+
+      unset($myPendingTrades);
+
+    }
+
+
+    require_once __DIR__.'/../view/teams_pendingTrades.php';
+
+
+  }
+
+
+  public function acceptOrRejectTrade()
+  {
+
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    if(isset($_POST['accept_trade_id']))
+    {
+      $title = 'Trade accepted';
+
+      $trade = $fst->getTradeById($_POST['accept_trade_id']);
+      $id_trade = $trade->id;
+      $id_team1 = $trade->id_team1;
+      $id_team2 = $trade->id_team2;
+      $team1 = $fst->getTeamById($id_team1);
+      $team2 = $fst->getTeamById($id_team2);
+
+      $id_player1 = $trade->id_player1;
+      $id_player11 = $trade->id_player11;
+      $id_player12 = $trade->id_player12;
+
+      $id_player21 = $trade->id_player21;
+      $id_player22 = $trade->id_player22;
+      $id_player2 = $trade->id_player2;
+
+      //prvo upisemo u tablicu teams novog igraca, izbrisemo ga iz starog tima
+      // $fst->addPlayerToTeam($team2->team_name, $team2->id_league,
+      // $team2->id_user, $id_player1, 0);
+      // $fst->addPlayerToTeam($team1->team_name, $team1->id_league,
+      // $team1->id_user, $id_player2, 0);
+
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player2);
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player1);
+
+      if($id_player11 !== null)
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player11);
+
+      if($id_player12 !== null)
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player12);
+
+      if($id_player21 !== null)
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player21);
+
+      if($id_player22 !== null)
+      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player22);
+
+      $fst->setTradeStatusAccepted($id_trade);
+
+    }
+
+    elseif(isset($_POST['reject_trade_id']))
+    {
+
+      $title = 'Trade rejected';
+
+      $trade = $fst->getTradeById($_POST['reject_trade_id']);
+      $id_trade = $trade->id;
+      $id_team1 = $trade->id_team1;
+      $id_team2 = $trade->id_team2;
+
+      $fst->setTradeStatusRejected($id_trade);
+
+    }
+
+
+    header('Location: index.php?rt=teams/tradeRequests');
+
 
   }
 

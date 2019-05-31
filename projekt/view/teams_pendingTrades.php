@@ -3,6 +3,9 @@
 
 <hr>
 
+<form  action="index.php?rt=teams/acceptOrRejectTrade" method="post">
+
+
 <ul>
 
 
@@ -13,26 +16,25 @@ foreach($allMyTrades as $trades)
 {
   echo '<li><ul>';
 
-  echo '<li>From '.$trades['team1_name'].' -> '.$trades['player1_name'];
+  echo '<li>Recieve -> '.$trades['player1_name'];
   if($trades['id_player11'] !== null)
   echo ', '.$trades['player11_name'];
   if($trades['id_player12'] !== null)
   echo ', '.$trades['player22_name'].'</li>';
 
 
-  echo '<li>From '.$trades['team2_name'].' -> '.$trades['player2_name'];
+  echo '<li>Give away -> '.$trades['player2_name'];
   if($trades['id_player21'] !== null)
   echo ', '.$trades['player21_name'];
   if($trades['id_player22'] !== null)
   echo ', '.$trades['player22_name'].'</li>';
 
-  if(strcmp($trades['trade_status'], 'pending') === 0)
-  echo '<li>Trade is still pending.</li>';
 
-  else
-  echo '<li>Trade has been accepted.</li>';
+  echo '<li><button type="submit" name="accept_trade_id"'.
+  ' value="'.$trades['id_trade'].'">Accept Trade</button>';
 
-
+  echo ' <button type="submit" name="reject_trade_id"'.
+  ' value="'.$trades['id_trade'].'">Reject Trade</button></li><br>';
 
 
   echo '</ul></li>';
@@ -45,5 +47,7 @@ foreach($allMyTrades as $trades)
 
  ?>
 </ul>
+
+</form>
 
 <?php require_once __DIR__.'/_footer.php'; ?>

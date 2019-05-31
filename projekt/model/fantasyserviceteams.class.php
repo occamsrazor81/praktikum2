@@ -492,6 +492,28 @@ class FantasyServiceTeams
 
 
 
+
+
+  function replacePlayerInTeamTrade($id_league, $id_team, $id_new)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_teams set id_player=:id_new
+        where id_league=:id_league and id=:id_team ');
+
+      $st->execute(array('id_new' => $id_new,
+      'id_league' => $id_league, 'id_team' => $id_team));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
   function cutPlayerFromTeam($id_league, $id_kicked)
   {
 
@@ -729,6 +751,135 @@ class FantasyServiceTeams
     $row['trade_status']);
 
     return $arr;
+
+  }
+
+
+  function getMyAcceptedTradesViaLeagueAndTeam($id_league, $id_team)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_trades
+      where id_league=:id_league and id_team1=:id_team
+      and trade_status=:accepted');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_team' => $id_team, 'accepted' => 'accepted'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+
+    while($row = $st->fetch())
+      $arr[] = new Trade($row['id'],  $row['id_league'],
+      $row['id_team1'], $row['id_team2'],
+    $row['id_player1'], $row['id_player11'], $row['id_player12'],
+    $row['id_player21'], $row['id_player22'], $row['id_player2'],
+    $row['trade_status']);
+
+    return $arr;
+
+  }
+
+
+  function getRecievedTradeRequestsViaLeagueAndTeam($id_league, $id_team2)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_trades
+      where id_league=:id_league and id_team2=:id_team2
+      and trade_status=:pending');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_team2' => $id_team2, 'pending' => 'pending'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+
+    while($row = $st->fetch())
+      $arr[] = new Trade($row['id'],  $row['id_league'],
+      $row['id_team1'], $row['id_team2'],
+    $row['id_player1'], $row['id_player11'], $row['id_player12'],
+    $row['id_player21'], $row['id_player22'], $row['id_player2'],
+    $row['trade_status']);
+
+    return $arr;
+
+  }
+
+
+  function getTradeById($id)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_trades
+      where id=:id');
+
+      $st->execute(array('id' => $id));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $row = $st->fetch();
+    if($row === false)
+			return null;
+
+    else
+      return new Trade($row['id'],  $row['id_league'],
+      $row['id_team1'], $row['id_team2'],
+    $row['id_player1'], $row['id_player11'], $row['id_player12'],
+    $row['id_player21'], $row['id_player22'], $row['id_player2'],
+    $row['trade_status']);
+
+  }
+
+
+  function setTradeStatusAccepted($id_trade)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_trades
+        set trade_status=:accepted
+        where id=:id_trade');
+
+      $st->execute(array('id_trade' => $id_trade, 'accepted' => 'accepted'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+  function setTradeStatusRejected($id_trade)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_trades
+        set trade_status=:rejected
+        where id=:id_trade');
+
+      $st->execute(array('id_trade' => $id_trade, 'rejected' => 'rejected'));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
   }
 
