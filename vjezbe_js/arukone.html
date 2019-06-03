@@ -1,0 +1,618 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="content-type">
+
+	<title>Number Link (Arukone) Puzzle</title>
+
+<style>
+	body {
+		-moz-user-select:none;
+		font-size:12px;
+		font-family:chalkboard,palatino;
+		margin-left:25px;
+		margin-top:25px;
+	}
+
+	input,select,button {
+		font-size:12px;
+		font-family:chalkboard,palatino;
+	}
+</style>
+
+<style>
+	td.brdCell {
+		width:24px;
+		height:24px;
+		border-style:solid;
+		border-color:gray;
+		font-size:14px;
+
+	}
+
+	td.brdCellSmall {
+		width:20px;
+		height:20px;
+		border-style:solid;
+		border-color:gray;
+		font-size:10px;
+	}
+
+	td.colorCell {
+		border:4px;
+		border-style:solid;
+		border-color:transparent;
+		font-size:12px;
+		width:20px;
+		height:20px;
+	}
+
+	td.colorCellSmall {
+		border:2px;
+		border-style:solid;
+		border-color:transparent;
+		font-size:10px;
+		width:14px;
+		height:14px;
+	}
+
+</style>
+
+
+<script language="JavaScript" src="numberLinkLevels.js"></script>
+
+
+<script language="javascript">
+
+
+var gCollNum, gLevelNum;
+var gRows,gCols,gOldRows, gOldCols, gOldMax;
+var gColors = new Array("white","#FF3366","#FFFF00","#7B68EE","#00FF00","#33FFFF","#FF00FF",'#D3D3D3',"tan","olive",
+						"#FFFF99","#FF6633","hotpink", "#99FF66", "#3300FF","silver","orange","mistyrose"
+						);
+var MOVED = "#D3D3D3";  // light gray
+var HILITE = "#0FFFF0";
+var BLANK = "&nbsp;&nbsp;&nbsp;"
+var gSelectedNum;
+var gVisited;
+var gMaxNum;
+var gMouseDown;
+var gPathStarts;
+var gPathEnds;
+
+
+/*
+Array.prototype.max = function() {
+var max = this[0];
+var len = this.length;
+	for (var i = 1; i < len; i++) if (this[i] > max) max = this[i];
+	return max;
+}
+*/
+
+Array.prototype.max = function( ){
+	return Math.max.apply( Math, this );
+};
+
+
+function praiseAndAsk() {
+	if (document.daForm.levelNum.selectedIndex < document.daForm.levelNum.options.length - 1) {
+		if (confirm('Yup!!\n Wanna move to next level?')) {
+			document.daForm.levelNum.selectedIndex++;
+			newGame();
+		}
+	}
+	else {
+		if (document.daForm.collNum.selectedIndex < document.daForm.collNum.options.length - 1) {
+			if (confirm('Yup!!\n Wanna move to next level?')) {
+				document.daForm.collNum.selectedIndex++;
+				startGame();
+			}
+		}
+		else {
+			alert('Yup!!\n You finished the last one!!');
+		}
+	}
+	return;
+}
+
+
+
+function isPath(num, from, to) { //alert(from);
+var ok = false;
+var completed = false;
+var r = Math.floor(from/gCols);
+var c = from % gCols;
+var nxt;
+
+	if (from == to) { // alert('gotOne');
+		return true;
+	}
+	nxt = from + 1;
+	if (c < (gCols -1) && gBrd[nxt] == num && !completed ) {
+		if (!gVisited[nxt]) {
+			gVisited[nxt]++;
+			completed = isPath(num, nxt, to);
+			if (!completed)
+				gVisited[nxt]--;
+		}
+	}
+	nxt = from - 1;
+	if (c > 0 && gBrd[nxt] == num && !completed) {
+		if (!gVisited[nxt]) {
+			gVisited[nxt]++;
+			completed = isPath(num, nxt, to);
+			if (!completed)
+				gVisited[nxt]--;
+		}
+	}
+	nxt = from + gCols;
+	if (r < (gRows -1) && gBrd[nxt] == num && !completed ) {
+		if (!gVisited[nxt]) {
+			gVisited[nxt]++;
+			completed = isPath(num, nxt, to);
+			if (!completed)
+				gVisited[nxt]--;
+		}
+	}
+	nxt = from - gCols;
+	if (r > 0 && gBrd[nxt] == num && !completed) {
+		if (!gVisited[nxt]) {
+			gVisited[nxt]++;
+			completed = isPath(num, nxt, to);
+			if (!completed)
+				gVisited[nxt]--;
+		}
+	}
+	return completed;
+
+}
+
+function winner() {
+var ok = true;
+
+	for (var j = 0; j< gRows *gCols; j++) {
+		gVisited[j] = 0;
+	}
+	for (var i = 1; i <= gMaxNum && ok; i++) { // alert('hi:' + i);
+		ok = ok && isPath(i, gPathStarts[i], gPathEnds[i]);
+	}
+	if (ok) {
+		for (var j = 0; j< gRows *gCols && ok; j++) {
+			ok = ok && gVisited[j] == 1 || gStarts[gCollNum][gLevelNum][BRD][j] != 0;
+		}
+	}
+	return ok;
+}
+
+function checkIn(evt) {
+
+/*	if (document.getElementById('num').value != 0) {
+		alert("hey at least place all the pieces!!!");
+		return;
+	}
+*/
+
+	if (winner()) {
+		setTimeout('praiseAndAsk();', 200);
+	}
+	else {
+		alert('not yet...');
+		return;
+	}
+}
+
+
+function showBoard() {
+var i,row,col;
+var num;
+var el;
+
+	if (gRows != gOldRows || gCols != gOldCols || gMaxNum != gOldMax) {
+		buildBoard();
+	}
+
+	document.getElementById('num').value = 0;
+
+	for (row = 0; row < gRows; row++) {
+		for(col = 0; col < gCols; col++) {
+			num = gBrd[row*gCols + col];
+			el = document.getElementById('cellr' + row + 'c' + col);
+			el.innerHTML = (num == 0) ? BLANK : "&nbsp;" + num + "&nbsp;";
+			el.style.color = (num == 0) ? 'white' : 'black';
+			el.style.backgroundColor = gColors[num];
+			el.style.borderColor = "gray"
+			if (num == 0) {
+				document.getElementById('num').value++;
+			}
+		}
+	}
+	for (var i = 1; i<=gMaxNum; i++) {
+		document.getElementById("pieceTD" + i).style.borderColor="transparent";
+	}
+
+	document.getElementById("painter").style.backgroundColor = gColors[0];
+	document.getElementById("painter").innerHTML =  BLANK;
+	pieceClick(0);
+
+
+}
+
+
+function colorOver(r,c, evt) {
+	document.getElementById('num').focus();
+
+	if (gMouseDown) {
+		clickAt(r,c);
+	}
+
+	return;
+
+}
+
+function colorOut(r,c, evt) { return;
+
+}
+
+
+function isShiftDown(e) {
+	shiftPressed = false;
+	if (parseInt(navigator.appVersion) > 3) {
+		if (e.modifiers) {
+			shiftPressed = (e.modifiers & Event.SHIFT_MASK);
+		}
+		else {
+			shiftPressed = e.shiftKey;
+		}
+	}
+	return (shiftPressed);
+}
+
+function pieceClick(num) {
+var el = document.getElementById("pieceTD" + num);
+var oldEl = document.getElementById("pieceTD" + gSelectedNum);
+var pEl = document.getElementById("painter");
+var zEl = document.getElementById("pieceTD" + 0);
+
+
+	if (gSelectedNum >= 0 && (oldEl != null) ) {
+		oldEl.style.borderColor = "transparent";
+	}
+	if (num == 0 ||  num != gSelectedNum) {
+		el.style.borderColor = 'green';
+		gSelectedNum = num;
+	}
+	else {
+		zEl.style.borderColor = 'green';
+		gSelectedNum = 0;
+	}
+	pEl.style.backgroundColor = gColors[gSelectedNum];
+	pEl.innerHTML = (gSelectedNum != 0) ? gSelectedNum : BLANK;
+
+
+}
+
+function handleMouseDown(r,c) {
+	var brdNum = gStarts[gCollNum][gLevelNum][BRD][r*gCols + c];
+
+	gMouseDown=true;
+	if (brdNum != 0 && gSelectedNum != brdNum) {
+		pieceClick(brdNum);
+		return;
+	}
+	clickAt(r,c);
+}
+
+function clickAt(r,c,evt) {
+	var el = document.getElementById('cellr' + r + 'c' + c);
+	var isNum = gBrd[r*gCols+c] != 0;
+	var brdNum = gStarts[gCollNum][gLevelNum][BRD][r*gCols + c];
+
+	document.getElementById('num').focus();
+
+	if (brdNum != 0) {
+		return;
+	}
+	el.innerHTML = (gSelectedNum != 0) ? gSelectedNum : BLANK;
+	el.style.backgroundColor = gColors[gSelectedNum];
+	gBrd[r*gCols+c] = gSelectedNum;
+	if (gSelectedNum != 0 && !isNum) {
+		document.getElementById('num').value--;
+	}
+	else {
+		if (gSelectedNum == 0 && isNum ) {
+			document.getElementById('num').value++;
+		}
+	}
+
+
+}
+
+function strBoard() {
+var toSpit = '';
+var row,col, color;
+
+	toSpit = gCollNum + '/' + gLevelNum + '/';
+	toSpit += gBrd;
+	toSpit +=  '/' + document.getElementById('num').value;
+	return toSpit;
+}
+
+
+function saveCookie(str) { //alert(str);
+	var exp = new Date();
+	var oneYearFromNow = exp.getTime() + (365 * 24 * 60 * 60 * 1000);
+	exp.setTime(oneYearFromNow);
+	document.cookie = "numberLinkSeth=" + str + "; expires=" + exp.toGMTString();
+	alert("saved");
+}
+
+
+function getCookie(cookie) {
+var bites = document.cookie.split(";");   // This is to break cookie down into an array of bites
+	for (i=0; i < bites.length; i++) {
+		nextbite = bites[i].split("=");         // break into the "name & value"
+		if (nextbite[0] == cookie)              // if the name = true
+			return unescape(nextbite[1]);       // return this value
+	}
+	return null;                             // if there is no match return null value
+}
+
+
+function loadFromCookie() {
+	var str = getCookie("numberLinkSeth");
+	if (str == null) {
+		alert ("No saved game to load");
+		return;
+	}
+	loadFromStr(str);
+	return;
+}
+
+function loadFromStr(str) {
+var arrayed = str.split('/');
+var row, col, num;
+	document.daForm.collNum.selectedIndex = arrayed[0];
+	startGame();
+	document.daForm.levelNum.selectedIndex = arrayed[1];
+	newGame();
+	gBrd = arrayed[2].split(',');
+	for (row = 0; row < gRows; row++) {
+		for(col = 0; col < gCols; col++) {
+			num = gBrd[row*gCols + col];
+			el = document.getElementById('cellr' + row + 'c' + col);
+			el.style.backgroundColor = gColors[num];
+		}
+	}
+	document.getElementById('num').value = arrayed[3];
+}
+
+
+
+function loadLevel() {
+
+	gRows = gStarts[gCollNum][gLevelNum][ROWS];
+	gCols = gStarts[gCollNum][gLevelNum][COLS];
+
+	gMaxNum = gStarts[gCollNum][gLevelNum][BRD].max();
+
+	gBrd = new Array();
+	for( i = 0; i < gStarts[gCollNum][gLevelNum][BRD].length; i++) {
+		gBrd[i] = gStarts[gCollNum][gLevelNum][BRD][i];
+	}
+
+
+	showBoard();
+
+	document.getElementById("byDiv").innerHTML = "Level By: " + gStarts[gCollNum][gLevelNum][BY];
+	gSelectedNum = 0;
+	gMouseDown = false;
+	gMoves = new Array();
+	gPathStarts = new Array();
+	gPathEnds = new Array();
+	for (i = 1; i<=gMaxNum; i++) {
+		for (var j = 0; j<=gBrd.length;j++) {
+			if (gBrd[j] == i) {
+				if (gPathStarts[i] == null) {
+					gPathStarts[i] = j;
+				}
+				else {
+					gPathEnds[i] = j;
+				}
+			}
+		}
+	}
+	gVisited = new Array();
+
+}
+
+function newGame() {
+	gLevelNum = 1 * document.daForm.levelNum.options[document.daForm.levelNum.selectedIndex].value ;
+	document.getElementById("prevButt").disabled = (gLevelNum == 0);
+	document.getElementById("nextButt").disabled = (gLevelNum ==  document.daForm.levelNum.options.length-1);
+
+	loadLevel();
+
+}
+
+function getURLparameter( name )
+{
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return results[1];
+}
+
+
+function startGame() {
+var pod = getURLparameter("pod");
+var now = new Date();
+var num;
+
+
+
+	if (pod != "" && gCollNum == null) {
+		document.daForm.collNum.options[1].selected = true;  // set it to medium
+		pod = 'yup'
+	}
+
+	gCollNum = 1 * document.daForm.collNum.options[document.daForm.collNum.selectedIndex].value ;
+	document.daForm.levelNum.options.length = 0;
+	for (var i = 0; i < gStarts[gCollNum].length; i++) {
+		document.daForm.levelNum.options[i] = new Option( 'level ' + (i + 1), i);
+	}
+	document.daForm.levelNum.options[0].selected = true;
+
+	if (pod == 'yup') {
+		num = (10000 * now.getYear() + 100 * now.getMonth() + 10 * now.getDate() + now.getDay()) % document.daForm.levelNum.options.length;
+		document.daForm.levelNum.options[num].selected = true;
+	}
+
+	gOldRows = 500;
+	newGame();
+
+}
+
+function buildBoard() {
+var i, row, col, toSay = '';
+var daStyle;
+
+	toSay += '<table border="1px" cellspacing="0" cellpadding="0" style="border-style:solid;border-color:gray;font-size:14pt;">';
+
+	daStyle = ( (gRows > 10) || (gCols > 10) ) ? "Small" : "";
+
+	/* MAIN BOARD  */
+	for (row = 0; row < gRows; row++) {
+		toSay += '<tr>';
+		for (col = 0; col < gCols; col++) {
+			toSay += '<td id="cellr' + row + 'c' + col + '" align="center" class="brdCell' + daStyle + '" onmousedown="handleMouseDown(' + row + ',' +  col + ',event);" onMouseUp="gMouseDown=false;" onmouseover="colorOver(' + row + ',' +  col + ',event);" onmouseout="colorOut(' + row + ',' +  col + ',event);">&nbsp;&nbsp;&nbsp;</td>';
+		}
+	}
+
+	toSay += '</table>'
+	toSay += '<br>Painter:&nbsp;<span id="painter" align="center" style="font-size:10pt;width:14px;padding:4px 8px 4px 6px;">&nbsp;&nbsp;</span><br>'
+
+	/* Number pieces */
+	toSay += '<br /><table border="4px" cellspacing="2" cellpadding="2" style="border-color:transparent;border-style:solid;font-size:10pt;">';
+	toSay += '<tr height="16">'
+
+	i = 0;
+	toSay += '<td id="pieceTD' + i + '" align="center" style="border:4px;border-style:solid;border-color:transparent;background-color:' + gColors[i] + ';width:14px;" onclick="javascript:pieceClick(' + i + ');">' + 'clr' +  '</td>';
+
+	for (i = 1; i <= gMaxNum; i++) {
+		if ( (i > 5) && (i % 5 == 1) && ( (gMaxNum - i) > 0)) {
+			toSay += '</tr><tr><td style="border:0px;">&nbsp;</td>';
+		}
+		toSay += '<td id="pieceTD' + i + '" align="center" class="colorCell' + daStyle + '" style="background-color:' + gColors[i] + ';" onclick="javascript:pieceClick(' + i + ');">&nbsp;' + i +  '&nbsp;</td>';
+	}
+	toSay += '</table>'
+
+
+	document.getElementById("daBrd").innerHTML = toSay;
+	gOldRows = gRows;
+	gOldCols = gCols;
+	gOldMax = gMaxNum;
+	return;
+}
+
+function nextLevel() {
+	if (document.daForm.levelNum.selectedIndex < document.daForm.levelNum.options.length - 1) {
+			document.daForm.levelNum.selectedIndex++;
+			newGame();
+	}
+	else {
+		alert('Why not try a different collection?')
+	}
+}
+
+function prevLevel() {
+	if (document.daForm.levelNum.selectedIndex > 0) {
+			document.daForm.levelNum.selectedIndex--;
+			newGame();
+	}
+}
+
+function showHideInstrDiv() {
+var div = document.getElementById("puzzleInstrDiv");
+var vis = div.style.display != 'none';
+
+	div.style.display = (vis) ? 'none' : 'block';
+	document.getElementById("showHideButt").value = (vis) ? "Show Instructions" : "Hide Instructions";
+	document.getElementById("showHideButt").blur();
+}
+
+
+
+</script>
+
+</head>
+<body onselectstart='return false;' ondragstart='return false;' onload="startGame();">
+<form name="daForm">
+Which collection?&nbsp;&nbsp;
+<select name="collNum" onchange="this.blur();startGame()">
+			<option value="0" selected>Small</option>
+			<option value="1" >Medium</option>
+			<option value="2" >Larger</option>
+</select>
+<br>
+Which Level?&nbsp;&nbsp;<select NAME="levelNum" ONCHANGE="this.blur();newGame()">
+			<option VALUE="0" SELECTED>level   1</option>
+</select>
+<br>
+<input type="button" value="<--" onClick="this.blur();prevLevel()" id="prevButt">
+<input type="button" value="-->" onClick="this.blur();nextLevel()" id="nextButt">
+<br /><br />
+<input TYPE="button" NAME = "reset" VALUE="Reset" onClick="this.blur();newGame()">
+&nbsp;&nbsp;&nbsp;
+<button type="button" name="check" value="check" onclick="javascript:checkIn();">Check, please!</button>
+<br /><br />
+<div id="daBrd"></div>
+<div id="byDiv">By:&nbsp;&nbsp;fred</div>
+<br />
+To Place:&nbsp;<input type="text" style="border:0;" size="3" id="num" value=0 onfocus="blur()" align="center">
+<br />
+<input TYPE="button" value="Save" onClick="saveCookie(strBoard())">
+<input TYPE="button" value="Load Saved" onClick="loadFromCookie();">
+<br />
+<br>
+<input type="button" id="showHideButt" onclick="showHideInstrDiv();" value="Show Instructions">
+<div id="puzzleInstrDiv" style="display:none;width:375px;background:cornsilk;padding:8px;position:absolute;top:25px;left:25px;margin:10px;">
+
+<pre>
+Connect each pair of numbers
+(1 to 1, 2 to 2, 3 to 3, etc.)
+with a single, continuous path
+of matching colored squares.
+
+No overlaps or blocks of color are allowed --
+   each path must be only 1 cell wide
+All squares in the puzzle must be colored in.
+
+Click a number from below,
+then click cells to "paint them".
+Click clr or the selected number again,
+to clear the "painter",
+  and to allow yourself to clear board squares.
+
+Alternatively, you can "paint" by
+clicking on a starting number
+within the board and then
+either clicking on
+or dragging over
+the cells you wish to color.
+
+enjoy!
+</pre>
+<div align="right"><a href="javascript:showHideInstrDiv();" >close</a></div>
+
+</div>
+<div align="right">
+</div>
+</form>
+</body>
+</html>
