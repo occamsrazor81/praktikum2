@@ -1164,6 +1164,46 @@ class TeamsController
   }
 
 
+//////
+
+  public function determineWeeklyMatchUp()
+  {
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+
+    $title = 'Weekly MatchUp';
+
+    $leagueUsers = $fst->getAllUsersInsideLeague($_SESSION['id_league']);
+
+    $usersIds = array();
+    foreach($leagueUsers as $user)
+    $usersIds[] = $user->id;
+
+    $numberOfMatchups = floor(count($usersIds) / 2);
+
+    shuffle($usersIds);
+
+
+    for($i = 0; $i < $numberOfMatchups; ++$i)
+    {
+      $id_user1 = $usersIds[2*$i];
+      $id_user2 = $usersIds[2*$i + 1];
+
+      $fst->makeFirstWeeklyMatchUp($_SESSION['id_league'], $id_user1, $id_user2);
+    }
+
+
+    //require_once __DIR__.'/../view/weekly_matchup_Intro.php';
+
+
+
+
+  }
+
+
+
+
+
 
 
 

@@ -202,8 +202,8 @@ try
 		'CREATE TABLE IF NOT EXISTS project_weekly_matchups (' .
 		'id int NOT NULL PRIMARY KEY AUTO_INCREMENT,' .
 		'id_league int NOT NULL,' .
-		'id_team1 int NOT NULL,' .
-		'id_team2 int NOT NULL,'.
+		'id_user1 int NOT NULL,' .
+		'id_user2 int NOT NULL,'.
 		'FGM1 int,' .
 		'FGA1 int,' .
 		'FG_PERC1 double,' .

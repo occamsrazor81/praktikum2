@@ -931,6 +931,25 @@ class FantasyServiceTeams
 
   }
 
+//////////////////////
+//promijeniti na usere umjesto timova u insert into
+  function makeFirstWeeklyMatchUp($id_league, $id_user1, $id_user2)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('INSERT into project_weekly_matchups(id_league, id_team1, id_team2)
+      values(:id_league, :id_user1, :id_user2)');
+
+      $st->execute(array('id_league' => $id_league, 'id_user1' => $id_user1,
+    'id_user2' => $id_user2 ));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
 
 
 
