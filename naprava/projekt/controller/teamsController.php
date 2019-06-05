@@ -508,12 +508,45 @@ class TeamsController
 
     $title = 'Trade from my Team';
 
-    $id_player = $_POST['player_id'];
-    $targetPlayer = $fst->getPlayerById($id_player);
+    // $id_player = $_POST['player_id'];
+    // $targetPlayer = $fst->getPlayerById($id_player);
+    //
+    // $_SESSION['trade_player_id'] = $id_player;
+    //
+    // $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
-    $_SESSION['trade_player_id'] = $id_player;
+    if(!isset($_POST['propose']) || (count($_POST['players']) > 3))
+    {
+      unset($_SESSION['other_user_id']);
+      header('Location: index.php?rt=teams/proposeTrade');
+      exit();
+    }
 
-    $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+    else
+    {
+      $targetPlayers = array();
+
+      $_SESSION['trade_count'] = count($_POST['players']);
+      $_SESSION['trade_ids'] = array();
+
+      if(!empty($_POST['players']))
+      {
+        //$cnt = 1;
+        foreach($_POST['players'] as $id_player)
+        {
+          $player = $fst->getPlayerById($id_player);
+          $targetPlayers[] = $player;
+
+          $_SESSION['trade_ids'][] = $id_player;
+          $string = 'trade_player_'.$id_player;
+          $_SESSION[$string] = $id_player;
+        //  $cnt++;
+        }
+      }
+
+      $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+    }
 
     require_once __DIR__.'/../view/teams_whoFor.php';
 
@@ -528,25 +561,68 @@ class TeamsController
 
     $title = 'Trade Request Confirmation';
 
-    if(isset($_POST['cancel']))
-    {
+    // if(isset($_POST['cancel']))
+    // {
+    //
+    //   unset($_SESSION['other_user_id']);
+    //   unset($_SESSION['trade_player_id']);
+    //   header('Location: index.php?rt=teams/proposeTrade');
+    //   exit();
+    // }
+    //
+    // $myPlayerId = $_POST['player_id'];
+    // $otherPlayerId = $_SESSION['trade_player_id'];
+    //
+    // $_SESSION['my_player_id'] = $myPlayerId;
+    //
+    // $myPlayer = $fst->getPlayerById($myPlayerId);
+    // $otherPlayer = $fst->getPlayerById($otherPlayerId);
+    //
+    //
+    // //$fst->requestTrade($_SESSION['id_league'], $myPlayerId, $otherPlayerId);
+    //
 
+    $otherCnt = $_SESSION['trade_count'];
+    if(isset($_POST['cancel']) || (count($_POST['myplayers']) < 1))
+    {
       unset($_SESSION['other_user_id']);
-      unset($_SESSION['trade_player_id']);
+
+      for($i = 0; $i < $_SESSION['trade_count']; $i++)
+      {
+        $string = 'trade_player_'.$_SESSION['trade_ids'][$i];
+        unset($_SESSION[$string]);
+      }
+
+      unset($_SESSION['trade_count']);
+      unset($_SESSION['trade_ids']);
+
       header('Location: index.php?rt=teams/proposeTrade');
       exit();
     }
 
-    $myPlayerId = $_POST['player_id'];
-    $otherPlayerId = $_SESSION['trade_player_id'];
+    $myPlayers = array();
+    $_SESSION['my_trade_ids'] = array();
 
-    $_SESSION['my_player_id'] = $myPlayerId;
+    $_SESSION['my_trade_count'] = count($_POST['myplayers']);
 
-    $myPlayer = $fst->getPlayerById($myPlayerId);
-    $otherPlayer = $fst->getPlayerById($otherPlayerId);
+    foreach($_POST['myplayers'] as $myPlayerId)
+    {
+      $myPlayer = $fst->getPlayerById($myPlayerId);
+      $myPlayers[] = $myPlayer;
+
+      $_SESSION['my_trade_ids'][] = $myPlayerId;
+
+    }
+
+    $otherPlayers = array();
+    foreach($_SESSION['trade_ids'] as $id_other)
+    {
+      $otherPlayer = $fst->getPlayerById($id_other);
+      $otherPlayers[] = $otherPlayer;
+
+    }
 
 
-    //$fst->requestTrade($_SESSION['id_league'], $myPlayerId, $otherPlayerId);
 
     require_once __DIR__.'/../view/teams_rUSure_trade.php';
 
@@ -561,17 +637,42 @@ class TeamsController
     $fst = new FantasyServiceTeams();
 
 
+    // if(isset($_POST['no']))
+    // {
+    //   $title = 'Canceled';
+    //
+    //   unset($_SESSION['other_user_id']);
+    //   unset($_SESSION['my_player_id']);
+    //   unset($_SESSION['trade_player_id']);
+    //   header('Location: index.php?rt=teams/proposeTrade');
+    //   exit();
+    //
+    // }
+
     if(isset($_POST['no']))
     {
-      $title = 'Canceled';
-
       unset($_SESSION['other_user_id']);
-      unset($_SESSION['my_player_id']);
-      unset($_SESSION['trade_player_id']);
+
+      for($i = 0; $i < $_SESSION['trade_count']; $i++)
+      {
+        $string = 'trade_player_'.$_SESSION['trade_ids'][$i];
+        unset($_SESSION[$string]);
+      }
+
+      unset($_SESSION['trade_count']);
+      unset($_SESSION['trade_ids']);
+
+
+      unset($_SESSION['my_trade_count']);
+      unset($_SESSION['my_trade_ids']);
+
       header('Location: index.php?rt=teams/proposeTrade');
       exit();
-
     }
+
+
+
+
 
     else
     {
@@ -583,15 +684,82 @@ class TeamsController
       $myTeamId = $myTeam->id;
       $otherTeamId = $otherTeam->id;
 
-      $fst->requestTrade($_SESSION['id_league'], $myTeamId, $otherTeamId,
-      $_SESSION['my_player_id'], $_SESSION['trade_player_id'],
-      null, null, null, null); //ostali igraci nisu ukljuceni
+      // $fst->requestTrade($_SESSION['id_league'], $myTeamId, $otherTeamId,
+      // $_SESSION['my_player_id'], $_SESSION['trade_player_id'],
+      // null, null, null, null); //ostali igraci nisu ukljuceni
 
+
+
+      // unset($_SESSION['other_user_id']);
+      // unset($_SESSION['my_player_id']);
+      // unset($_SESSION['trade_player_id']);
+
+      // ///////////////////////////////////
+      // function requestTrade($id_league, $myTeamId, $otherTeamId,
+      // $id_player1, $id_player2,
+      // $id_player11, $id_player12, $id_player21, $id_player22)
+      ///////////////////////////////////////////////
+
+      $myCount = $_SESSION['my_trade_count'];
+      $otherCnt = $_SESSION['trade_count'];
+
+
+      $myPlayerId1 = $_SESSION['my_trade_ids'][0];
+      $myCount--;
+
+      if($myCount > 0)
+      {
+        $myPlayerId11 = $_SESSION['my_trade_ids'][1];
+        $myCount--;
+      }
+      else $myPlayerId11 = null;
+
+      if($myCount > 0)
+      {
+        $myPlayerId12 = $_SESSION['my_trade_ids'][2];
+        $myCount--;
+      }
+      else $myPlayerId12 = null;
+
+//***********************************
+
+      $myPlayerId2 = $_SESSION['trade_ids'][0];
+      $otherCnt--;
+
+      if($otherCnt > 0)
+      {
+        $myPlayerId21 = $_SESSION['trade_ids'][1];
+        $otherCnt--;
+      }
+      else $myPlayerId21 = null;
+
+      if($otherCnt > 0)
+      {
+        $myPlayerId22 = $_SESSION['trade_ids'][2];
+        $otherCnt--;
+      }
+      else $myPlayerId22 = null;
+
+
+      $fst->requestTrade($_SESSION['id_league'], $myTeamId, $otherTeamId,
+      $myPlayerId1, $myPlayerId2,
+      $myPlayerId11, $myPlayerId12, $myPlayerId21, $myPlayerId22);
 
 
       unset($_SESSION['other_user_id']);
-      unset($_SESSION['my_player_id']);
-      unset($_SESSION['trade_player_id']);
+
+      for($i = 0; $i < $_SESSION['trade_count']; $i++)
+      {
+        $string = 'trade_player_'.$_SESSION['trade_ids'][$i];
+        unset($_SESSION[$string]);
+      }
+
+      unset($_SESSION['trade_count']);
+      unset($_SESSION['trade_ids']);
+
+
+      unset($_SESSION['my_trade_count']);
+      unset($_SESSION['my_trade_ids']);
 
 
       // require_once __DIR__.'/../view/teams_myTrades.php';
@@ -865,6 +1033,10 @@ class TeamsController
       $id_player22 = $trade->id_player22;
       $id_player2 = $trade->id_player2;
 
+      // echo 'id_p1 = '.$id_player1.', id_p11 = '.$id_player11.', id_p12 = '.$id_player12;
+      // echo "<br>";
+      // echo 'id_p2 = '.$id_player2.', id_p21 = '.$id_player21.', id_p22 = '.$id_player22;
+
       //prvo upisemo u tablicu teams novog igraca, izbrisemo ga iz starog tima
       // $fst->addPlayerToTeam($team2->team_name, $team2->id_league,
       // $team2->id_user, $id_player1, 0);
@@ -877,8 +1049,19 @@ class TeamsController
       //dodati reject ostalima koji ga traze ili kojima ga nudim
       //za sve od donjih igraca
 
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player2);
-      $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player1);
+//***************************************
+
+
+        $fst->addPlayerToTeam($team2->team_name, $team2->id_league,
+         $team2->id_user, $id_player1, 0);
+        $fst->popFromTeam($team1->team_name, $team1->id_league, $id_player1);
+
+        $fst->addPlayerToTeam($team1->team_name, $team1->id_league,
+         $team1->id_user, $id_player2, 0);
+        $fst->popFromTeam($team2->team_name, $team2->id_league, $id_player2);
+
+      // $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player2);
+      // $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player1);
 
       $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player2);
       foreach($tradesRejected as $trades)
@@ -894,7 +1077,11 @@ class TeamsController
 
       if($id_player11 !== null)
       {
-        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player11);
+        $fst->addPlayerToTeam($team2->team_name, $team2->id_league,
+         $team2->id_user, $id_player11, 0);
+        $fst->popFromTeam($team1->team_name, $team1->id_league, $id_player11);
+
+        //$fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player11);
 
         $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player11);
         foreach($tradesRejected as $trades)
@@ -906,7 +1093,11 @@ class TeamsController
 
       if($id_player12 !== null)
       {
-        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player12);
+        $fst->addPlayerToTeam($team2->team_name, $team2->id_league,
+         $team2->id_user, $id_player12, 0);
+        $fst->popFromTeam($team1->team_name, $team1->id_league, $id_player12);
+
+        //$fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team2,  $id_player12);
 
         $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player12);
         foreach($tradesRejected as $trades)
@@ -918,7 +1109,11 @@ class TeamsController
 
       if($id_player21 !== null)
       {
-        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player21);
+        $fst->addPlayerToTeam($team1->team_name, $team1->id_league,
+         $team1->id_user, $id_player21, 0);
+        $fst->popFromTeam($team2->team_name, $team2->id_league, $id_player21);
+
+        //$fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player21);
 
         $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player21);
         foreach($tradesRejected as $trades)
@@ -930,7 +1125,11 @@ class TeamsController
 
       if($id_player22 !== null)
       {
-        $fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player22);
+        $fst->addPlayerToTeam($team1->team_name, $team1->id_league,
+         $team1->id_user, $id_player22, 0);
+        $fst->popFromTeam($team2->team_name, $team2->id_league, $id_player22);
+
+        //$fst->replacePlayerInTeamTrade($_SESSION['id_league'], $id_team1,  $id_player22);
 
         $tradesRejected = $fst->getAllTradesInvolvingPlayerInLeague($_SESSION['id_league'], $id_player22);
         foreach($tradesRejected as $trades)

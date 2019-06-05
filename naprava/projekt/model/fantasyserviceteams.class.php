@@ -281,6 +281,28 @@ class FantasyServiceTeams
 
 
 
+  function popFromTeam($team_name, $id_league, $id_player)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('DELETE from project_teams
+      where team_name=:team_name and id_league=:id_league
+      and id_player=:id_player');
+
+      $st->execute(array('team_name' => $team_name, 'id_league' => $id_league,
+        'id_player' => $id_player));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+  // 'DELETE from project_teams
+  //   where id_league=:id_league and  id_player=:id_kicked '
+
+
   function deleteMinimalCurrent()
   {
 

@@ -3,27 +3,45 @@
 <form  action="index.php?rt=teams/askForTrade" method="post">
 
 <br>
-<table>
+<!-- <table>
 
-<tr><th>Player Name</th><th>Position</th></tr>
+<tr><th>Player Name</th><th>Position</th></tr> -->
 
   <?php
 
+  // foreach($playersFromSelectedTeam as $player)
+  // {
+  //   echo '<tr>'.
+  //   '<td><button type="submit" name="player_id" value="'.
+  //   $player->id.'">'.$player->name.'</button></td>'.
+  //   '<td>'.$player->position.'</td>';
+  //
+  //   // '<td><button type="submit" name="player_id" value="'.
+  //   // $player->id.'" id="'.$player->id.'">'.'Propose Trade</button></td>';
+  // }
+  ?>
+
+<!-- </table> -->
+
+  <ul>
+
+
+  <?php
   foreach($playersFromSelectedTeam as $player)
   {
-    echo '<tr>'.
-    '<td><button type="submit" name="player_id" value="'.
-    $player->id.'">'.$player->name.'</button></td>'.
-    '<td>'.$player->position.'</td>';
+    echo '<li><input type="checkbox" name="players[]"'.
+    'value="'.$player->id.'" id="'.$player->id.'">'.$player->name.'</li>';
 
-    // '<td><button type="submit" name="player_id" value="'.
-    // $player->id.'" id="'.$player->id.'">'.'Propose Trade</button></td>';
   }
+
+  echo '<br><button type="submit" name="propose" value="propose">'.'Propose Trade</button>';
 
 
    ?>
 
-</table>
+   </ul>
+
+
 
 </form>
 
