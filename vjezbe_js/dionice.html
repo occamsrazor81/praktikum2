@@ -1,0 +1,92 @@
+<html>
+<head>
+    <meta charset="utf8" />
+    <title>dionice</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <!-- <script src="linkovi.js"></script> -->
+    <style media="screen">
+      table, td { border: solid 2px;}
+    </style>
+</head>
+<body>
+
+<h1>Vrijednosti dionica</h1>
+<div id="tbl"></div>
+
+
+
+<script>
+
+$(document).ready(function()
+{
+
+  cekajPromjene(0);
+
+});
+
+
+function cekajPromjene( lastChange )
+{
+
+  var timestamp = 0;
+    // Recimo, koristimo $.ajax (možemo i $.get).
+    $.ajax(
+    {
+        url: "dionice.php",
+        type: "GET",
+        data:
+        {
+            // Timestamp = vrijeme kad smo zadnji put dobili poruke sa servera.
+            timestamp: timestamp,
+
+            // cache = svaki put šaljemo i trenutno vrijeme tako da browser ne pročita iz
+            //         cache-a odgovor servera, nego ga zaista ide kontaktirati.
+            // Da smo koristili post, ovo ne bi bilo potrebno. (POST se ne cache-ira.)
+            //cache: new Date().getTime()
+        },
+        dataType: "json",
+        success: function( data )
+        {
+            crtajTablicu(data);
+            console.log("success: " + data);
+            cekajPromjene(data.timestamp);
+        }//,
+        // error: function( xhr, status )
+        // {
+        //     console.log( "cekajPoruku :: error :: status = " + status );
+        //     // Nešto je pošlo po krivu...
+        //     // Ako se dogodio timeout, tj. server nije ništa poslao u zadnjih XY sekundi,
+        //     // pozovi ponovno cekajPoruku.
+        //     if( status === "timeout" )
+        //         cekajPoruku();
+        // }
+    } );
+}
+
+function crtajTablicu(data)
+{
+  //data.oznaka, data.ime, data.cijena
+
+  var tbl = $("<table>");
+
+  for(var i = 0; i < data.oznaka.length; ++i)
+  {
+    var tr = $("<tr>");
+
+    var td1 = $("<td>").html(data.oznaka[i]);
+    var td2 = $("<td>").html(data.ime[i]);
+    var td3 = $("<td>").html(data.cijena[i]);
+
+    tr.append(td1).append(td2).append(td3);
+    $(tbl).append(tr);
+  }
+
+
+  $("body").append(tbl);
+  
+}
+
+</script>
+
+</body>
+</html>

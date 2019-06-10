@@ -1,9 +1,8 @@
 
 $(document).ready(function()
 {
-  $('a.fileLink').on("mouseenter", getFileData);
   $('a.fileLink').on("mouseleave", deletePravokutnik);
-
+  $('a.fileLink').on("mouseenter", getFileData);
 
 });
 
