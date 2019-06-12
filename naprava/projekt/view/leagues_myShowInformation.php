@@ -2,10 +2,10 @@
 <?php require_once __DIR__.'/_header_ulogiranog.php'; ?>
 
 
-<ul>
+
 <form  action="index.php?rt=leagues/inviteSomeone" method="post">
 
-
+<ul>
 	<?php
 
 			 echo '<li>Admin: '.$leagueInformationList['admin'].'</li>'.
