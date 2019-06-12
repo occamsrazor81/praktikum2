@@ -2,8 +2,8 @@
 
 <script>
 
-if( localStorage.getItem( "draftGotov" ) === null )
-       localStorage.setItem( "draftGotov", "da" );
+// if( localStorage.getItem( "draftGotov" ) === null )
+//        localStorage.setItem( "draftGotov", "da" );
 
 </script>
 

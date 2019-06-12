@@ -15,3 +15,15 @@
 </head>
 <body>
 	<h1><?php echo $title; ?></h1>
+
+	<script type="text/javascript">
+
+	$(document).ready(function()
+	{
+	$("body").css('background-color', 'orange')
+	.css('font-family', 'Arial')
+	.css('text-align', 'justify');
+
+
+	});
+	</script>
