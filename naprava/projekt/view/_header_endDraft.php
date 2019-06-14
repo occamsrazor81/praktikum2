@@ -31,7 +31,7 @@
 	</form>
 
 	<nav>
-		<ul>
+		<ul class="map">
 			<li><a class="link" href="index.php?rt=leagues/myLeagues">Return to MyLeagues</a></li>
 			<li><a class="link" href="index.php?rt=teams/myTeam">My Team</a></li>
       <li><a class="link" href="index.php?rt=teams/myTeamStats">My Team Stats</a></li>
@@ -68,14 +68,14 @@
 	.css('font-weight', '600')
 	.css("position", "relative");
 
-	$("ul").css('list-style', 'none')
+	$("ul.map").css('list-style', 'none')
 					.css('margin', '0')
 					 .css("padding", '0')
 						.css('display', 'box')
-							 .css("overflow", "hidden")
-							 .css("border" , "1px solid #e7e7e7");
+						.css("overflow", "hidden")
+						.css("border" , "1px solid #e7e7e7");
 
-	$("li").css("float", "left").width("33.33%");
+	$("ul.map li").css("float", "left").width("33.33%");
 
 
 

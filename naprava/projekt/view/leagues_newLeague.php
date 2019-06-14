@@ -42,7 +42,7 @@ $(document).ready(function()
 
       $("option").css("text-align","left");
 
-     $("#cr").css("font-weight","700").css("background-color", "green").css("width","20%")
+     $("#cr").css("font-weight","700").css("background-color", "green").css("width","30%")
      .css("margin","5px");
 
      $("#cr").css('background', '#4CAF50')
@@ -51,7 +51,7 @@ $(document).ready(function()
    	.css('margin', '8px 0')
    	.css('border', 'none')
    	.css('cursor', 'pointer')
-   	.css('width', '10%')
+   	.css('width', '30%')
    	.css('position', 'relative')
    	.mouseenter(function(){
    	$(this).css('opacity', '0.7');

@@ -106,7 +106,7 @@ $(document).ready(function()
 						.css("border-bottom","1px solid")
 						.css("border-top","1px solid");
 
-						$(".acc") .css("width", "50%")
+						$(".acc") .css("width", "60%")
 						          .css('background-color', '#3CB371')
 						          .css("padding", '5px')
 						           .css("border","none")
@@ -120,7 +120,7 @@ $(document).ready(function()
 						            $(this).css("opacity", "1");
 						          });
 
-						$(".rej") .css("width", "50%")
+						$(".rej") .css("width", "60%")
 						          .css('background-color', '#FF6347')
 						          .css("padding", '5px')
 						          .css("border","none")
