@@ -4,6 +4,17 @@ session_start();
 require_once __DIR__.'/../model/fantasyservice.class.php';
 require_once __DIR__.'/../model/fantasyserviceteams.class.php';
 
+function sendJSONandExit( $message )
+{
+    // Kao izlaz skripte pošalji $message u JSON formatu i prekini izvođenje.
+    header( 'Content-type:application/json;charset=utf-8' );
+    echo json_encode( $message );
+    flush();
+    exit( 0 );
+}
+///////////////////////////////////////
+
+
 class TeamsController
 {
 
@@ -68,7 +79,7 @@ class TeamsController
 
     $players = $fst->getAllPlayers();
 
-    $user = $fst->getMinimalCurrentUser();
+    $user = $fst->getMinimalCurrentUser($_SESSION['id_league']);//
 
     $_SESSION['na_redu'] = $user->username;
 
@@ -89,21 +100,45 @@ class TeamsController
 
     $title = 'Draft';
 
+    ///---------------------ajax
+
+    if(!isset($_POST['player_id']))
+    {
+      sendJSONandExit(['error' => 'You need to send player_id']);
+    }
+
+    $id_player = $_POST['player_id'];
+    $id_league = $_SESSION['id_league'];
+    $user_na_redu = $fs->getUserByName($_SESSION['na_redu']);
+    $user_na_redu_id = $user_na_redu->id;
+    $team_name = $_SESSION['na_redu'];
+    $team_name .= "'s team";
 
 
+    ///---------------------ajax
 
     //zelimo ubaciti igrace u timove
     //user na redu je onaj na pocetku $_SESSION['redoslijed']
     //odabrani igrac se dobije iz gumba
 
-    $id_league = $_SESSION['id_league'];
-    $user_na_redu = $fs->getUserByName($_SESSION['na_redu']);
-    $user_na_redu_id = $user_na_redu->id;
-    $id_player = $_POST['player_id'];
-    $team_name = $_SESSION['na_redu'];
 
-    $team_name .= "'s team";
 
+///bez ajaxa
+
+
+    // $id_league = $_SESSION['id_league'];
+    // $user_na_redu = $fs->getUserByName($_SESSION['na_redu']);
+    // $user_na_redu_id = $user_na_redu->id;
+    // $id_player = $_POST['player_id'];
+    // $team_name = $_SESSION['na_redu'];
+    //
+    // $team_name .= "'s team";
+
+
+//kraj bez ajaxa
+
+
+  
     //brojimo jesmo li na kraju ( ako svaki user ima 7 igraca )
     $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $user_na_redu_id);
     if($brojSelektiranihIgraca === 2)
@@ -132,11 +167,11 @@ class TeamsController
     $starting = $draft->starting_number;
 
 
-    $user = $fst->getMinimalCurrentUser();
-    $fst->deleteMinimalCurrent();
-    $fst->updateOtherCurrents();
+    $user = $fst->getMinimalCurrentUser($_SESSION['id_league']);
+    $fst->deleteMinimalCurrent($_SESSION['id_league']);
+    $fst->updateOtherCurrents($_SESSION['id_league']);
 
-    $current = $fst->getMaxCurrentDraft();
+    $current = $fst->getMaxCurrentDraft($_SESSION['id_league']);
     $current++;
     $fst->pushBackCurrent($id_league, $user_na_redu->id, $current, $starting);
 
@@ -145,10 +180,30 @@ class TeamsController
 
 
   //  nastavi draft
-    header( 'Location: index.php?rt=teams/startDraft' );
+    //header( 'Location: index.php?rt=teams/startDraft' );
+
+
+
+
+//--------------- ajax - nastavak
+
+$msg = [];
+
+$new_na_redu = $fst->getMinimalCurrentUser($_SESSION['id_league']);
+
+$msg['player_id'] = $id_player;
+$msg['na_redu'] = $new_na_redu->username;
+
+sendJSONandExit($msg);
+
+//--------------- ajax - nastavak
 
 
   }
+
+
+
+
 
   ///////////////////////////////////////////////////////////
   ///POSLIJE DRAFTA

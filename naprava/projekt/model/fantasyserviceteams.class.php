@@ -127,7 +127,7 @@ class FantasyServiceTeams
   }
 
 
-  function getMinimalCurrentUser()
+  function getMinimalCurrentUser($id_league)
   {
     try
     {
@@ -136,9 +136,10 @@ class FantasyServiceTeams
       $st = $db->prepare('SELECT id, username, password_hash, email,
 				registration_sequence, has_registered, bank_account from project_users
         where id = (SELECT id_user from project_draft
-        order by current_number asc limit 1)');
+          where id_league = :id_league
+          order by current_number asc limit 1)');
 
-      $st->execute();
+      $st->execute(array('id_league' => $id_league));
 
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -157,16 +158,17 @@ class FantasyServiceTeams
 
 
 
-  function getMaxCurrentDraft()
+  function getMaxCurrentDraft($id_league)
   {
     try
     {
 
       $db = DB::getConnection();
       $st = $db->prepare('SELECT current_number from project_draft
+        where id_league = :id_league
         order by current_number desc limit 1');
 
-      $st->execute();
+      $st->execute(array('id_league' => $id_league));
 
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -303,31 +305,33 @@ class FantasyServiceTeams
   //   where id_league=:id_league and  id_player=:id_kicked '
 
 
-  function deleteMinimalCurrent()
+  function deleteMinimalCurrent($id_league)
   {
 
     try
     {
       $db = DB::getConnection();
       $st = $db->prepare('DELETE from project_draft
+        where id_league = :id_league
         order by current_number asc limit 1');
 
-      $st->execute();
+      $st->execute(array('id_league' => $id_league));
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
   }
 
 
-  function updateOtherCurrents()
+  function updateOtherCurrents($id_league)
   {
     try
     {
       $db = DB::getConnection();
       $st = $db->prepare('UPDATE project_draft
-        set current_number = current_number - 1');
+        set current_number = current_number - 1
+        where id_league = :id_league');
 
-      $st->execute();
+      $st->execute(array('id_league' => $id_league));
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
 
