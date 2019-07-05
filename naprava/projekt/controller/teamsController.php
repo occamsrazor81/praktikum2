@@ -3,6 +3,7 @@
 session_start();
 require_once __DIR__.'/../model/fantasyservice.class.php';
 require_once __DIR__.'/../model/fantasyserviceteams.class.php';
+require_once __DIR__.'/../model/fantasyserviceweekly.class.php';
 
 function sendJSONandExit( $message )
 {
@@ -77,7 +78,7 @@ class TeamsController
 
     $title = 'Draft';
 
-    if($fst->countSelectedPlayersByUserInLeague($_SESSION['id_league'], $_SESSION['id_user']) >= 2)
+    if($fst->countSelectedPlayersByUserInLeague($_SESSION['id_league'], $_SESSION['id_user']) >= 7)
     {
 
       require_once __DIR__.'/../view/teams_endDraft.php';
@@ -150,7 +151,7 @@ class TeamsController
 
     //brojimo jesmo li na kraju ( ako svaki user ima 7 igraca )
     $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $user_na_redu_id);
-    if($brojSelektiranihIgraca === 2)
+    if($brojSelektiranihIgraca === 7)
     {
       header( 'Location: index.php?rt=teams/endDraft' );
       exit();
@@ -381,7 +382,7 @@ sendJSONandExit($msg);
     $myCurrentPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
     //promijeniti u 7
-    if(count($myCurrentPlayers) == 2)
+    if(count($myCurrentPlayers) == 7)
     {
       $_SESSION['new_player_id'] = $_POST['player_id'];
       $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
@@ -1280,15 +1281,44 @@ sendJSONandExit($msg);
 
 //////
 
-  public function determineWeeklyMatchUp()
+
+  public function weekly()
   {
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
     $title = 'Weekly MatchUp';
 
+    require_once __DIR__.'/../view/weekly_matchup_Intro.php';
+
+  }
+
+
+  public function determineWeeklyMatchUp()
+  {
+    $fs = new FantasyService();
+    $fst = new FantasyServiceTeams();
+    $fsw = new FantasyServiceWeekly();
+
+    $title = 'Weekly MatchUp';
+
     $leagueUsers = $fst->getAllUsersInsideLeague($_SESSION['id_league']);
 
+    $row = $fsw->getDayAndWeekInLeague($_SESSION['id_league']);
+
+    $day = $row['day'];
+    $week = $row['week'];
+
+    $num = $fsw->getCount($_SESSION['id_league']);
+
+    echo $num;
+    //echo "day = ".$day.", week = ".$week;
+
+    if((int)$day !== 1 || (int)$week !== 1 || (int)$num !== 0)
+    {
+      header('Location: index.php?rt=teams/weekly');
+      exit();
+    }
 
     $usersIds = array();
     foreach($leagueUsers as $user)
@@ -1306,13 +1336,16 @@ sendJSONandExit($msg);
       $id_user1 = $usersIds[2*$i];
       $id_user2 = $usersIds[2*$i + 1];
 
+      //dodati barikade da se isti matchevi ne ponove
+
     //  echo 'id_user1 = '.$id_user1.', id_user2 = '.$id_user2.'<br>';
 
-      $fst->makeFirstWeeklyMatchUp($_SESSION['id_league'], $id_user1, $id_user2);
+      $fst->makeFirstWeeklyMatchUp($_SESSION['id_league'], $id_user1, $id_user2, $week);
     }
 
     //napraviti za popis svih matcheva + postavu za svaki dan(javascript)
-    //require_once __DIR__.'/../view/weekly_matchup_Intro.php';
+
+    require_once __DIR__.'/../view/weekly_matchup_Intro.php';
 
 
 

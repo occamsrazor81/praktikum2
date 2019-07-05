@@ -40,7 +40,7 @@
 			<li><a class="link" href="index.php?rt=teams/proposeTrade">Propose Trade</a></li>
 			<li><a class="link" href="index.php?rt=teams/tradeRequests">Trade Requests</a></li>
 			<li><a class="link" href="index.php?rt=teams/pendingTrades">Pending Trades</a></li>
-      <li><a class="link" href="index.php?rt=teams/determineWeeklyMatchUp">Determine Weekly Matchup</a></li>
+      <li><a class="link" href="index.php?rt=teams/weekly">Weekly Matchup</a></li>
 
 
 		</ul>
