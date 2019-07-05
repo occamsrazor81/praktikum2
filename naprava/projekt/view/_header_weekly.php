@@ -31,7 +31,13 @@
       <li><a class="link" href="index.php?rt=teams/determineWeeklyMatchUp">Determine Weekly Matchup</a></li>
 			<li><a class="link" href="index.php?rt=games/thisWeek">Game Score</a></li>
 			<li><a class="link" href="index.php?rt=games/changeLineup">Change LineUp</a></li>
+			<li><a class="link" href="index.php?rt=teams/startDraft">Return to Previous Page</a></li>
 
+			<?php
+			if(isset($_SESSION['id_user']) && isset($_SESSION['admin']) &&
+				 strcmp($_SESSION['id_user'], $_SESSION['admin']) == 0)
+			echo '<li><a class="link" href="index.php?rt=games/simulateDay">Simulate</a></li>';
+			?>
 
 		</ul>
 	</nav>

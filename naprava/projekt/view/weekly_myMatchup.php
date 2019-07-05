@@ -58,7 +58,7 @@
   }
 
 
-  else
+  else if(isset($weeklyStats2))
   {
 
     echo '<tr><td>'.$weeklyStats2->fgm1.' / '.$weeklyStats2->fga1.
@@ -69,41 +69,41 @@
     '</td><td>FG%</td><td>'.
     $weeklyStats2->fg_perc2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->ftm1.'/'.$weeklystats2->fta1.
+    echo '<tr><td>'.$weeklyStats2->ftm1.'/'.$weeklyStats2->fta1.
     '</td><td>FTM/A</td><td>'.
-    $weeklystats2->ftm2.' / '.$weeklystats2->fta2.'</td></tr>';
+    $weeklyStats2->ftm2.' / '.$weeklyStats2->fta2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->ft_perc1.
+    echo '<tr><td>'.$weeklyStats2->ft_perc1.
     '</td><td>FT%</td><td>'.
-    $weeklystats2->ft_perc2.'</td></tr>';
+    $weeklyStats2->ft_perc2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->tpm1.
+    echo '<tr><td>'.$weeklyStats2->tpm1.
     '</td><td>3PTM</td><td>'.
-    $weeklystats2->tpm2.'</td></tr>';
+    $weeklyStats2->tpm2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->pts1.
+    echo '<tr><td>'.$weeklyStats2->pts1.
     '</td><td>PTS</td><td>'.
-    $weeklystats2->pts2.'</td></tr>';
+    $weeklyStats2->pts2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->reb1.
+    echo '<tr><td>'.$weeklyStats2->reb1.
     '</td><td>REB</td><td>'.
-    $weeklystats2->reb2.'</td></tr>';
+    $weeklyStats2->reb2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->ast1.
+    echo '<tr><td>'.$weeklyStats2->ast1.
     '</td><td>AST</td><td>'.
-    $weeklystats2->ast2.'</td></tr>';
+    $weeklyStats2->ast2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->st1.
+    echo '<tr><td>'.$weeklyStats2->st1.
     '</td><td>ST</td><td>'.
-    $weeklystats2->st2.'</td></tr>';
+    $weeklyStats2->st2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->blk1.
+    echo '<tr><td>'.$weeklyStats2->blk1.
     '</td><td>BLK</td><td>'.
-    $weeklystats2->blk2.'</td></tr>';
+    $weeklyStats2->blk2.'</td></tr>';
 
-    echo '<tr><td>'.$weeklystats2->tov1.
+    echo '<tr><td>'.$weeklyStats2->tov1.
     '</td><td>TO</td><td>'.
-    $weeklystats2->tov2.'</td></tr>';
+    $weeklyStats2->tov2.'</td></tr>';
 
 
   }
@@ -111,6 +111,9 @@
    ?>
 
 </table>
+<br>
+
+
 
 <script>
 

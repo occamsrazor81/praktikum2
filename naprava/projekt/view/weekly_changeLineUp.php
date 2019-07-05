@@ -25,8 +25,8 @@
 
 
 </table>
-
-
+<br>
+<button type="submit" id="saveChanges">Save Changes</button>
 
 <script>
 
@@ -54,6 +54,22 @@ $(document).ready(function()
              .css("text-align", "center")
              .css("margin", "0").css("padding", "16px")
              .css("letter-spacing", "1.1");
+
+      $("#saveChanges").css("width", "100%")
+                .css('background-color', '#3CB371')
+                .css("padding", '20px').css("margin","6px")
+                 .css("border","none")
+                 .css("font-weight", "800")
+                 .css("letter-spacing", "1.1")
+                 .on("mouseenter", function(){
+                  $(this).css("opacity", "0.7");
+
+                 })
+                 .on("mouseleave", function(){
+                  $(this).css("opacity", "1");
+                });
+                
+//dodati spremanje postave negdje(valjda u bazu podataka)
 
 
       $("#bench td").css("border", "0.5px solid black")

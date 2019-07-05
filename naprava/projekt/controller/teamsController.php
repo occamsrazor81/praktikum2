@@ -1289,6 +1289,10 @@ sendJSONandExit($msg);
 
     $title = 'Weekly MatchUp';
 
+    $league = $fs->getLeagueById($_SESSION['id_league']);
+
+    $_SESSION['admin'] = $league->id_user;
+
     require_once __DIR__.'/../view/weekly_matchup_Intro.php';
 
   }
