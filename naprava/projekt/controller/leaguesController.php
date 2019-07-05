@@ -272,13 +272,16 @@ class LeaguesController
 
 
 		    $current = 1;
+//******************************************************************
+
+				$date = date("Y-m-d h:i:sa");
 
 		    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
 		    //startni broj isti kao current
 		    while(count($newLeagueOrder) > 0)
 		    {
 		      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
-		       $current, $current);
+					$date, $current, $current);
 		       $current++;
 
 		       $currentUser = array_shift($newLeagueOrder);
@@ -381,12 +384,14 @@ class LeaguesController
 
 			    $current = 1;
 
+					$date = date("Y-m-d h:i:sa");
+
 			    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
 			    //startni broj isti kao current
 			    while(count($newLeagueOrder) > 0)
 			    {
 			      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
-			       $current, $current);
+						$date, $current, $current);
 			       $current++;
 
 			       $currentUser = array_shift($newLeagueOrder);
@@ -477,12 +482,14 @@ class LeaguesController
 
 			    $current = 1;
 
+					$date = date("Y-m-d h:i:sa");
+
 			    //$_SESSION['na_redu'] = $newLeagueOrder[0]->username;
 			    //startni broj isti kao current
 			    while(count($newLeagueOrder) > 0)
 			    {
 			      $fst->initializeDraftOrder($id_league, $newLeagueOrder[0]->id,
-			       $current, $current);
+			       $date ,$current, $current);
 			       $current++;
 
 			       $currentUser = array_shift($newLeagueOrder);

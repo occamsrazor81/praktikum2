@@ -20,7 +20,7 @@
     '<td>'.$player->position.'</td>'.
 
     '<td><button class="pick" type="submit" name="player_id" value="'.
-    $player->id.'" id="'.$player->id.'">'.'Select</button></td>';
+    $player->id.'" id="'.$player->name.'">'.'Select</button></td>';
   }
 
   else
@@ -87,14 +87,59 @@ $(document).ready(function()
                     td.css("opacity","1");
                  });
 
-      $(".pick").on("click", pickPlayer);
+      $("body").on("click", ".pick", pickPlayer);
+
+
+
+
+
+//       $(".pick").click((function(event) {
+//
+//         console.log("1");
+//         $(this).prop('disabled', true);
+//         $(this).css("background-color", 'gold')
+//                      .css("width", "100%")
+//                      .css("color", "#800000")
+//                      .css("border","none")
+//                      .css("font-weight", "800").css("display", "table-cell")
+//                      .css("letter-spacing", "1.1")
+//
+//                      .on("mouseenter", function(){
+//                       $(this).css("opacity", "1");
+//
+//                         var td = $(this).parent();
+//                         td.css("opacity","1");
+//                      })
+//
+//                      .on("mouseleave", function(){
+//                       $(this).css("opacity", "1");
+//                         var td = $(this).parent();
+//                         td.css("opacity","1");
+//                         });
+//
+//         $(this).removeClass("pick").addClass("notpick");
+// }));
 
       $(".notpick").css("background-color", 'gold')
                    .css("width", "100%")
                    .css("color", "#800000")
                    .css("border","none")
                    .css("font-weight", "800").css("display", "table-cell")
-                   .css("letter-spacing", "1.1");
+                   .css("letter-spacing", "1.1")
+                   .on("mouseenter", function(){
+                   $(this).css("opacity", "1")
+                     .css("background-color", '#FFFAFA');
+
+                     var td = $(this).parent();
+                     td.css("opacity","1")
+                       .css("background-color", '#FFFAFA');
+                   })
+
+                   .on("mouseleave", function(){
+                   $(this).css("opacity", "1").css("background-color", '#FFFAFA');
+                     var td = $(this).parent();
+                     td.css("opacity","1").css("background-color", '#FFFAFA');
+                     });
 
        $("#nr").css("font-weight", "600")
     						.css('font-family', 'Droid serif')
@@ -103,10 +148,40 @@ $(document).ready(function()
     						.css("position", "relative");
 
 
+
+    var unavailable = [];
+
     function pickPlayer( e )
     {
+      //console.log("2");
       var btn = $(this);
       var player_id = btn.prop("value");
+
+
+      // $(this).prop('disabled', true);
+      // $(this).css("background-color", 'gold')
+      //              .css("width", "100%")
+      //              .css("color", "#800000")
+      //              .css("border","none")
+      //              .css("font-weight", "800").css("display", "table-cell")
+      //              .css("letter-spacing", "1.1")
+      //
+      //              .on("mouseenter", function(){
+      //               $(this).css("opacity", "1")
+      //                      .css("background-color", '#FFFAFA');
+      //
+      //                 var td = $(this).parent();
+      //                 td.css("opacity","1")
+      //                   .css("background-color", '#FFFAFA');
+      //              })
+      //
+      //              .on("mouseleave", function(){
+      //               $(this).css("opacity", "1").css("background-color", '#FFFAFA');
+      //                 var td = $(this).parent();
+      //                 td.css("opacity","1").css("background-color", '#FFFAFA');
+      //                 });
+      //
+      // $(this).removeClass("pick").addClass("notpick");
 
       $.ajax({
         url: "index.php?rt=teams/processDraft",
@@ -121,18 +196,106 @@ $(document).ready(function()
           var player_id = data.player_id;
           // console.log(data.player_id);
           // console.log(data.na_redu);
+          //console.log(data.error);
+          //console.log("uslo");
 
           $("#nr").html(data.na_redu);
-          location.reload();
+          //location.reload();
 
-        }
+          //unavailable.push(data.novi);
+          //console.log('#' + data.player_id);
+
+
+          btn.prop('disabled', true);
+          btn.css("background-color", 'gold')
+                      .css("width", "100%")
+                      .css("color", "#800000")
+                      .css("border","none")
+                      .css("font-weight", "800").css("display", "table-cell")
+                      .css("letter-spacing", "1.1")
+
+                      .on("mouseenter", function(){
+                      btn.css("opacity", "1")
+                        .css("background-color", '#FFFAFA');
+
+                        var td = btn.parent();
+                        td.css("opacity","1")
+                          .css("background-color", '#FFFAFA');
+                      })
+
+                      .on("mouseleave", function(){
+                      btn.css("opacity", "1").css("background-color", '#FFFAFA');
+                        var td = btn.parent();
+                        td.css("opacity","1").css("background-color", '#FFFAFA');
+                        });
+
+          //btn.removeClass("pick").addClass("notpick");
+
+
+
+        },
+        error: function(xhr,status)
+        {
+			       console.log("pickPlayer :: Status: " + status);
+
+		    }
+
 
       });
     }
 
 
+    //wait4Draft(0);
 
 });
+
+/////////////////////////////////////////////////
+//
+// function wait4Draft(lastAccess)
+// {
+//   console.log("wait your turn");
+//
+//   $.ajax(
+//     {
+//       url: "index.php?rt=teams/waitDraft",
+//       data:
+//       {
+//         lastAccess: lastAccess
+//       },
+//       method: "POST",
+//       dataType:"json",
+//       success: function( data )
+//       {
+//         console.log("uspjeh");
+//
+//         if( typeof(data.error) !== 'undefined')
+//         {
+//           console.log( "wait4draft :: success :: server javio grešku " + data.error );
+//         }
+//
+//         else
+//         {
+//
+//
+//           console.log(data.allSelected);
+//           //tablica iznad
+//           wait4Draft(data.lastAccess);
+//
+//         }
+//       },
+//       error: function(xhr, status)
+//       {
+//         console.log( "wait4Draft :: error :: status = " + status );
+//             // Nešto je pošlo po krivu...
+//             // Ako se dogodio timeout, tj. server nije ništa poslao u zadnjih XY sekundi,
+//             // pozovi ponovno cekajPoruku.
+//             if( status === "timeout" )
+//                 wait4Draft(lastAccess);
+//       }
+//
+//
+//     });
+// }
 
 
 </script>

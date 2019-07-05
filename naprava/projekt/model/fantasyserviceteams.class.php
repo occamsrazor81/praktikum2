@@ -236,7 +236,7 @@ class FantasyServiceTeams
 
   }
 
-
+//
   function checkPlayerAvailability($id_league, $id_player)
   {
 
@@ -951,6 +951,52 @@ class FantasyServiceTeams
 
     }
     catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
+
+  function getLastModified($id_league)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT MAX(lastModified) as maxLastModified
+      from project_draft where id_league=:id_league');
+
+      $st->execute(array('id_league' => $id_league));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $row = $st->fetch();
+
+    return $row['maxLastModified'];
+
+  }
+
+
+  function getAllSelectedPlayersInLeague($id_league)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_players where id in
+        (select id_player from project_teams
+          where id_league=:id_league) ');
+
+      $st->execute(array('id_league' => $id_league));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
 
   }
 

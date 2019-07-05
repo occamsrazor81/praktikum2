@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>z1</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+  </head>
+  <body>
+ Crte ne izgledaju najpreciznije(kad neka stranka ima mali broj glasova je gotovo nevidljivo).
+ <br>
+ Ali rezultati su postotak*100(ispisano u console);<hr>
+    Stranka: <input type="text" id="stranka"> je dobila
+     <input type="text" id="brojGlasova"> glasova.
+     <button  id="spremiGlasove" value="spremiGlasove">Spremi Glasove</button>
+
+     <div id="popis">
+     <canvas id="canvas" width="600" height="600" style="border: solid 1px;"></canvas>
+   </div>
+   <div id="koalicija">
+   Odaberi Stranke za koaliciju:
+
+
+    </div>
+    <br>
+     Ime koalicije: <input type="text" id="imeKoal">
+    <button  id="stvoriKoaliciju" value="stvoriKoaliciju">stvoriKoaliciju </button>
+    <br>
+
+
+<script>
+
+
+var sveStranke = [];
+
+function Stranka(ime, glasovi, koalicija) {
+  this.ime = ime;
+  this.glasovi = Number(glasovi);
+  this.koalicija = koalicija;
+}
+
+$(document).ready(function()
+{
+    $("body").on("click", "#spremiGlasove", obradi);
+    $("body").on("click", "#stvoriKoaliciju", stvori);
+
+
+});
+
+function obradi( event )
+{
+  $("#koalicija").html("");
+  $("#koalicija").html("Odaberi Stranke za koaliciju:<br>");
+
+  var ctx = $("#canvas").get(0).getContext("2d");
+  ctx.clearRect(0,0,600,600);
+
+  var btn = $(this).val();
+
+  if(btn === "spremiGlasove")
+  {
+    var stranka = $("#stranka").val();
+    var brojGlasova = $("#brojGlasova").val();
+
+
+    ctx.strokeStyle = "black";
+    //ctx.fillStyle = "yellow";
+    ctx.font = "30px Arial";
+
+    var nova = new Stranka(stranka, brojGlasova, "ne");
+
+    var provjera = 0;
+    for(var i = 0; i < sveStranke.length; ++i)
+    {
+      if(sveStranke[i].ime === stranka)
+        {provjera = 1;  var index = i; break;}
+
+    }
+
+    if(provjera == 0)
+    sveStranke.push(nova);
+
+    else sveStranke[i].glasovi += Number(brojGlasova);
+
+
+
+
+    var brojStranki = sveStranke.length;
+
+    var ukupnoGlasova = 0;
+    for(var i = 0; i < sveStranke.length; ++i)
+    ukupnoGlasova = ukupnoGlasova + Number(sveStranke[i].glasovi);
+
+    // console.log(ukupnoGlasova);
+
+    ctx.beginPath();
+    for(var i = 0; i < sveStranke.length; ++i)
+    {
+        var pomak = 30 + i*(600/brojStranki);
+        ctx.fillText(sveStranke[i].ime, 20 , pomak);
+
+        sveStranke[i].x = 20;
+        sveStranke[i].y = pomak;
+        //console.log("pomak = " + pomak);
+
+        var postotak = sveStranke[i].glasovi / ukupnoGlasova;
+
+        ctx.fillRect(120, pomak, 100*postotak, 20);
+
+        console.log("stranka = " + sveStranke[i].ime + ", postotak = " + postotak);
+
+    }
+
+    for(var i = 0; i < sveStranke.length; ++i)
+    {
+      if(sveStranke[i].koalicija === "ne")
+      {
+        var chk = $( '<input type="checkbox" name="chk[]" class="chk" id="' + i +
+        '" value="' + i + '" />' );
+        var name = sveStranke[i].ime;
+        $("#koalicija").append( chk )
+                      .append( name )
+                        .append( $( "<br />") );
+      }
+    }
+
+  }
+
+  else
+  {
+    console.log("neka greska");
+
+
+  }
+
+
+}
+
+function stvori(event)
+{
+
+      var imeKoal = $("#imeKoal").val();
+
+
+      // var koje = $('.chk:checked').val();
+      // console.log(koje);
+
+      var checkboxes = document.getElementsByName('chk[]');
+      var vals = [];
+      for (var i=0; i < checkboxes.length; i++)
+      {
+        if (checkboxes[i].checked)
+        {
+          vals[i] = checkboxes[i].value;
+        }
+      }
+
+      if(vals.length < 2) return; //manje od 2 stranke
+
+      var spoji = [];
+
+    //console.log(vals.length);
+
+     for(var j = 0; j < vals.length; ++j)
+     {
+       if(vals[j] != undefined)
+       {
+        sveStranke[vals[j]].koalicija = "da";
+
+        spoji.push(sveStranke[vals[j]]);
+        sveStranke.splice(vals[j],1);
+      }
+     }
+
+
+
+     for(var i = 0; i < sveStranke.length; ++i)
+     {
+       if(sveStranke[i].koalicija === "da")
+       sveStranke.splice(i,1);
+     }
+
+
+
+     var brojGlasovaNove = 0;
+     for(var i = 0; i < spoji.length; ++i)
+     brojGlasovaNove += Number(spoji[i].glasovi);
+
+     //console.log(brojGlasovaNove);
+
+     var nova = new Stranka(imeKoal, brojGlasovaNove, "napravljena");
+
+     nova.unutra = spoji;
+
+     sveStranke.push(nova);
+
+     console.log(sveStranke);
+
+
+     refresh();
+
+
+}
+
+function refresh()
+{
+  $("#koalicija").html("");
+  $("#koalicija").html("Odaberi Stranke za koaliciju:<br>");
+
+  var ctx = $("#canvas").get(0).getContext("2d");
+  ctx.clearRect(0,0,600,600);
+
+  var brojStranki = sveStranke.length;
+
+  var ukupnoGlasova = 0;
+  for(var i = 0; i < sveStranke.length; ++i)
+  ukupnoGlasova = ukupnoGlasova + Number(sveStranke[i].glasovi);
+
+  console.log(ukupnoGlasova);
+
+  ctx.beginPath();
+  for(var i = 0; i < sveStranke.length; ++i)
+  {
+      var pomak = 30 + i*(600/brojStranki);
+      ctx.fillText(sveStranke[i].ime, 20 , pomak);
+
+      sveStranke[i].x = 20;
+      sveStranke[i].y = pomak;
+
+      var postotak = sveStranke[i].glasovi / ukupnoGlasova;
+
+      ctx.fillRect(120, pomak, 100*postotak, 20);
+
+      console.log("stranka = " + sveStranke[i].ime + ", postotak = " + postotak);
+
+  }
+
+  for(var i = 0; i < sveStranke.length; ++i)
+  {
+    if(sveStranke[i].koalicija === "ne")
+    {
+      var chk = $( '<input type="checkbox" name="chk[]" class="chk" id="' + i +
+      '" value="' + i + '" />' );
+      var name = sveStranke[i].ime;
+      $("#koalicija").append( chk )
+                    .append( name )
+                      .append( $( "<br />") );
+    }
+  }
+
+
+}
+
+  $("body").on("click", "#canvas", prikaziInfoStranke);
+
+  function prikaziInfoStranke(event)
+  {
+    var ctx = this.getContext( "2d" );
+    var rect = this.getBoundingClientRect();
+
+    var x = event.clientX - rect.left, y = event.clientY - rect.top;
+
+
+
+  }
+
+</script>
+  </body>
+</html>

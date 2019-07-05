@@ -12,6 +12,15 @@ function sendJSONandExit( $message )
     flush();
     exit( 0 );
 }
+
+
+function sendErrorAndExit( $messageText )
+{
+	$message = [];
+	$message[ 'error' ] = $messageText;
+	sendJSONandExit( $message );
+}
+
 ///////////////////////////////////////
 
 
@@ -138,7 +147,7 @@ class TeamsController
 //kraj bez ajaxa
 
 
-  
+
     //brojimo jesmo li na kraju ( ako svaki user ima 7 igraca )
     $brojSelektiranihIgraca = $fst->countSelectedPlayersByUserInLeague($id_league, $user_na_redu_id);
     if($brojSelektiranihIgraca === 2)
@@ -162,7 +171,9 @@ class TeamsController
         exit();
       }
 
-  //  brisemo iz tablice najmanji current i stavljamo ga na kraj sa brojem max()+1
+
+
+  // //  brisemo iz tablice najmanji current i stavljamo ga na kraj sa brojem max()+1
     $draft = $fst->getDraftByUserIdInLeague($id_league, $user_na_redu_id);
     $starting = $draft->starting_number;
 
@@ -179,6 +190,8 @@ class TeamsController
 
 
 
+//
+
   //  nastavi draft
     //header( 'Location: index.php?rt=teams/startDraft' );
 
@@ -187,12 +200,17 @@ class TeamsController
 
 //--------------- ajax - nastavak
 
+// $targetedPlayer = $fst->getPlayerById($_POST['player_id']);
+// $all = $fst->getAllPlayers();
+
 $msg = [];
 
 $new_na_redu = $fst->getMinimalCurrentUser($_SESSION['id_league']);
 
 $msg['player_id'] = $id_player;
 $msg['na_redu'] = $new_na_redu->username;
+//$msg['novi'] = $targetedPlayer->name;
+
 
 sendJSONandExit($msg);
 
@@ -200,6 +218,39 @@ sendJSONandExit($msg);
 
 
   }
+
+/// funkcija cekanja da drugi igrac napravi potez
+  // public function waitDraft()
+  // {
+  //
+  //   if(!isset($_POST['lastAccess']))
+  //     sendErrorAndExit('lastAccess is not set.');
+  //
+  //   $lastAccess = (int)$_POST['lastAccess'];
+  //
+  //   while( 1 )
+  //   {
+  //     // zelimo samo za tu ligu
+  //     $fst = new FantasyServiceTeams();
+  //     $maxLastModified = $fst->getLastModified($_SESSION['id_league']);
+  //
+  //     $timestamp = strtotime($maxLastModified);
+  //
+  //     if($timestamp > $lastAccess)
+  //     {
+  //       $allSelected = $fst->getAllSelectedPlayersInLeague($_SESSION['id_league']);
+  //       $message['allSelected'] = $allSelected;
+  //       $message['lastAccess'] = $timestamp;
+  //
+  //       sendJSONandExit( $message );
+  //     }
+  //
+  //
+  //
+  //     usleep(5000000); //5sec
+  //   }
+  //
+  // }
 
 
 

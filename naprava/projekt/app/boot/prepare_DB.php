@@ -291,6 +291,7 @@ try
 		'id int NOT NULL PRIMARY KEY AUTO_INCREMENT,' .
 		'id_league int NOT NULL,' .
 		'id_user int NOT NULL,' .
+		'lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,'. //CURRENT TIMESTAMP
 		'current_number int NOT NULL,' .
 		'starting_number int NOT NULL)'
 	);
@@ -528,7 +529,7 @@ $st->execute(array('id_player' => 2, 'fgm' => 10, 'fga' => 18, 'fg_perc' => 55.6
 'ftm' => 9, 'fta' => 9, 'ft_perc' => 100.0, '3ptm' => 6, 'pts' => 35, 'reb' => 3,
 'ast' => 9, 'st' => 2, 'blk' => 0, 'tov' => 2, 'week' => 3, 'day' => 4));
 
-$st->execute(array('id_player' => 2, 'fgm' => 7, 'fga' => 23, 'fg_perc' => 30.4
+$st->execute(array('id_player' => 2, 'fgm' => 7, 'fga' => 23, 'fg_perc' => 30.4,
 'ftm' => 15, 'fta' => 18, 'ft_perc' => 83.3, '3ptm' => 6, 'pts' => 35, 'reb' => 6,
 'ast' => 12, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 5));
 
@@ -1129,10 +1130,5 @@ $st->execute(array('id_player' => 16, 'fgm' => 8, 'fga' => 12, 'fg_perc' => 66.7
 }
 catch( PDOException $e ) { exit( "PDO error [insert project_player_stats]: " . $e->getMessage() ); }
 echo "Ubacio u tablicu project_player_stats.<br />";
-
-?>
-
-
-
 
 ?>

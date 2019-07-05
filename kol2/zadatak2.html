@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf8">
+	<title>vJESALICA</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+</head>
+<body>
+
+<button id="start" >Start</button>
+<div id="unos">
+<input type="text" id="slovo" >
+<button id="probaj" >Probaj</button>
+</div>
+
+<div id="rijec">
+
+</div>
+<div id="pokusaji">
+
+</div>
+
+	<script>
+
+
+var idx = null;
+var duljina = null;
+var brojPokusaja = 0;
+var brojNadenih = 0;
+var trazena = '';
+
+$( document ).ready( function()
+{
+	$( "body" ).on( "click","#start", zapocni );
+} );
+
+
+
+function zapocni( event )
+{
+
+  brojPokusaja = 0;
+	$.ajax(
+	{
+		url: "zadatak2.php",
+		data:
+		{
+			koliko:0
+		},
+		dataType: "json",
+		success: function( data )
+		{
+			idx = data.idx;
+      duljina = data.duljina;
+
+      console.log(idx,duljina);
+      $("#start").prop("disabled","disabled");
+
+
+      for(var i = 0; i < duljina; ++i)
+      trazena += '-';
+
+      $("#rijec").html(trazena);
+		}
+	} );
+}
+
+$( "body" ).on( "click","#probaj", probaj );
+
+
+function probaj( event )
+{
+  var slovo = $("#slovo").val();
+  $("#pokusaji").html("");
+
+	$.ajax(
+	{
+		url: "zadatak2.php",
+		data:
+		{
+			slovo:slovo,
+      idx:idx
+		},
+		dataType: "json",
+		success: function( data )
+		{
+      $("#slovo").val("");
+      console.log(data.positions);
+
+      brojNadenih += data.positions.length;
+      //console.log(brojNadenih);
+      brojPokusaja++;
+
+
+      for(var i = 0; i < data.positions.length; ++i)
+      {
+
+        trazena = setCharAt(trazena,data.positions[i],slovo)
+      }
+
+      console.log(trazena);
+
+      $("#rijec").html(trazena);
+      $("#pokusaji").html("Broj pokusaja: " + brojPokusaja + "<br>");
+
+      if(brojNadenih === duljina)
+      alert("Pobjedili ste");
+
+
+
+		}
+	} );
+}
+
+
+function setCharAt(str,index,chr)
+{
+	if(index > str.length-1) return str;
+	return str.substr(0,index) + chr + str.substr(index+1);
+}
+
+
+
+	</script>
+</body>
+</html>

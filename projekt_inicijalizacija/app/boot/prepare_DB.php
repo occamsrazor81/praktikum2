@@ -202,8 +202,8 @@ try
 		'CREATE TABLE IF NOT EXISTS project_weekly_matchups (' .
 		'id int NOT NULL PRIMARY KEY AUTO_INCREMENT,' .
 		'id_league int NOT NULL,' .
-		'id_team1 int NOT NULL,' .
-		'id_team2 int NOT NULL,'.
+		'id_user1 int NOT NULL,' .
+		'id_user2 int NOT NULL,'.
 		'FGM1 int,' .
 		'FGA1 int,' .
 		'FG_PERC1 double,' .
@@ -272,7 +272,8 @@ try
 		'id_player12 int,' .
 		'id_player21 int,' .
 		'id_player22 int NULL,' .
-		'id_player2 int NOT NULL)'
+		'id_player2 int NOT NULL,'.
+		'trade_status varchar(30) NOT NULL)'
 	);
 
 	$st->execute();
@@ -282,7 +283,7 @@ catch( PDOException $e ) { exit( "PDO error [create project_trades]: " . $e->get
 echo "Napravio tablicu project_trades.<br />";
 
 
-
+//project_draft
 try
 {
 	$st = $db->prepare(
@@ -290,6 +291,7 @@ try
 		'id int NOT NULL PRIMARY KEY AUTO_INCREMENT,' .
 		'id_league int NOT NULL,' .
 		'id_user int NOT NULL,' .
+		'lastModified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,'. //CURRENT TIMESTAMP
 		'current_number int NOT NULL,' .
 		'starting_number int NOT NULL)'
 	);
@@ -405,28 +407,728 @@ echo "Ubacio u tablicu project_players.<br />";
 //
 
 // //ubaci statse
+// try
+// {
+// 	$st = $db->prepare('INSERT into project_player_stats(id_player, FGM, FGA, FG_PERC,
+// 	FTM, FTA, FT_PERC, 3PTM, PTS, REB, AST, ST, BLK, TOV, week, day)
+// 	values (:id_player,:fgm, :fga, :fg_perc, :ftm, :fta, :ft_perc, :3ptm,
+// 		:pts, :reb, :ast, :st, :blk, :tov, :week, :day)');
+//
+// 	$st->execute(array('id_player' => 1, 'fgm' => 7, 'fga' => 20, 'fg_perc' => 35.0,
+// 'ftm' => 6, 'fta' => 7, 'ft_perc' => 85.7, '3ptm' => 0, 'pts' => 20, 'reb' => 8,
+// 'ast' => 1, 'st' => 0, 'blk' => 2, 'tov' => 5, 'week' => 1, 'day' => 2));
+//
+//
+//
+//
+//
+// }
+// catch( PDOException $e ) { exit( "PDO error [insert project_player_stats]: " . $e->getMessage() ); }
+//
+// echo "Ubacio u tablicu project_player_stats.<br />";
+//
+
+
+
 try
 {
-	$st = $db->prepare('INSERT into project_player_stats(id_player, FGM, FGA, FG_PERC,
-	FTM, FTA, FT_PERC, 3PTM, PTS, REB, AST, ST, BLK, TOV, week, day)
-	values (:id_player,:fgm, :fga, :fg_perc, :ftm, :fta, :ft_perc, :3ptm,
-		:pts, :reb, :ast, :st, :blk, :tov, :week, :day)');
+ $st = $db->prepare('INSERT into project_player_stats(id_player, FGM, FGA, FG_PERC,
+ FTM, FTA, FT_PERC, 3PTM, PTS, REB, AST, ST, BLK, TOV, week, day)
+ values (:id_player,:fgm, :fga, :fg_perc, :ftm, :fta, :ft_perc, :3ptm,
+	 :pts, :reb, :ast, :st, :blk, :tov, :week, :day)');
 
-	$st->execute(array('id_player' => 1, 'fgm' => 7, 'fga' => 20, 'fg_perc' => 35.0,
+
+///Davis
+$st->execute(array('id_player' => 1, 'fgm' => 7, 'fga' => 20, 'fg_perc' => 35.0,
 'ftm' => 6, 'fta' => 7, 'ft_perc' => 85.7, '3ptm' => 0, 'pts' => 20, 'reb' => 8,
-'ast' => 1, 'st' => 0, 'blk' => 2, 'tov' => 5, 'week' => 1, 'day' => 2));
+'ast' => 1, 'st' => 0, 'blk' => 1, 'tov' => 5, 'week' => 1, 'day' => 2));
 
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 13, 'fga' => 24, 'fg_perc' => 54.2,
+'ftm' => 4, 'fta' => 7, 'ft_perc' => 57.1, '3ptm' => 2, 'pts' => 32, 'reb' => 15,
+'ast' => 7, 'st' => 1, 'blk' => 4, 'tov' => 4, 'week' => 1, 'day' => 4));
+
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 7, 'fga' => 18, 'fg_perc' => 38.9,
+'ftm' => 12, 'fta' => 12, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 26, 'reb' => 13,
+'ast' => 6, 'st' => 1, 'blk' => 2, 'tov' => 1, 'week' => 1, 'day' => 7));
+
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 11, 'fga' => 20, 'fg_perc' => 55.0,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 25, 'reb' => 20,
+'ast' => 6, 'st' => 0, 'blk' => 2, 'tov' => 4, 'week' => 2, 'day' => 2));
+
+
+
+	 //+
+$st->execute(array('id_player' => 1, 'fgm' => 9, 'fga' => 25, 'fg_perc' => 36.0,
+'ftm' => 9, 'fta' => 10, 'ft_perc' => 90.0, '3ptm' => 2, 'pts' => 29, 'reb' => 11,
+'ast' => 2, 'st' => 2, 'blk' => 4, 'tov' => 0, 'week' => 2, 'day' => 4));
+
+
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 16, 'fga' => 25, 'fg_perc' => 64.0,
+'ftm' => 10, 'fta' => 15, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 43, 'reb' => 17,
+'ast' => 5, 'st' => 1, 'blk' => 1, 'tov' => 2, 'week' => 2, 'day' => 6));
+
+
+
+
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 10, 'fga' => 20, 'fg_perc' => 50.0,
+'ftm' => 20, 'fta' => 21, 'ft_perc' => 95.2, '3ptm' => 0, 'pts' => 40, 'reb' => 8,
+'ast' => 8, 'st' => 0, 'blk' => 1, 'tov' => 0, 'week' => 2, 'day' => 7));
+
+			 //+
+$st->execute(array('id_player' => 1, 'fgm' => 13, 'fga' => 22, 'fg_perc' => 59.1,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 29, 'reb' => 9,
+'ast' => 4, 'st' => 2, 'blk' => 2, 'tov' => 2, 'week' => 3, 'day' => 2));
+
+			 //+
+$st->execute(array('id_player' => 1, 'fgm' => 4, 'fga' => 13, 'fg_perc' => 30.8,
+'ftm' => 4, 'fta' => 7, 'ft_perc' => 57.1, '3ptm' => 0, 'pts' => 12, 'reb' => 16,
+'ast' => 6, 'st' => 5, 'blk' => 5, 'tov' => 2, 'week' => 3, 'day' => 4));
+
+//+
+$st->execute(array('id_player' => 1, 'fgm' => 12, 'fga' => 19, 'fg_perc' => 63.2,
+'ftm' => 8, 'fta' => 10, 'ft_perc' => 80.0, '3ptm' => 1, 'pts' => 33, 'reb' => 11,
+'ast' => 4, 'st' => 0, 'blk' => 0, 'tov' => 0, 'week' => 3, 'day' => 6));
+
+
+
+////////////Harden
+$st->execute(array('id_player' => 2, 'fgm' => 8, 'fga' => 17, 'fg_perc' => 47.1,
+'ftm' => 10, 'fta' => 13, 'ft_perc' => 76.9, '3ptm' => 3, 'pts' => 29, 'reb' => 4,
+'ast' => 8, 'st' => 2, 'blk' => 1, 'tov' => 5, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 2, 'fgm' => 5, 'fga' => 16, 'fg_perc' => 31.3,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 15, 'reb' => 6,
+'ast' => 2, 'st' => 0, 'blk' => 0, 'tov' => 7, 'week' => 1, 'day' => 5));
+
+$st->execute(array('id_player' => 2, 'fgm' => 11, 'fga' => 22, 'fg_perc' => 50.0,
+'ftm' => 7, 'fta' => 7, 'ft_perc' => 100.0, '3ptm' => 6, 'pts' => 35, 'reb' => 4,
+'ast' => 8, 'st' => 1, 'blk' => 1, 'tov' => 6, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 2, 'fgm' => 10, 'fga' => 21, 'fg_perc' => 47.6,
+'ftm' => 5, 'fta' => 7, 'ft_perc' => 71.4, '3ptm' => 4, 'pts' => 29, 'reb' => 1,
+'ast' => 4, 'st' => 1, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 3));
+
+$st->execute(array('id_player' => 2, 'fgm' => 14, 'fga' => 26, 'fg_perc' => 53.8,
+'ftm' => 18, 'fta' => 19, 'ft_perc' => 94.7, '3ptm' => 4, 'pts' => 50, 'reb' => 10,
+'ast' => 11, 'st' => 2, 'blk' => 0, 'tov' => 6, 'week' => 2, 'day' => 5));
+
+$st->execute(array('id_player' => 2, 'fgm' => 9, 'fga' => 14, 'fg_perc' => 64.3,
+'ftm' => 11, 'fta' => 13, 'ft_perc' => 84.6, '3ptm' => 3, 'pts' => 32, 'reb' => 12,
+'ast' => 10, 'st' => 2, 'blk' => 0, 'tov' => 5, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 2, 'fgm' => 14, 'fga' => 31, 'fg_perc' => 45.2,
+'ftm' => 15, 'fta' => 16, 'ft_perc' => 93.8, '3ptm' => 4, 'pts' => 47, 'reb' => 6,
+'ast' => 5, 'st' => 5, 'blk' => 0, 'tov' => 5, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 2, 'fgm' => 10, 'fga' => 18, 'fg_perc' => 55.6,
+'ftm' => 9, 'fta' => 9, 'ft_perc' => 100.0, '3ptm' => 6, 'pts' => 35, 'reb' => 3,
+'ast' => 9, 'st' => 2, 'blk' => 0, 'tov' => 2, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 2, 'fgm' => 7, 'fga' => 23, 'fg_perc' => 30.4,
+'ftm' => 15, 'fta' => 18, 'ft_perc' => 83.3, '3ptm' => 6, 'pts' => 35, 'reb' => 6,
+'ast' => 12, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 5));
+
+$st->execute(array('id_player' => 2, 'fgm' => 12, 'fga' => 34, 'fg_perc' => 35.3,
+'ftm' => 8, 'fta' => 9, 'ft_perc' => 88.9, '3ptm' => 7, 'pts' => 39, 'reb' => 4,
+'ast' => 10, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 7));
+
+
+
+
+//George
+$st->execute(array('id_player' => 3, 'fgm' => 8, 'fga' => 10, 'fg_perc' => 80.0,
+'ftm' => 10, 'fta' => 12, 'ft_perc' => 83.3, '3ptm' => 5, 'pts' => 31, 'reb' => 3,
+'ast' => 3, 'st' => 4, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 3, 'fgm' => 9, 'fga' => 17, 'fg_perc' => 52.9,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 25, 'reb' => 11,
+'ast' => 5, 'st' => 2, 'blk' => 1, 'tov' => 4, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 3, 'fgm' => 12, 'fga' => 24, 'fg_perc' => 50.0,
+'ftm' => 5, 'fta' => 6, 'ft_perc' => 83.3, '3ptm' => 3, 'pts' => 32, 'reb' => 5,
+'ast' => 2, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 3, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 6, 'fta' => 8, 'ft_perc' => 75.0, '3ptm' => 5, 'pts' => 33, 'reb' => 7,
+'ast' => 6, 'st' => 1, 'blk' => 1, 'tov' => 0, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 3, 'fgm' => 8, 'fga' => 19, 'fg_perc' => 42.1,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 24, 'reb' => 8,
+'ast' => 4, 'st' => 3, 'blk' => 0, 'tov' => 3, 'week' => 2, 'day' => 2));
+
+
+$st->execute(array('id_player' => 3, 'fgm' => 15, 'fga' => 27, 'fg_perc' => 55.6,
+'ftm' => 9, 'fta' => 10, 'ft_perc' => 90.0, '3ptm' => 4, 'pts' => 43, 'reb' => 12,
+'ast' => 7, 'st' => 0, 'blk' => 0, 'tov' => 5, 'week' => 2, 'day' => 4));
+
+
+$st->execute(array('id_player' => 3, 'fgm' => 15, 'fga' => 25, 'fg_perc' => 60.0,
+'ftm' => 8, 'fta' => 10, 'ft_perc' => 80.0, '3ptm' => 5, 'pts' => 43, 'reb' => 14,
+'ast' => 6, 'st' => 5, 'blk' => 1, 'tov' => 3, 'week' => 2, 'day' => 7));
+
+
+$st->execute(array('id_player' => 3, 'fgm' => 11, 'fga' => 24, 'fg_perc' => 45.8,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 31, 'reb' => 12,
+'ast' => 3, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 1));
+
+
+$st->execute(array('id_player' => 3, 'fgm' => 11, 'fga' => 24, 'fg_perc' => 45.8,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 31, 'reb' => 12,
+'ast' => 3, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 1));
+
+
+
+$st->execute(array('id_player' => 3, 'fgm' => 10, 'fga' => 25, 'fg_perc' => 40.0,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 28, 'reb' => 14,
+'ast' => 2, 'st' => 3, 'blk' => 0, 'tov' => 4, 'week' => 3, 'day' => 2));
+
+
+
+///Curry
+
+$st->execute(array('id_player' => 4, 'fgm' => 10, 'fga' => 17, 'fg_perc' => 58.8,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 6, 'pts' => 30, 'reb' => 3,
+'ast' => 2, 'st' => 1, 'blk' => 1, 'tov' => 3, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 4, 'fgm' => 11, 'fga' => 20, 'fg_perc' => 55.0,
+'ftm' => 11, 'fta' => 12, 'ft_perc' => 91.7, '3ptm' => 9, 'pts' => 42, 'reb' => 9,
+'ast' => 7, 'st' => 1, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 4, 'fgm' => 7, 'fga' => 17, 'fg_perc' => 41.2,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 20, 'reb' => 8,
+'ast' => 4, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 4, 'fgm' => 12, 'fga' => 23, 'fg_perc' => 52.2,
+'ftm' => 7, 'fta' => 7, 'ft_perc' => 100.0, '3ptm' => 7, 'pts' => 38, 'reb' => 7,
+'ast' => 6, 'st' => 2, 'blk' => 1, 'tov' => 2, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 4, 'fgm' => 3, 'fga' => 12, 'fg_perc' => 25.0,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 10, 'reb' => 3,
+'ast' => 3, 'st' => 1, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 4, 'fgm' => 11, 'fga' => 23, 'fg_perc' => 47.8,
+'ftm' => 8, 'fta' => 8, 'ft_perc' => 100.0, '3ptm' => 5, 'pts' => 35, 'reb' => 7,
+'ast' => 6, 'st' => 3, 'blk' => 0, 'tov' => 1, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 4, 'fgm' => 6, 'fga' => 16, 'fg_perc' => 37.5,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 20, 'reb' => 7,
+'ast' => 1, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 4, 'fgm' => 12, 'fga' => 21, 'fg_perc' => 57.1,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 5, 'pts' => 32, 'reb' => 3,
+'ast' => 3, 'st' => 3, 'blk' => 1, 'tov' => 4, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 4, 'fgm' => 7, 'fga' => 22, 'fg_perc' => 31.8,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 6, 'pts' => 22, 'reb' => 5,
+'ast' => 5, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 7));
+
+
+//Antetokounmpo
+
+$st->execute(array('id_player' => 5, 'fgm' => 6, 'fga' => 12, 'fg_perc' => 50.0,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 0, 'pts' => 15, 'reb' => 7,
+'ast' => 5, 'st' => 1, 'blk' => 1, 'tov' => 5, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 5, 'fgm' => 8, 'fga' => 13, 'fg_perc' => 61.5,
+'ftm' => 6, 'fta' => 9, 'ft_perc' => 66.7, '3ptm' => 0, 'pts' => 22, 'reb' => 15,
+'ast' => 5, 'st' => 2, 'blk' => 2, 'tov' => 4, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 5, 'fgm' => 8, 'fga' => 15, 'fg_perc' => 53.3,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 19, 'reb' => 19,
+'ast' => 6, 'st' => 0, 'blk' => 1, 'tov' => 2, 'week' => 2, 'day' => 1));
+
+$st->execute(array('id_player' => 5, 'fgm' => 4, 'fga' => 6, 'fg_perc' => 66.7,
+'ftm' => 3, 'fta' => 6, 'ft_perc' => 50.0, '3ptm' => 1, 'pts' => 12, 'reb' => 10,
+'ast' => 7, 'st' => 0, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 5, 'fgm' => 14, 'fga' => 19, 'fg_perc' => 73.7,
+'ftm' => 16, 'fta' => 21, 'ft_perc' => 76.2, '3ptm' => 0, 'pts' => 44, 'reb' => 14,
+'ast' => 8, 'st' => 0, 'blk' => 2, 'tov' => 4, 'week' => 2, 'day' => 6));
+
+
+$st->execute(array('id_player' => 5, 'fgm' => 15, 'fga' => 21, 'fg_perc' => 71.4,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 32, 'reb' => 12,
+'ast' => 5, 'st' => 0, 'blk' => 2, 'tov' => 6, 'week' => 3, 'day' => 2));
+
+
+$st->execute(array('id_player' => 5, 'fgm' => 8, 'fga' => 13, 'fg_perc' => 61.5,
+'ftm' => 9, 'fta' => 13, 'ft_perc' => 69.2, '3ptm' => 0, 'pts' => 25, 'reb' => 8,
+'ast' => 8, 'st' => 2, 'blk' => 1, 'tov' => 6, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 5, 'fgm' => 8, 'fga' => 13, 'fg_perc' => 61.5,
+'ftm' => 13, 'fta' => 17, 'ft_perc' => 76.5, '3ptm' => 1, 'pts' => 30, 'reb' => 8,
+'ast' => 5, 'st' => 0, 'blk' => 3, 'tov' => 4, 'week' => 3, 'day' => 6));
+
+$st->execute(array('id_player' => 5, 'fgm' => 3, 'fga' => 12, 'fg_perc' => 25.0,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 0, 'pts' => 9, 'reb' => 13,
+'ast' => 3, 'st' => 0, 'blk' => 2, 'tov' => 4, 'week' => 3, 'day' => 7));
+
+
+
+////Towns
+$st->execute(array('id_player' => 6, 'fgm' => 10, 'fga' => 24, 'fg_perc' => 41.7,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 1, 'pts' => 24, 'reb' => 11,
+'ast' => 3, 'st' => 3, 'blk' => 1, 'tov' => 3, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 6, 'fgm' => 13, 'fga' => 20, 'fg_perc' => 65.0,
+'ftm' => 5, 'fta' => 7, 'ft_perc' => 71.4, '3ptm' => 4, 'pts' => 35, 'reb' => 12,
+'ast' => 3, 'st' => 2, 'blk' => 6, 'tov' => 2, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 6, 'fgm' => 6, 'fga' => 16, 'fg_perc' => 37.5,
+'ftm' => 5, 'fta' => 6, 'ft_perc' => 83.3, '3ptm' => 2, 'pts' => 19, 'reb' => 10,
+'ast' => 2, 'st' => 1, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 6, 'fgm' => 11, 'fga' => 15, 'fg_perc' => 73.3,
+'ftm' => 8, 'fta' => 12, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 31, 'reb' => 11,
+'ast' => 4, 'st' => 0, 'blk' => 1, 'tov' => 4, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 6, 'fgm' => 8, 'fga' => 15, 'fg_perc' => 53.3,
+'ftm' => 1, 'fta' => 1, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 19, 'reb' => 11,
+'ast' => 4, 'st' => 0, 'blk' => 3, 'tov' => 2, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 6, 'fgm' => 11, 'fga' => 26, 'fg_perc' => 42.3,
+'ftm' => 5, 'fta' => 6, 'ft_perc' => 83.3, '3ptm' => 1, 'pts' => 28, 'reb' => 12,
+'ast' => 4, 'st' => 2, 'blk' => 2, 'tov' => 0, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 6, 'fgm' => 5, 'fga' => 11, 'fg_perc' => 45.5,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 14, 'reb' => 14,
+'ast' => 3, 'st' => 0, 'blk' => 3, 'tov' => 1, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 6, 'fgm' => 6, 'fga' => 15, 'fg_perc' => 40.0,
+'ftm' => 4, 'fta' => 6, 'ft_perc' => 66.7, '3ptm' => 0, 'pts' => 16, 'reb' => 8,
+'ast' => 2, 'st' => 1, 'blk' => 3, 'tov' => 2, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 6, 'fgm' => 4, 'fga' => 15, 'fg_perc' => 26.7,
+'ftm' => 4, 'fta' => 5, 'ft_perc' => 80.0, '3ptm' => 1, 'pts' => 13, 'reb' => 6,
+'ast' => 4, 'st' => 1, 'blk' => 0, 'tov' => 1, 'week' => 3, 'day' => 6));
+
+
+
+///Leonard
+$st->execute(array('id_player' => 7, 'fgm' => 10, 'fga' => 22, 'fg_perc' => 45.5,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 26, 'reb' => 6,
+'ast' => 1, 'st' => 1, 'blk' => 0, 'tov' => 1, 'week' => 1, 'day' => 3));
+
+$st->execute(array('id_player' => 7, 'fgm' => 14, 'fga' => 20, 'fg_perc' => 70.0,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 31, 'reb' => 1,
+'ast' => 2, 'st' => 2, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 7, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 0, 'fta' => 3, 'ft_perc' => 0.0, '3ptm' => 3, 'pts' => 25, 'reb' => 9,
+'ast' => 2, 'st' => 1, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 7, 'fgm' => 8, 'fga' => 20, 'fg_perc' => 40.0,
+'ftm' => 4, 'fta' => 6, 'ft_perc' => 66.7, '3ptm' => 5, 'pts' => 25, 'reb' => 8,
+'ast' => 4, 'st' => 2, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 5));
+
+$st->execute(array('id_player' => 7, 'fgm' => 11, 'fga' => 21, 'fg_perc' => 52.4,
+'ftm' => 6, 'fta' => 8, 'ft_perc' => 75.0, '3ptm' => 5, 'pts' => 33, 'reb' => 10,
+'ast' => 2, 'st' => 1, 'blk' => 1, 'tov' => 1, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 7, 'fgm' => 8, 'fga' => 19, 'fg_perc' => 42.1,
+'ftm' => 4, 'fta' => 5, 'ft_perc' => 80.0, '3ptm' => 2, 'pts' => 22, 'reb' => 10,
+'ast' => 6, 'st' => 2, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 7, 'fgm' => 12, 'fga' => 23, 'fg_perc' => 52.2,
+'ftm' => 9, 'fta' => 10, 'ft_perc' => 90.0, '3ptm' => 4, 'pts' => 37, 'reb' => 6,
+'ast' => 4, 'st' => 2, 'blk' => 0, 'tov' => 8, 'week' => 3, 'day' => 6));
+
+$st->execute(array('id_player' => 7, 'fgm' => 10, 'fga' => 18, 'fg_perc' => 55.6,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 28, 'reb' => 9,
+'ast' => 3, 'st' => 0, 'blk' => 2, 'tov' => 2, 'week' => 3, 'day' => 7));
+
+
+
+///Durant
+$st->execute(array('id_player' => 8, 'fgm' => 10, 'fga' => 13, 'fg_perc' => 76.9,
+'ftm' => 7, 'fta' => 8, 'ft_perc' => 87.5, '3ptm' => 1, 'pts' => 28, 'reb' => 5,
+'ast' => 8, 'st' => 2, 'blk' => 0, 'tov' => 5, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 8, 'fgm' => 9, 'fga' => 16, 'fg_perc' => 56.3,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 4, 'pts' => 25, 'reb' => 10,
+'ast' => 9, 'st' => 1, 'blk' => 2, 'tov' => 4, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 8, 'fgm' => 3, 'fga' => 14, 'fg_perc' => 21.4,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 11, 'reb' => 8,
+'ast' => 6, 'st' => 1, 'blk' => 0, 'tov' => 7, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 8, 'fgm' => 7, 'fga' => 15, 'fg_perc' => 46.7,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 22, 'reb' => 5,
+'ast' => 3, 'st' => 3, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 8, 'fgm' => 13, 'fga' => 22, 'fg_perc' => 59.1,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 30, 'reb' => 7,
+'ast' => 5, 'st' => 0, 'blk' => 0, 'tov' => 5, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 8, 'fgm' => 9, 'fga' => 20, 'fg_perc' => 45.0,
+'ftm' => 11, 'fta' => 12, 'ft_perc' => 91.7, '3ptm' => 4, 'pts' => 33, 'reb' => 8,
+'ast' => 8, 'st' => 0, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 8, 'fgm' => 7, 'fga' => 15, 'fg_perc' => 46.7,
+'ftm' => 8, 'fta' => 8, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 23, 'reb' => 3,
+'ast' => 5, 'st' => 0, 'blk' => 2, 'tov' => 2, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 8, 'fgm' => 10, 'fga' => 23, 'fg_perc' => 43.5,
+'ftm' => 8, 'fta' => 9, 'ft_perc' => 88.9, '3ptm' => 2, 'pts' => 30, 'reb' => 7,
+'ast' => 2, 'st' => 0, 'blk' => 1, 'tov' => 5, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 8, 'fgm' => 9, 'fga' => 18, 'fg_perc' => 50.0,
+'ftm' => 8, 'fta' => 8, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 29, 'reb' => 12,
+'ast' => 8, 'st' => 0, 'blk' => 1, 'tov' => 5, 'week' => 3, 'day' => 7));
+
+
+
+
+///Embiid
+$st->execute(array('id_player' => 9, 'fgm' => 9, 'fga' => 19, 'fg_perc' => 47.4,
+'ftm' => 8, 'fta' => 12, 'ft_perc' => 66.7, '3ptm' => 2, 'pts' => 28, 'reb' => 19,
+'ast' => 3, 'st' => 1, 'blk' => 3, 'tov' => 5, 'week' => 1, 'day' => 3));
+
+$st->execute(array('id_player' => 9, 'fgm' => 12, 'fga' => 23, 'fg_perc' => 52.2,
+'ftm' => 17, 'fta' => 19, 'ft_perc' => 89.5, '3ptm' => 1, 'pts' => 42, 'reb' => 18,
+'ast' => 2, 'st' => 3, 'blk' => 2, 'tov' => 4, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 9, 'fgm' => 7, 'fga' => 17, 'fg_perc' => 41.2,
+'ftm' => 10, 'fta' => 11, 'ft_perc' => 90.9, '3ptm' => 1, 'pts' => 25, 'reb' => 12,
+'ast' => 5, 'st' => 1, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 9, 'fgm' => 8, 'fga' => 13, 'fg_perc' => 61.5,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 2, 'pts' => 20, 'reb' => 10,
+'ast' => 4, 'st' => 0, 'blk' => 1, 'tov' => 3, 'week' => 2, 'day' => 3));
+
+$st->execute(array('id_player' => 9, 'fgm' => 11, 'fga' => 17, 'fg_perc' => 64.7,
+'ftm' => 12, 'fta' => 14, 'ft_perc' => 85.7, '3ptm' => 1, 'pts' => 35, 'reb' => 14,
+'ast' => 2, 'st' => 1, 'blk' => 3, 'tov' => 7, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 9, 'fgm' => 9, 'fga' => 24, 'fg_perc' => 37.5,
+'ftm' => 8, 'fta' => 12, 'ft_perc' => 66.7, '3ptm' => 0, 'pts' => 26, 'reb' => 8,
+'ast' => 1, 'st' => 0, 'blk' => 6, 'tov' => 2, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 9, 'fgm' => 10, 'fga' => 17, 'fg_perc' => 58.8,
+'ftm' => 4, 'fta' => 6, 'ft_perc' => 66.7, '3ptm' => 4, 'pts' => 31, 'reb' => 13,
+'ast' => 3, 'st' => 0, 'blk' => 1, 'tov' => 4, 'week' => 3, 'day' => 3));
+
+$st->execute(array('id_player' => 9, 'fgm' => 9, 'fga' => 19, 'fg_perc' => 47.4,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 22, 'reb' => 13,
+'ast' => 8, 'st' => 1, 'blk' => 3, 'tov' => 5, 'week' => 3, 'day' => 5));
+
+$st->execute(array('id_player' => 9, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 8, 'fta' => 12, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 31, 'reb' => 8,
+'ast' => 6, 'st' => 0, 'blk' => 1, 'tov' => 3, 'week' => 3, 'day' => 6));
+
+
+/// Irving
+
+$st->execute(array('id_player' => 10, 'fgm' => 8, 'fga' => 16, 'fg_perc' => 50.0,
+'ftm' => 0, 'fta' => 0, 'ft_perc' => 0, '3ptm' => 1, 'pts' => 17, 'reb' => 2,
+'ast' => 6, 'st' => 3, 'blk' => 0, 'tov' => 0, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 10, 'fgm' => 5, 'fga' => 9, 'fg_perc' => 55.6,
+'ftm' => 1, 'fta' => 1, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 12, 'reb' => 2,
+'ast' => 2, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 10, 'fgm' => 10, 'fga' => 19, 'fg_perc' => 52.6,
+'ftm' => 0, 'fta' => 0, 'ft_perc' => 0, '3ptm' => 2, 'pts' => 22, 'reb' => 5,
+'ast' => 5, 'st' => 1, 'blk' => 1, 'tov' => 3, 'week' => 1, 'day' => 5));
+
+$st->execute(array('id_player' => 10, 'fgm' => 7, 'fga' => 16, 'fg_perc' => 43.6,
+'ftm' => 11, 'fta' => 13, 'ft_perc' => 84.6, '3ptm' => 0, 'pts' => 25, 'reb' => 5,
+'ast' => 6, 'st' => 2, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 10, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 27, 'reb' => 5,
+'ast' => 18, 'st' => 1, 'blk' => 1, 'tov' => 7, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 10, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 27, 'reb' => 5,
+'ast' => 18, 'st' => 1, 'blk' => 1, 'tov' => 7, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 10, 'fgm' => 14, 'fga' => 21, 'fg_perc' => 66.7,
+'ftm' => 6, 'fta' => 9, 'ft_perc' => 66.7, '3ptm' => 4, 'pts' => 38, 'reb' => 7,
+'ast' => 11, 'st' => 0, 'blk' => 1, 'tov' => 3, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 10, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 5, 'pts' => 32, 'reb' => 3,
+'ast' => 5, 'st' => 1, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 10, 'fgm' => 11, 'fga' => 19, 'fg_perc' => 57.9,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 2, 'pts' => 26, 'reb' => 3,
+'ast' => 10, 'st' => 8, 'blk' => 1, 'tov' => 3, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 10, 'fgm' => 12, 'fga' => 27, 'fg_perc' => 44.4,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 32, 'reb' => 6,
+'ast' => 10, 'st' => 2, 'blk' => 0, 'tov' => 4, 'week' => 3, 'day' => 7));
+
+
+
+
+//Vucevic
+$st->execute(array('id_player' => 11, 'fgm' => 7, 'fga' => 14, 'fg_perc' => 50.0,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 1, 'pts' => 18, 'reb' => 13,
+'ast' => 3, 'st' => 1, 'blk' => 1, 'tov' => 1, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 11, 'fgm' => 8, 'fga' => 17, 'fg_perc' => 47.1,
+'ftm' => 1, 'fta' => 2, 'ft_perc' => 50.0, '3ptm' => 3, 'pts' => 20, 'reb' => 8,
+'ast' => 3, 'st' => 2, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 11, 'fgm' => 7, 'fga' => 18, 'fg_perc' => 38.9,
+'ftm' => 2, 'fta' => 4, 'ft_perc' => 50.0, '3ptm' => 0, 'pts' => 16, 'reb' => 13,
+'ast' => 5, 'st' => 0, 'blk' => 0, 'tov' => 4, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 11, 'fgm' => 9, 'fga' => 16, 'fg_perc' => 56.3,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 1, 'pts' => 22, 'reb' => 9,
+'ast' => 6, 'st' => 1, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 1));
+
+$st->execute(array('id_player' => 11, 'fgm' => 11, 'fga' => 22, 'fg_perc' => 50.0,
+'ftm' => 0, 'fta' => 1, 'ft_perc' => 0, '3ptm' => 2, 'pts' => 24, 'reb' => 13,
+'ast' => 3, 'st' => 1, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 11, 'fgm' => 7, 'fga' => 20, 'fg_perc' => 35.0,
+'ftm' => 1, 'fta' => 1, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 16, 'reb' => 17,
+'ast' => 6, 'st' => 0, 'blk' => 1, 'tov' => 0, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 11, 'fgm' => 11, 'fga' => 24, 'fg_perc' => 45.8,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 27, 'reb' => 6,
+'ast' => 4, 'st' => 0, 'blk' => 2, 'tov' => 0, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 11, 'fgm' => 12, 'fga' => 23, 'fg_perc' => 52.2,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 29, 'reb' => 14,
+'ast' => 2, 'st' => 0, 'blk' => 2, 'tov' => 0, 'week' => 3, 'day' => 1));
+
+$st->execute(array('id_player' => 11, 'fgm' => 9, 'fga' => 20, 'fg_perc' => 45.0,
+'ftm' => 2, 'fta' => 2, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 21, 'reb' => 14,
+'ast' => 5, 'st' => 2, 'blk' => 4, 'tov' => 4, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 11, 'fgm' => 12, 'fga' => 17, 'fg_perc' => 70.6,
+'ftm' => 3, 'fta' => 5, 'ft_perc' => 60.0, '3ptm' => 1, 'pts' => 28, 'reb' => 9,
+'ast' => 1, 'st' => 0, 'blk' => 1, 'tov' => 3, 'week' => 3, 'day' => 6));
+
+
+
+
+//Jokic
+$st->execute(array('id_player' => 12, 'fgm' => 8, 'fga' => 16, 'fg_perc' => 50.0,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 1, 'pts' => 19, 'reb' => 14,
+'ast' => 15, 'st' => 1, 'blk' => 3, 'tov' => 5, 'week' => 1, 'day' => 3));
+
+$st->execute(array('id_player' => 12, 'fgm' => 10, 'fga' => 18, 'fg_perc' => 55.6,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 3, 'pts' => 26, 'reb' => 13,
+'ast' => 6, 'st' => 1, 'blk' => 1, 'tov' => 5, 'week' => 1, 'day' => 5));
+
+$st->execute(array('id_player' => 12, 'fgm' => 16, 'fga' => 29, 'fg_perc' => 55.2,
+'ftm' => 4, 'fta' => 5, 'ft_perc' => 80.0, '3ptm' => 3, 'pts' => 39, 'reb' => 12,
+'ast' => 6, 'st' => 3, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 12, 'fgm' => 11, 'fga' => 20, 'fg_perc' => 55.0,
+'ftm' => 1, 'fta' => 1, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 24, 'reb' => 13,
+'ast' => 4, 'st' => 2, 'blk' => 1, 'tov' => 8, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 12, 'fgm' => 11, 'fga' => 21, 'fg_perc' => 52.4,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 29, 'reb' => 11,
+'ast' => 10, 'st' => 1, 'blk' => 0, 'tov' => 3, 'week' => 2, 'day' => 3));
+
+$st->execute(array('id_player' => 12, 'fgm' => 8, 'fga' => 19, 'fg_perc' => 42.1,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 0, 'pts' => 18, 'reb' => 14,
+'ast' => 10, 'st' => 0, 'blk' => 2, 'tov' => 1, 'week' => 2, 'day' => 5));
+
+$st->execute(array('id_player' => 12, 'fgm' => 8, 'fga' => 15, 'fg_perc' => 53.3,
+'ftm' => 6, 'fta' => 7, 'ft_perc' => 85.7, '3ptm' => 1, 'pts' => 23, 'reb' => 10,
+'ast' => 4, 'st' => 0, 'blk' => 1, 'tov' => 2, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 12, 'fgm' => 15, 'fga' => 23, 'fg_perc' => 65.2,
+'ftm' => 6, 'fta' => 8, 'ft_perc' => 75.0, '3ptm' => 4, 'pts' => 40, 'reb' => 10,
+'ast' => 8, 'st' => 0, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 1));
+
+$st->execute(array('id_player' => 12, 'fgm' => 6, 'fga' => 12, 'fg_perc' => 50.0,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 17, 'reb' => 4,
+'ast' => 8, 'st' => 0, 'blk' => 0, 'tov' => 3, 'week' => 3, 'day' => 3));
+
+$st->execute(array('id_player' => 12, 'fgm' => 6, 'fga' => 18, 'fg_perc' => 33.3,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 18, 'reb' => 8,
+'ast' => 11, 'st' => 1, 'blk' => 1, 'tov' => 2, 'week' => 3, 'day' => 5));
+
+$st->execute(array('id_player' => 12, 'fgm' => 8, 'fga' => 12, 'fg_perc' => 66.7,
+'ftm' => 0, 'fta' => 1, 'ft_perc' => 0, '3ptm' => 3, 'pts' => 19, 'reb' => 11,
+'ast' => 12, 'st' => 1, 'blk' => 0, 'tov' => 1, 'week' => 3, 'day' => 7));
+
+
+
+/// Lillard
+$st->execute(array('id_player' => 13, 'fgm' => 6, 'fga' => 16, 'fg_perc' => 37.5,
+'ftm' => 5, 'fta' => 6, 'ft_perc' => 83.3, '3ptm' => 1, 'pts' => 18, 'reb' => 5,
+'ast' => 5, 'st' => 1, 'blk' => 0, 'tov' => 0, 'week' => 1, 'day' => 1));
+
+$st->execute(array('id_player' => 13, 'fgm' => 5, 'fga' => 15, 'fg_perc' => 33.3,
+'ftm' => 0, 'fta' => 0, 'ft_perc' => 0, '3ptm' => 3, 'pts' => 13, 'reb' => 6,
+'ast' => 3, 'st' => 0, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 3));
+
+$st->execute(array('id_player' => 13, 'fgm' => 11, 'fga' => 25, 'fg_perc' => 44.0,
+'ftm' => 0, 'fta' => 0, 'ft_perc' => 0, '3ptm' => 3, 'pts' => 25, 'reb' => 4,
+'ast' => 4, 'st' => 1, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 5));
+
+$st->execute(array('id_player' => 13, 'fgm' => 7, 'fga' => 15, 'fg_perc' => 46.7,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 19, 'reb' => 5,
+'ast' => 12, 'st' => 0, 'blk' => 0, 'tov' => 4, 'week' => 2, 'day' => 1));
+
+
+$st->execute(array('id_player' => 13, 'fgm' => 8, 'fga' => 23, 'fg_perc' => 34.8,
+'ftm' => 12, 'fta' => 13, 'ft_perc' => 92.3, '3ptm' => 3, 'pts' => 31, 'reb' => 8,
+'ast' => 11, 'st' => 0, 'blk' => 1, 'tov' => 2, 'week' => 2, 'day' => 4));
+
+
+$st->execute(array('id_player' => 13, 'fgm' => 5, 'fga' => 18, 'fg_perc' => 27.8,
+'ftm' => 5, 'fta' => 6, 'ft_perc' => 83.3, '3ptm' => 1, 'pts' => 16, 'reb' => 6,
+'ast' => 5, 'st' => 0, 'blk' => 0, 'tov' => 5, 'week' => 2, 'day' => 6));
+
+
+$st->execute(array('id_player' => 13, 'fgm' => 12, 'fga' => 29, 'fg_perc' => 41.4,
+'ftm' => 13, 'fta' => 15, 'ft_perc' => 86.7, '3ptm' => 3, 'pts' => 40, 'reb' => 6,
+'ast' => 5, 'st' => 1, 'blk' => 0, 'tov' => 1, 'week' => 3, 'day' => 1));
+
+$st->execute(array('id_player' => 13, 'fgm' => 9, 'fga' => 22, 'fg_perc' => 40.9,
+'ftm' => 8, 'fta' => 10, 'ft_perc' => 80.0, '3ptm' => 3, 'pts' => 29, 'reb' => 6,
+'ast' => 8, 'st' => 2, 'blk' => 0, 'tov' => 4, 'week' => 3, 'day' => 3));
+
+$st->execute(array('id_player' => 13, 'fgm' => 5, 'fga' => 12, 'fg_perc' => 41.7,
+'ftm' => 11, 'fta' => 13, 'ft_perc' => 84.6, '3ptm' => 1, 'pts' => 22, 'reb' => 4,
+'ast' => 5, 'st' => 0, 'blk' => 2, 'tov' => 4, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 13, 'fgm' => 9, 'fga' => 24, 'fg_perc' => 37.5,
+'ftm' => 2, 'fta' => 3, 'ft_perc' => 66.7, '3ptm' => 3, 'pts' => 23, 'reb' => 2,
+'ast' => 8, 'st' => 2, 'blk' => 1, 'tov' => 2, 'week' => 3, 'day' => 6));
+
+
+
+
+//Beal
+$st->execute(array('id_player' => 14, 'fgm' => 11, 'fga' => 24, 'fg_perc' => 45.8,
+'ftm' => 1, 'fta' => 2, 'ft_perc' => 50.0, '3ptm' => 4, 'pts' => 27, 'reb' => 6,
+'ast' => 6, 'st' => 0, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 14, 'fgm' => 12, 'fga' => 22, 'fg_perc' => 54.5,
+'ftm' => 4, 'fta' => 5, 'ft_perc' => 80.0, '3ptm' => 2, 'pts' => 30, 'reb' => 8,
+'ast' => 4, 'st' => 1, 'blk' => 3, 'tov' => 8, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 14, 'fgm' => 9, 'fga' => 20, 'fg_perc' => 45.0,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 25, 'reb' => 6,
+'ast' => 13, 'st' => 2, 'blk' => 0, 'tov' => 6, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 14, 'fgm' => 13, 'fga' => 21, 'fg_perc' => 61.9,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 31, 'reb' => 2,
+'ast' => 4, 'st' => 4, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 14, 'fgm' => 9, 'fga' => 19, 'fg_perc' => 47.4,
+'ftm' => 12, 'fta' => 12, 'ft_perc' => 100.0, '3ptm' => 2, 'pts' => 32, 'reb' => 6,
+'ast' => 10, 'st' => 2, 'blk' => 1, 'tov' => 1, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 14, 'fgm' => 6, 'fga' => 15, 'fg_perc' => 40.0,
+'ftm' => 14, 'fta' => 15, 'ft_perc' => 93.3, '3ptm' => 2, 'pts' => 28, 'reb' => 3,
+'ast' => 11, 'st' => 1, 'blk' => 1, 'tov' => 6, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 14, 'fgm' => 16, 'fga' => 25, 'fg_perc' => 64.0,
+'ftm' => 10, 'fta' => 10, 'ft_perc' => 100.0, '3ptm' => 4, 'pts' => 46, 'reb' => 6,
+'ast' => 7, 'st' => 0, 'blk' => 1, 'tov' => 1, 'week' => 3, 'day' => 6));
+
+$st->execute(array('id_player' => 14, 'fgm' => 12, 'fga' => 22, 'fg_perc' => 54.5,
+'ftm' => 8, 'fta' => 8, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 35, 'reb' => 3,
+'ast' => 6, 'st' => 2, 'blk' => 0, 'tov' => 2, 'week' => 3, 'day' => 7));
+
+
+
+
+///Butler
+$st->execute(array('id_player' => 15, 'fgm' => 5, 'fga' => 10, 'fg_perc' => 50.0,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 14, 'reb' => 2,
+'ast' => 4, 'st' => 3, 'blk' => 0, 'tov' => 1, 'week' => 1, 'day' => 3));
+
+$st->execute(array('id_player' => 15, 'fgm' => 8, 'fga' => 18, 'fg_perc' => 44.4,
+'ftm' => 6, 'fta' => 7, 'ft_perc' => 85.7, '3ptm' => 0, 'pts' => 22, 'reb' => 3,
+'ast' => 4, 'st' => 3, 'blk' => 0, 'tov' => 2, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 15, 'fgm' => 8, 'fga' => 18, 'fg_perc' => 44.4,
+'ftm' => 3, 'fta' => 4, 'ft_perc' => 75.0, '3ptm' => 0, 'pts' => 19, 'reb' => 9,
+'ast' => 3, 'st' => 0, 'blk' => 0, 'tov' => 3, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 15, 'fgm' => 3, 'fga' => 8, 'fg_perc' => 37.5,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 12, 'reb' => 4,
+'ast' => 4, 'st' => 1, 'blk' => 1, 'tov' => 0, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 15, 'fgm' => 8, 'fga' => 14, 'fg_perc' => 57.1,
+'ftm' => 6, 'fta' => 7, 'ft_perc' => 85.7, '3ptm' => 0, 'pts' => 22, 'reb' => 6,
+'ast' => 7, 'st' => 2, 'blk' => 2, 'tov' => 3, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 15, 'fgm' => 8, 'fga' => 16, 'fg_perc' => 50.0,
+'ftm' => 9, 'fta' => 13, 'ft_perc' => 69.2, '3ptm' => 2, 'pts' => 27, 'reb' => 6,
+'ast' => 3, 'st' => 3, 'blk' => 0, 'tov' => 2, 'week' => 2, 'day' => 7));
+
+$st->execute(array('id_player' => 15, 'fgm' => 8, 'fga' => 19, 'fg_perc' => 42.1,
+'ftm' => 6, 'fta' => 6, 'ft_perc' => 100.0, '3ptm' => 1, 'pts' => 23, 'reb' => 4,
+'ast' => 9, 'st' => 2, 'blk' => 1, 'tov' => 2, 'week' => 3, 'day' => 3));
+
+
+$st->execute(array('id_player' => 15, 'fgm' => 7, 'fga' => 17, 'fg_perc' => 41.2,
+'ftm' => 5, 'fta' => 5, 'ft_perc' => 100.0, '3ptm' => 3, 'pts' => 22, 'reb' => 4,
+'ast' => 2, 'st' => 0, 'blk' => 0, 'tov' => 0, 'week' => 3, 'day' => 4));
+
+
+$st->execute(array('id_player' => 15, 'fgm' => 6, 'fga' => 13, 'fg_perc' => 46.2,
+'ftm' => 13, 'fta' => 13, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 25, 'reb' => 6,
+'ast' => 4, 'st' => 2, 'blk' => 1, 'tov' => 1, 'week' => 3, 'day' => 7));
+
+
+
+
+/// Gobert
+$st->execute(array('id_player' => 16, 'fgm' => 4, 'fga' => 8, 'fg_perc' => 50.0,
+'ftm' => 6, 'fta' => 10, 'ft_perc' => 60.0, '3ptm' => 0, 'pts' => 14, 'reb' => 15,
+'ast' => 3, 'st' => 2, 'blk' => 1, 'tov' => 2, 'week' => 1, 'day' => 2));
+
+$st->execute(array('id_player' => 16, 'fgm' => 4, 'fga' => 8, 'fg_perc' => 50.0,
+'ftm' => 4, 'fta' => 4, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 12, 'reb' => 14,
+'ast' => 2, 'st' => 1, 'blk' => 1, 'tov' => 1, 'week' => 1, 'day' => 4));
+
+$st->execute(array('id_player' => 16, 'fgm' => 4, 'fga' => 10, 'fg_perc' => 40.0,
+'ftm' => 4, 'fta' => 8, 'ft_perc' => 50.0, '3ptm' => 0, 'pts' => 12, 'reb' => 18,
+'ast' => 2, 'st' => 2, 'blk' => 2, 'tov' => 2, 'week' => 1, 'day' => 6));
+
+$st->execute(array('id_player' => 16, 'fgm' => 5, 'fga' => 6, 'fg_perc' => 83.3,
+'ftm' => 5, 'fta' => 9, 'ft_perc' => 55.6, '3ptm' => 0, 'pts' => 15, 'reb' => 16,
+'ast' => 8, 'st' => 1, 'blk' => 2, 'tov' => 5, 'week' => 1, 'day' => 7));
+
+$st->execute(array('id_player' => 16, 'fgm' => 6, 'fga' => 9, 'fg_perc' => 66.7,
+'ftm' => 6, 'fta' => 8, 'ft_perc' => 75.0, '3ptm' => 0, 'pts' => 18, 'reb' => 25,
+'ast' => 3, 'st' => 0, 'blk' => 2, 'tov' => 1, 'week' => 2, 'day' => 2));
+
+$st->execute(array('id_player' => 16, 'fgm' => 7, 'fga' => 10, 'fg_perc' => 70.0,
+'ftm' => 9, 'fta' => 10, 'ft_perc' => 90.0, '3ptm' => 0, 'pts' => 23, 'reb' => 22,
+'ast' => 1, 'st' => 1, 'blk' => 4, 'tov' => 0, 'week' => 2, 'day' => 4));
+
+$st->execute(array('id_player' => 16, 'fgm' => 8, 'fga' => 10, 'fg_perc' => 80.0,
+'ftm' => 3, 'fta' => 3, 'ft_perc' => 100.0, '3ptm' => 0, 'pts' => 19, 'reb' => 15,
+'ast' => 5, 'st' => 2, 'blk' => 2, 'tov' => 3, 'week' => 2, 'day' => 6));
+
+$st->execute(array('id_player' => 16, 'fgm' => 4, 'fga' => 10, 'fg_perc' => 40.0,
+'ftm' => 2, 'fta' => 4, 'ft_perc' => 50.0, '3ptm' => 0, 'pts' => 10, 'reb' => 13,
+'ast' => 3, 'st' => 0, 'blk' => 4, 'tov' => 1, 'week' => 3, 'day' => 2));
+
+$st->execute(array('id_player' => 16, 'fgm' => 4, 'fga' => 11, 'fg_perc' => 36.4,
+'ftm' => 7, 'fta' => 9, 'ft_perc' => 77.8, '3ptm' => 0, 'pts' => 15, 'reb' => 10,
+'ast' => 3, 'st' => 0, 'blk' => 3, 'tov' => 0, 'week' => 3, 'day' => 4));
+
+$st->execute(array('id_player' => 16, 'fgm' => 8, 'fga' => 12, 'fg_perc' => 66.7,
+'ftm' => 2, 'fta' => 4, 'ft_perc' => 50.0, '3ptm' => 0, 'pts' => 18, 'reb' => 16,
+'ast' => 2, 'st' => 2, 'blk' => 5, 'tov' => 1, 'week' => 3, 'day' => 6));
 
 
 
 
 }
 catch( PDOException $e ) { exit( "PDO error [insert project_player_stats]: " . $e->getMessage() ); }
-
 echo "Ubacio u tablicu project_player_stats.<br />";
-
-
-
-
 
 ?>
