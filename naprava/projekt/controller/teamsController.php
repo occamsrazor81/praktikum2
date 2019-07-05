@@ -21,7 +21,7 @@ function sendErrorAndExit( $messageText )
 	sendJSONandExit( $message );
 }
 
-///////////////////////////////////////
+////////////////////////////////////////
 
 
 class TeamsController
@@ -287,17 +287,25 @@ sendJSONandExit($msg);
 
     $players = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
+    //print_r($players);
+
     $myPlayers = array();
 
     //za svakog igraca dohvati id, ime, poziciju i statse
     foreach($players as $plr)
     {
-     $plyr_stats = $fst->getPlayerStatsByPlayerId($plr->id);
-
-     //print_r($plyr_stats);
+     $all_plyr_stats = $fst->getPlayerStatsByPlayerId($plr->id);
 
 
-     if(isset($plr->id))
+     // if($plr->id !== null) echo "string";
+     //
+     // foreach($all_plyr_stats as $p)
+     // {
+     //   echo $p->fga.', ';
+     // }
+
+     foreach($all_plyr_stats as $plyr_stats)
+     if($plr->id !== null)
       $myPlayers[] = array(
     'id_player' => $plr->id, 'player_name' => $plr->name,'position' => $plr->position,
     'fgm' => $plyr_stats->fgm, 'fga' => $plyr_stats->fga, 'fg_perc' => $plyr_stats->fg_perc,
@@ -1281,11 +1289,14 @@ sendJSONandExit($msg);
 
     $leagueUsers = $fst->getAllUsersInsideLeague($_SESSION['id_league']);
 
+
     $usersIds = array();
     foreach($leagueUsers as $user)
     $usersIds[] = $user->id;
 
+
     $numberOfMatchups = floor(count($usersIds) / 2);
+
 
     shuffle($usersIds);
 
@@ -1295,10 +1306,12 @@ sendJSONandExit($msg);
       $id_user1 = $usersIds[2*$i];
       $id_user2 = $usersIds[2*$i + 1];
 
+    //  echo 'id_user1 = '.$id_user1.', id_user2 = '.$id_user2.'<br>';
+
       $fst->makeFirstWeeklyMatchUp($_SESSION['id_league'], $id_user1, $id_user2);
     }
 
-
+    //napraviti za popis svih matcheva + postavu za svaki dan(javascript)
     //require_once __DIR__.'/../view/weekly_matchup_Intro.php';
 
 

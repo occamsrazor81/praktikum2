@@ -395,9 +395,9 @@ class FantasyServiceTeams
 
       $db = DB::getConnection();
       $st = $db->prepare('SELECT id, id_player, FGM, FGA, FG_PERC, FTM, FTA, FT_PERC,
-        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats');
-        // where id_player in (select id from project_players
-        //   where id=:id_plr )');
+        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats
+         where id_player in (select id from project_players
+           where id=:id_plr )');
 
       $st->execute(array('id_plr' => $id_plr));
 
@@ -414,7 +414,12 @@ class FantasyServiceTeams
     $row['BLK'], $row['TOV'], $row['week'], $row['day']);
 
 
+    // print_r($arr[0]->id_player);
 
+    // foreach($arr as $a)
+    // {
+    //   echo $a->id_player;
+    // }
 
     return $arr;
 
@@ -943,7 +948,7 @@ class FantasyServiceTeams
     {
 
       $db = DB::getConnection();
-      $st = $db->prepare('INSERT into project_weekly_matchups(id_league, id_team1, id_team2)
+      $st = $db->prepare('INSERT into project_weekly_matchups(id_league, id_user1, id_user2)
       values(:id_league, :id_user1, :id_user2)');
 
       $st->execute(array('id_league' => $id_league, 'id_user1' => $id_user1,
@@ -954,7 +959,7 @@ class FantasyServiceTeams
 
   }
 
-
+///////////////////////////////////////////////////////////
 
   function getLastModified($id_league)
   {
