@@ -215,6 +215,92 @@ class FantasyServiceWeekly
 
   }
 
+  function getAllWeeklyMatchups($id_league, $week)
+  {
+
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT * from project_weekly_matchups
+      where id_league=:id_league and week=:week');
+
+      $st->execute(array('id_league' => $id_league,'week' => $week));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new WeeklyMatchup($row['id'], $row['id_league'],
+        $row['id_user1'], $row['id_user2'], $row['week'],
+        $row['FGM1'], $row['FGA1'], $row['FG_PERC1'],
+        $row['FTM1'], $row['FTA1'], $row['FT_PERC1'],
+        $row['3PTM1'], $row['PTS1'], $row['REB1'],
+        $row['AST1'], $row['ST1'], $row['BLK1'], $row['TO1'],
+        $row['FGM2'], $row['FGA2'], $row['FG_PERC2'],
+        $row['FTM2'], $row['FTA2'], $row['FT_PERC2'],
+        $row['3PTM2'], $row['PTS2'], $row['REB2'],
+        $row['AST2'], $row['ST2'], $row['BLK2'], $row['TO2']);
+
+
+    return $arr;
+
+  }
+
+
+  function refresLeagueDate($id_league, $week, $day)
+  {
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_leagues set
+        week=:week, day =:day where id=:id_league');
+
+     $st->execute(array( 'week' => $week, 'day' => $day,
+      'id_league' => $id_league));
+
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+  }
+
+
+  function refreshWeeklyMatchUp($id, $fgm1, $fga1, $fg_perc1,
+  $ftm1, $fta1, $ft_perc1, $tpm1, $pts1,
+  $reb1, $ast1, $st1, $blk1, $tov1,
+  $fgm2, $fga2, $fg_perc2, $ftm2, $fta2, $ft_perc2,
+  $tpm2, $pts2, $reb2, $ast2, $st2, $blk2, $tov2)
+  {
+
+    try
+    {
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_weekly_matchups set
+        FGM1=:fgm1, FGA1=:fga1, FG_PERC1=:fg_perc1, FTM1=:ftm1,
+        FTA1=:fta1, FT_PERC1=:ft_perc1, 3PTM1=:tpm1, PTS1=:pts1,
+        REB1=:reb1, AST1=:ast1, ST1=:st1, BLK1=:blk1, TO1=:tov1,
+        FGM2=:fgm2, FGA2=:fga2, FG_PERC2=:fg_perc2, FTM2=:ftm2,
+        FTA2=:fta2, FT_PERC2=:ft_perc2, 3PTM2=:tpm2, PTS2=:pts2,
+        REB2=:reb2, AST2=:ast2, ST2=:st2, BLK2=:blk2, TO2=:tov2
+        where id=:id');
+
+      $st->execute(array('fgm1' => $fgm1, 'fga1' => $fga1, 'fg_perc1' => $fg_perc1,
+      'ftm1' => $ftm1, 'fta1' => $fta1, 'ft_perc1' => $ft_perc1,
+      'tpm1' => $tpm1, 'pts1' => $pts1, 'reb1' => $reb1, 'ast1' => $ast1,
+      'st1' => $st1, 'blk1' => $blk1, 'tov1' => $tov1,
+      'fgm2' => $fgm2, 'fga2' => $fga2, 'fg_perc2' => $fg_perc2,
+      'ftm2' => $ftm2, 'fta2' => $fta2, 'ft_perc2' => $ft_perc2,
+      'tpm2' => $tpm2, 'pts2' => $pts2, 'reb2' => $reb2, 'ast2' => $ast2,
+      'st2' => $st2, 'blk2' => $blk2, 'tov2' => $tov2,
+      'id' => $id));
+
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
+
 
 
 
