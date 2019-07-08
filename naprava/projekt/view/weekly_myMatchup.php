@@ -5,7 +5,8 @@
 
   <?php
 
-  echo '<tr><th id=myScore>'.$myTeamName.'</th><th id=score></th><th id=theirScore>'.$hisTeamName.'</th></tr>';
+  echo '<tr><th id=myScore>'.$myTeamName.'</th><th id=time>week = '.
+  $week.'<br><br>day = '.$day.'</th><th id=theirScore>'.$hisTeamName.'</th></tr>';
 
   if(isset($weeklyStats1))
   {

@@ -98,6 +98,11 @@ class GamesController
 
     }
 
+    $date = $fsw->getDayAndWeekInLeague($id_league);
+    $week = $date['week'];
+    $day = $date['day'];
+
+
 
 
       require_once __DIR__.'/../view/weekly_myMatchup.php';
@@ -118,6 +123,28 @@ class GamesController
     $myStarters = $fsw->getStartersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
     $myBench = $fsw->getBenchInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
+    $days = array();
+
+    $leagueDate = $fsw->getDayAndWeekInLeague($_SESSION['id_league']);
+    $week = $leagueDate['week'];
+    $day = $leagueDate['day'];
+
+    foreach($myStarters as $starter)
+    {
+      $curr = $fst->getPlayerStatsByPlayerIdAndWeekAndDay($starter->id, $week, $day);
+      if($curr !== null)
+      $days[] = $starter->name;
+    }
+
+    foreach($myBench as $bench)
+    {
+      $curr = $fst->getPlayerStatsByPlayerIdAndWeekAndDay($bench->id, $week, $day);
+      if($curr !== null)
+      $days[] = $bench->name;
+    }
+
+
+    //print_r($days);
 
     // print_r($myStarters);
     // print_r($myBench);
@@ -237,7 +264,8 @@ class GamesController
     foreach($weeklyMatchups as $wm)
     {
       $user1 = $fs->getUserById($wm->id_user1);
-      $players1 = $fst->getPlayersFromTeam($id_league, $user1->id);
+      //samo starterima se broji
+      $players1 = $fsw->getStartersInMyTeam($id_league, $user1->id);
 
       $stats1 = new Stats($user1->id, $user1->id,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $leagueWeek, $leagueDay);
@@ -282,7 +310,7 @@ class GamesController
 
       ///user2
       $user2 = $fs->getUserById($wm->id_user2);
-      $players2 = $fst->getPlayersFromTeam($id_league, $user2->id);
+      $players2 = $fsw->getStartersInMyTeam($id_league, $user2->id);
 
       $stats2 = new Stats($user2->id, $user2->id,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $leagueWeek, $leagueDay);

@@ -1,5 +1,10 @@
 <?php require_once __DIR__.'/_header_weekly.php'; ?>
-
+<div id="days"><?php
+foreach ($days as $day)
+{
+  echo '<span>'.$day.'</span>';
+} ?>
+</div>
 <table id="starteri">
 
     <tr><th>Name</th><th>Position</th></tr>
@@ -9,7 +14,7 @@
 
     foreach($myStarters as $starter)
     {
-      echo '<tr><td>'.$starter->name.'</td>';
+      echo '<tr><td class=day>'.$starter->name.'</td>';
       echo '<td>'.$starter->position.'</td></tr>';
 
     }
@@ -24,7 +29,7 @@
 
     foreach ($myBench as $bench)
     {
-      echo '<tr><td>'.$bench->name.'</td>';
+      echo '<tr><td class=day>'.$bench->name.'</td>';
       echo '<td>'.$bench->position.'</td></tr>';
 
     }
@@ -111,6 +116,32 @@ $(document).ready(function()
          .css("letter-spacing", "1.6")
          .css("font-weight", "900")
          .css("font-style", "italic");
+
+
+    var playersLen = $(".day").length;
+
+
+    var p = $("#days span").length;
+    //var div = $()
+
+    for(var i = 0; i < playersLen; ++i)
+    {
+      var curr1 = $(".day").eq(i).html();
+
+      var td = $(".day").eq(i);
+
+      for(var j = 0; j < p; ++j)
+      {
+        var curr2 = $("#days span").eq(j).html();
+
+        if(curr1 == curr2)
+        td.html(curr1 + "<br><br>" + "(has game today)");
+
+      }
+
+    }
+
+    $("#days").html("");
 
   }
 

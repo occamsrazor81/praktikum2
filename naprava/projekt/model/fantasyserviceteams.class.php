@@ -461,6 +461,39 @@ class FantasyServiceTeams
 
 
 
+  function getPlayerStatsByPlayerIdAndWeek($id_plr, $week)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, id_player, FGM, FGA, FG_PERC, FTM, FTA, FT_PERC,
+        3PTM, PTS, REB, AST, ST, BLK, TOV, week, day from project_player_stats
+         where id_player in (select id from project_players
+           where id=:id_plr and week=:week)');
+
+      $st->execute(array('id_plr' => $id_plr, 'week' => $week));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Stats($row['id'], $row['id_player'],
+       $row['FGM'] ,$row['FGA'], $row['FG_PERC'],
+        $row['FTM'], $row['FTA'], $row['FT_PERC'],
+    $row['3PTM'], $row['PTS'], $row['REB'], $row['AST'], $row['ST'],
+    $row['BLK'], $row['TOV'], $row['week'], $row['day']);
+
+
+    return $arr;
+
+
+  }
+
+
+
 
   function getTeamName($id_league, $id_user)
   {
