@@ -226,39 +226,59 @@ sendJSONandExit($msg);
   }
 
 /// funkcija cekanja da drugi igrac napravi potez
-  // public function waitDraft()
-  // {
-  //
-  //   if(!isset($_POST['lastAccess']))
-  //     sendErrorAndExit('lastAccess is not set.');
-  //
-  //   $lastAccess = (int)$_POST['lastAccess'];
-  //
-  //   while( 1 )
-  //   {
-  //     // zelimo samo za tu ligu
-  //     $fst = new FantasyServiceTeams();
-  //     $maxLastModified = $fst->getLastModified($_SESSION['id_league']);
-  //
-  //     $timestamp = strtotime($maxLastModified);
-  //
-  //     if($timestamp > $lastAccess)
-  //     {
-  //       $allSelected = $fst->getAllSelectedPlayersInLeague($_SESSION['id_league']);
-  //       $message['allSelected'] = $allSelected;
-  //       $message['lastAccess'] = $timestamp;
-  //
-  //       sendJSONandExit( $message );
-  //     }
-  //
-  //
-  //
-  //     usleep(5000000); //5sec
-  //   }
-  //
-  // }
+  public function waitDraft()
+  {
+
+    if(!isset($_POST['lastAccess']))
+      sendErrorAndExit('lastAccess is not set.');
+
+    $lastAccess = (int)$_POST['lastAccess'];
+
+    $message['lastAccess'] = $lastAccess;
+     //usleep(5000000);
+    //sendJSONandExit($message);
 
 
+    // while( 1 )
+    // {
+    //   // zelimo samo za tu ligu
+      $fst = new FantasyServiceTeams();
+      $maxLastModified = $fst->getLastModified($_SESSION['id_league']);
+
+      $timestamp = strtotime($maxLastModified);
+      // echo "timestamp = ".$timestamp."<br>";
+    //
+      if($timestamp > $lastAccess)
+      {
+        $allSelected = $fst->getAllSelectedPlayersInLeague($_SESSION['id_league']);
+        // $message['allSelected'] = $allSelected;
+
+        $message = [];
+        $new_na_redu = $fst->getMinimalCurrentUser($_SESSION['id_league']);
+
+        $message['lastAccess'] = $timestamp;
+        $message['na_redu'] = $new_na_redu->username;
+        $message['allSelected'] = [];
+
+        foreach($allSelected as $as)
+        {
+          $message['allSelected'][] = array('id' => $as->id,
+          'name' => $as->name, 'position' => $as->position);
+        }
+
+        sendJSONandExit( $message );
+
+
+       }
+
+
+       usleep(5000000); //5sec
+    //
+    // }
+
+  }
+
+//
 
 
 

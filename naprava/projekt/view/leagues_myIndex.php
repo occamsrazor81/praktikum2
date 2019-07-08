@@ -30,10 +30,10 @@
             echo '<li class="inUL">'.$applicants->username.'<br>'.
 						'<button class="acc" type="submit" name="accept" value="'.
 						$league['id'].'_'.$applicants->id.'">'.
-						'Accept application.</button> '.
+						'Accept.</button> '.
 						'<button class="rej" type="submit" name="reject" value="'.
 						$league['id'].'_'.$applicants->id.'">'.
-						'Reject application.</button>'.
+						'Reject.</button>'.
 						'</li>';
             //dodati gumbe za prihvat odnosno odbijanje aplikanata
           }
@@ -106,7 +106,7 @@ $(document).ready(function()
 						.css("border-bottom","1px solid")
 						.css("border-top","1px solid");
 
-						$(".acc") .css("width", "60%")
+						$(".acc") .css("width", "70%")
 						          .css('background-color', '#3CB371')
 						          .css("padding", '5px')
 						           .css("border","none")
@@ -120,7 +120,7 @@ $(document).ready(function()
 						            $(this).css("opacity", "1");
 						          });
 
-						$(".rej") .css("width", "60%")
+						$(".rej") .css("width", "70%")
 						          .css('background-color', '#FF6347')
 						          .css("padding", '5px')
 						          .css("border","none")
