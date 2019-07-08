@@ -116,6 +116,105 @@ class FantasyServiceWeekly
   }
 
 
+  function getStartersInMyTeam($id_league, $id_user)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, name, position from project_players
+        where id in (select id_player from project_teams
+      where id_league=:id_league and id_user=:id_user and points=:rs)');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_user' => $id_user, 'rs' => 1));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+
+  }
+
+
+
+  function getBenchInMyTeam($id_league, $id_user)
+  {
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('SELECT id, name, position from project_players
+        where id in (select id_player from project_teams
+      where id_league=:id_league and id_user=:id_user and points=:rs)');
+
+      $st->execute(array('id_league' => $id_league,
+      'id_user' => $id_user, 'rs' => 0));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr = array();
+    while($row = $st->fetch())
+      $arr[] = new Player($row['id'], $row['name'], $row['position']);
+
+    return $arr;
+
+
+  }
+
+  // function getPlayerIdViaName($name)
+  // {
+  //
+  //   $newName = '"'.$name.'"';
+  //
+  //   //echo $newName;
+  //
+  //
+  //   try
+  //   {
+  //
+  //     $db = DB::getConnection();
+  //     $st = $db->prepare('SELECT id from project_players
+  //     where name like :name');
+  //
+  //     $st->execute(array('name' => $newName));
+  //
+  //   }
+  //   catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+  //
+  //   $row = $st->fetch();
+  //   if($row === false)
+  //     return null;
+  //
+  //   return $row['id'];
+  //
+  // }
+
+
+  function updateRosterStatus($id_league, $id_player, $rs)
+  {
+
+    try
+    {
+
+      $db = DB::getConnection();
+      $st = $db->prepare('UPDATE project_teams set points=:rs
+        where id_league=:id_league and id_player=:id_player');
+
+      $st->execute(array('rs' => $rs,
+      'id_league' => $id_league, 'id_player' => $id_player ));
+
+    }
+    catch (PDOException $e) { exit( 'PDO error ' . $e->getMessage() ); }
+
+  }
+
 
 
 

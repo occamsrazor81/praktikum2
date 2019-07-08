@@ -106,16 +106,79 @@ class GamesController
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
-    $myPlayers = $fst->getAllPlayersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+    $myStarters = $fsw->getStartersInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
+    $myBench = $fsw->getBenchInMyTeam($_SESSION['id_league'], $_SESSION['id_user']);
 
-    //print_r($myPlayers);
 
-    //echo $myPlayers[0]->name;
-
-    // foreach($myPlayers as $player)
-    // echo "<br>".$player->name;
+    // print_r($myStarters);
+    // print_r($myBench);
 
     require_once __DIR__.'/../view/weekly_changeLineUp.php';
+
+
+  }
+
+  public function saveLineUp()
+  {
+    $title = 'Change LineUp';
+
+    $fsw = new FantasyServiceWeekly();
+    $fst = new FantasyServiceTeams();
+    $fs = new FantasyService();
+
+    if(isset($_POST['starterPlayers'], $_POST['benchPlayers']))
+    {
+      $starterPlayers = $_POST['starterPlayers'];
+      $benchPlayers = $_POST['benchPlayers'];
+
+      // foreach ($starterPlayers as $starter)
+      // {
+      //   $playerId = $fsw->getPlayerIdViaName($starter['name']);
+      //   echo "<br>".$playerId;
+      // }
+
+      $allPlayers = $fst->getPlayersFromTeam($_SESSION['id_league'], $_SESSION['id_user']);
+
+
+      $id_league = $_SESSION['id_league'];
+
+      foreach ($allPlayers as $player)
+      {
+        foreach ($starterPlayers as $starter)
+        {
+          if(strcmp($starter['name'], $player->name) == 0)
+          {
+
+            $fsw->updateRosterStatus($id_league, $player->id, 1);
+
+          }
+        }
+
+        foreach ($benchPlayers as $bench)
+        {
+
+          if(strcmp($bench['name'], $player->name) == 0)
+          {
+            $fsw->updateRosterStatus($id_league, $player->id, 0);
+
+          }
+
+        }
+      }
+
+      $message['starterPlayers'] = $starterPlayers;
+      $message['benchPlayers'] = $benchPlayers;
+
+      sendJSONandExit($message);
+
+    }
+
+    else
+    {
+      sendErrorAndExit("Expected parameters have not been sent.");
+
+    }
+
 
 
   }

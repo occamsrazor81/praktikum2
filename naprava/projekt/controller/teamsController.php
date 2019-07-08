@@ -163,8 +163,13 @@ class TeamsController
 
     $bool = $fst->checkPlayerAvailability($id_league, $id_player);
 
-    if($bool === 1)
+    if($bool === 1  && $brojSelektiranihIgraca <= 5)
+      $fst->addPlayerToTeam($team_name, $id_league, $user_na_redu_id, $id_player, 1);
+
+    elseif ($bool === 1 && $brojSelektiranihIgraca > 5)
+    {
       $fst->addPlayerToTeam($team_name, $id_league, $user_na_redu_id, $id_player, 0);
+    }
 
     else
       {

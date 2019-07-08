@@ -6,17 +6,26 @@
 
   <?php
 
-    $cnt = 0;
-    foreach($myPlayers as $player)
-    {
-      echo '<tr><td>'.$player->name.'</td>';
-      echo '<td>'.$player->position.'</td></tr>';
-      $cnt++;
 
-      if($cnt === 5)
-      {
-        echo '</table><br><table id="bench"><th>Bench players</th><th>Position</th>';
-      }
+    foreach($myStarters as $starter)
+    {
+      echo '<tr><td>'.$starter->name.'</td>';
+      echo '<td>'.$starter->position.'</td></tr>';
+
+    }
+    ?>
+  </table>
+<br>
+  <table id="bench">
+    <tr><th>Bench Players</th><th>Position</th></tr>
+
+
+    <?php
+
+    foreach ($myBench as $bench)
+    {
+      echo '<tr><td>'.$bench->name.'</td>';
+      echo '<td>'.$bench->position.'</td></tr>';
 
     }
 
@@ -32,56 +41,27 @@
 
 $(document).ready(function()
 {
-      $("body").css("background-color", "orange");
-      $("table").css("background-color", "gold")
-								.css("border-collapse","collapse")
-								.css("border-spacing","0")
-								.css("width","100%");
-
-      $("th").css("border", "0.7px solid black")
-      			 .css("background-color", 'gold')
-             .css("width", "80").css("height", "40")
-             .css("text-align", "center")
-             .css("margin", "0").css("padding", "16px")
-             .css("text-transform", "uppercase")
-             .css("letter-spacing", "1.6")
-             .css("font-weight", "900")
-             .css("font-style", "italic");
-
-      $("td").css("border", "0.5px solid black")
-      			 .css("background-color", 'gold')
-             .css("width", "80").css("height", "40")
-             .css("text-align", "center")
-             .css("margin", "0").css("padding", "16px")
-             .css("letter-spacing", "1.1");
-
-      $("#saveChanges").css("width", "100%")
-                .css('background-color', '#3CB371')
-                .css("padding", '20px').css("margin","6px")
-                 .css("border","none")
-                 .css("font-weight", "800")
-                 .css("letter-spacing", "1.1")
-                 .on("mouseenter", function(){
-                  $(this).css("opacity", "0.7");
-
-                 })
-                 .on("mouseleave", function(){
-                  $(this).css("opacity", "1");
-                });
-                
-//dodati spremanje postave negdje(valjda u bazu podataka)
+    uredi();
 
 
-      $("#bench td").css("border", "0.5px solid black")
-      			        .css("background-color", '#9370DB')
-                    .css("width", "80").css("height", "40")
-                    .css("text-align", "center")
-                    .css("margin", "0").css("padding", "16px")
-                    .css("letter-spacing", "1.1");
+  $("body").on("click", "td", pushIn);
+  $("body").on("click","#saveChanges", save);
+//  $("body").on("click", "#starteri td", pushOut);
+
+});
 
 
-    $("#bench th").css("border", "0.7px solid black")
-           .css("background-color", '#9370DB')
+
+  function uredi()
+  {
+    $("body").css("background-color", "orange");
+    $("table").css("background-color", "gold")
+              .css("border-collapse","collapse")
+              .css("border-spacing","0")
+              .css("width","100%");
+
+    $("th").css("border", "0.7px solid black")
+           .css("background-color", 'gold')
            .css("width", "80").css("height", "40")
            .css("text-align", "center")
            .css("margin", "0").css("padding", "16px")
@@ -90,11 +70,49 @@ $(document).ready(function()
            .css("font-weight", "900")
            .css("font-style", "italic");
 
+    $("td").css("border", "0.5px solid black")
+           .css("background-color", 'gold')
+           .css("width", "80").css("height", "40")
+           .css("text-align", "center")
+           .css("margin", "0").css("padding", "16px")
+           .css("letter-spacing", "1.1");
 
-  $("body").on("click", "td", pushIn);
-//  $("body").on("click", "#starteri td", pushOut);
+    $("#saveChanges").css("width", "100%")
+              .css('background-color', '#3CB371')
+              .css("padding", '20px').css("margin","6px")
+               .css("border","none")
+               .css("font-weight", "800")
+               .css("letter-spacing", "1.1")
+               .on("mouseenter", function(){
+                $(this).css("opacity", "0.7");
 
-});
+               })
+               .on("mouseleave", function(){
+                $(this).css("opacity", "1");
+              });
+
+///dodati spremanje postave negdje(valjda u bazu podataka)
+
+
+     $("#bench td").css("border", "0.5px solid black")
+                  .css("background-color", '#9370DB')
+                  .css("width", "80").css("height", "40")
+                  .css("text-align", "center")
+                  .css("margin", "0").css("padding", "16px")
+                  .css("letter-spacing", "1.1");
+
+
+     $("#bench th").css("border", "0.7px solid black")
+         .css("background-color", '#9370DB')
+         .css("width", "80").css("height", "40")
+         .css("text-align", "center")
+         .css("margin", "0").css("padding", "16px")
+         .css("text-transform", "uppercase")
+         .css("letter-spacing", "1.6")
+         .css("font-weight", "900")
+         .css("font-style", "italic");
+
+  }
 
   var prvi = null;
   var prviPos = null;
@@ -155,70 +173,153 @@ $(document).ready(function()
 
   }
 
-  // function pushIn(event)
-  // {
-  //   //console.log("klik");
-  //   $(this).css("background-color", "#228B22");
-  //
-  //   var pos1 = $(this).next("#bench td");
-  //
-  //   // $("body").on("click", "#starteri td", pushIn);
-  //
-  //   // console.log($(this).next("#bench td").html());
-  //
-  //   if(pos1 != undefined)
-  //   {
-  //     var pressed = $(this);
-  //
-  //     $("body").on("click", "#starteri td", function(event)
-  //     {
-  //       // pressed.css("background-color","gold");
-  //       // $(this).css("background-color","#9370DB");
-  //       var tmp = pressed.html();
-  //       var tmpPos = pos1.html();
-  //
-  //       var novo = $(this).html();
-  //       var novoPos = $(this).next("#starteri td");
-  //
-  //       console.log(novoPos.html());
-  //
-  //       if(novoPos != undefined)
-  //       {
-  //         //console.log(novoPos);
-  //
-  //         pressed.html(novo);
-  //         $(this).html(tmp);
-  //
-  //         pos1.html(novoPos.html());
-  //         novoPos.html(tmpPos)
-  //
-  //
-  //
-  //         novo = "";
-  //         tmp = "";
-  //         novoPos = "";
-  //         tmpPos = "";
-  //
-  //         pressed.css("background-color","#9370DB");
-  //       }
-  //
-  //       else
-  //       {
-  //         pressed.css("background-color", "#9370DB");
-  //       }
-  //
-  //
-  //     });
-  // }
-  //
-  // else
-  // {
-  //
-  //   $(this).css("background-color", "#9370DB");
-  //
-  // }
-  //
-  // }
+
+function Player(name,pos)
+{
+  this.name = name;
+  this.pos = pos;
+}
+
+
+function save( event )
+{
+  	var starteri = $("#starteri td");
+
+    var allStarters = [];
+    for(var i = 0; i < starteri.length; ++i)
+    {
+    	if(i%2) continue;
+    	var starter = starteri.eq(i);
+        var pos = starteri.eq(i+1);
+
+        var player = new Player(starter.html(),pos.html());
+
+        allStarters.push(player);
+
+    }
+
+    var bench = $("#bench td");
+    var benchPlayers = [];
+
+     for(var i = 0; i < bench.length; ++i)
+    {
+    	if(i%2) continue;
+    	var bencher = bench.eq(i);
+        var pos = bench.eq(i+1);
+
+        var player = new Player(bencher.html(),pos.html());
+
+        benchPlayers.push(player);
+
+    }
+
+
+
+    //console.log(allStarters);
+    //console.log(benchPlayers);
+
+    //trebamo u tablici_project_teams status igraca(starter ili bench)
+    // koristimo ajax, koristimo tablicu prokject_teams
+    // treba promijeniti ulaz takoder
+    // ne primamo myPlayers vec myStarters i myBench
+
+    $.ajax(
+    {
+    	url: "index.php?rt=games/saveLineUp",
+        data:
+        {
+
+          starterPlayers: allStarters,
+          benchPlayers: benchPlayers
+          // u php-u update tablice project_teams
+        },
+        method: "POST",
+        dataType:"json",
+        success: function(data)
+        {
+        	console.log("lineup successfully saved");
+            crtajTablicu(data);
+        },
+        error: function(xhr,status)
+        {
+          console.log("error occured :: " + status);
+        }
+    });
+
+
+    //crtajTablicu(allStarters,benchPlayers);
+    // ovo treba biti u ajaxu
+  }
+
+  function crtajTablicu( data )
+  {
+
+    $("#bench").html("");
+    $("#starteri").html("");
+
+
+    var trBench = $("<tr></tr>");
+    var trStarter = $("<tr></tr>");
+    var thBenchPlayers = $("<th></th>");
+    var thBenchPos = $("<th></th>");
+    var thStarters = $("<th></th>");
+    var thStarterPos = $("<th></th>");
+
+    thBenchPlayers.html("Bench Players");
+    thBenchPos.html("Position");
+    thStarters.html("Name");
+    thStarterPos.html("Position");
+
+    trStarter.append(thStarters);
+    trStarter.append(thStarterPos);
+    trBench.append(thBenchPlayers);
+    trBench.append(thBenchPos);
+
+    $("#starteri").append(trStarter);
+    $("#bench").append(trBench);
+
+    for(var i = 0; i < data.starterPlayers.length; ++i)
+    {
+      var tr = $("<tr></tr>");
+      var tdPlayer = $("<td></td>");
+      var tdPos = $("<td></td>");
+
+      tdPlayer.html(data.starterPlayers[i].name);
+      tdPos.html(data.starterPlayers[i].pos);
+      tr.append(tdPlayer);
+      tr.append(tdPos);
+
+      $("#starteri").append(tr);
+    }
+
+
+    for(var i = 0; i < data.benchPlayers.length; ++i)
+    {
+      var tr = $("<tr></tr>");
+      var tdPlayer = $("<td></td>");
+      var tdPos = $("<td></td>");
+
+      tdPlayer.html(data.benchPlayers[i].name);
+      tdPos.html(data.benchPlayers[i].pos);
+      tr.append(tdPlayer);
+      tr.append(tdPos);
+
+      $("#bench").append(tr);
+    }
+
+    uredi();
+
+
+
+  }
+
+
+
+
+
+
+
+
 
 
 
