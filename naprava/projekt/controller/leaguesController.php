@@ -3,6 +3,28 @@ session_start();
 require_once __DIR__.'/../model/fantasyservice.class.php';
 require_once __DIR__.'/../model/fantasyserviceteams.class.php';
 
+function sendJSONandExit( $message )
+{
+    // Kao izlaz skripte pošalji $message u JSON formatu i prekini izvođenje.
+    header( 'Content-type:application/json;charset=utf-8' );
+    echo json_encode( $message );
+    flush();
+    exit( 0 );
+}
+
+
+function sendErrorAndExit( $messageText )
+{
+	$message = [];
+	$message[ 'error' ] = $messageText;
+	sendJSONandExit( $message );
+}
+
+
+///////////////////////////////////////////
+
+
+
 class LeaguesController
 {
 
@@ -625,7 +647,21 @@ class LeaguesController
 	 ///////////////////////////////////////////////////////////
 
 
+	 public function checkIfClosed()
+	 {
 
+		 $fs = new FantasyService();
+		 $message = [];
+
+		 $leagueIds = $_POST['allLeagueIds'];
+
+		 $message['status'] = $league->status;
+
+		 //print_r($leagueIds);
+
+		 //usleep(10000000);
+
+	 }
 
 
 
