@@ -48,6 +48,12 @@ class TeamsController
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = 'Users in League';
 
     $oldLeagueUsers = $fst->getAllUsersInsideLeague($_SESSION['id_league']);
@@ -75,6 +81,12 @@ class TeamsController
   {
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $title = 'Draft';
 
@@ -107,6 +119,12 @@ class TeamsController
 
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $title = 'Draft';
 
@@ -163,10 +181,10 @@ class TeamsController
 
     $bool = $fst->checkPlayerAvailability($id_league, $id_player);
 
-    if($bool === 1  && $brojSelektiranihIgraca <= 5)
+    if($bool === 1  && $brojSelektiranihIgraca < 5)
       $fst->addPlayerToTeam($team_name, $id_league, $user_na_redu_id, $id_player, 1);
 
-    elseif ($bool === 1 && $brojSelektiranihIgraca > 5)
+    elseif ($bool === 1 && $brojSelektiranihIgraca >= 5)
     {
       $fst->addPlayerToTeam($team_name, $id_league, $user_na_redu_id, $id_player, 0);
     }
@@ -229,6 +247,12 @@ sendJSONandExit($msg);
   public function waitDraft()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     if(!isset($_POST['lastAccess']))
       sendErrorAndExit('lastAccess is not set.');
 
@@ -288,6 +312,12 @@ sendJSONandExit($msg);
   public function myTeam()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
@@ -304,6 +334,12 @@ sendJSONandExit($msg);
 
   public function myTeamStats()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
     //svi igraci tima i njihovi statsi
 
     $fst = new FantasyServiceTeams();
@@ -354,6 +390,13 @@ sendJSONandExit($msg);
 
   public function changeTeamName()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = 'Change Team Name';
 
     require_once __DIR__.'/../view/teams_change_team_name.php';
@@ -365,6 +408,12 @@ sendJSONandExit($msg);
 
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     if(!isset($_POST['team_name']) || !preg_match('/^[a-zA-Z][a-zA-Z0-9,\' ]*$/',$_POST['team_name']))
     {
@@ -386,6 +435,12 @@ sendJSONandExit($msg);
   public function addPlayer()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
@@ -400,6 +455,12 @@ sendJSONandExit($msg);
 
   public function pickUpFreeAgent()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
@@ -437,6 +498,12 @@ sendJSONandExit($msg);
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
     $title = 'Replace player from '.$team_name;
 
@@ -466,6 +533,13 @@ sendJSONandExit($msg);
   {
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
+
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     if(isset($_POST['no']))
     {
@@ -507,6 +581,12 @@ sendJSONandExit($msg);
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
     $title = 'Cut player from '.$team_name;
 
@@ -525,6 +605,12 @@ sendJSONandExit($msg);
   {
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
 
     if(isset($_POST['no']))
@@ -563,6 +649,12 @@ sendJSONandExit($msg);
     $fst = new FantasyServiceTeams();
     $fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $team_name = $fst->getTeamName($_SESSION['id_league'], $_SESSION['id_user']);
 
     if(isset($_POST['no']))
@@ -596,6 +688,12 @@ sendJSONandExit($msg);
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = 'Propose Trade';
 
     $otherTeamsInLeague = $fst->getOtherTeams($_SESSION['id_league'], $_SESSION['id_user']);
@@ -622,6 +720,12 @@ sendJSONandExit($msg);
   public function checkTeam()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
@@ -642,6 +746,12 @@ sendJSONandExit($msg);
 
   public function askForTrade()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
@@ -695,6 +805,12 @@ sendJSONandExit($msg);
 
   public function confirmTradeRequest()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
@@ -775,6 +891,12 @@ sendJSONandExit($msg);
 
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
 
     // if(isset($_POST['no']))
@@ -918,6 +1040,12 @@ sendJSONandExit($msg);
 
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $title = 'My Trades';
 
@@ -1067,6 +1195,12 @@ sendJSONandExit($msg);
   public function tradeRequests()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
@@ -1150,6 +1284,12 @@ sendJSONandExit($msg);
 
   public function acceptOrRejectTrade()
   {
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
@@ -1312,6 +1452,12 @@ sendJSONandExit($msg);
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = 'Weekly MatchUp';
 
     $league = $fs->getLeagueById($_SESSION['id_league']);
@@ -1328,6 +1474,12 @@ sendJSONandExit($msg);
     $fs = new FantasyService();
     $fst = new FantasyServiceTeams();
     $fsw = new FantasyServiceWeekly();
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $title = 'Weekly MatchUp';
 

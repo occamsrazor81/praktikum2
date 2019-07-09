@@ -49,6 +49,12 @@ class GamesController
     $fs = new FantasyService();
     $fsw = new FantasyServiceWeekly();
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = "This week's MatchUp";
 
     $id_league = $_SESSION['id_league'];
@@ -114,6 +120,12 @@ class GamesController
   public function changeLineup()
   {
 
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
+
     $title = 'Change LineUp';
 
     $fsw = new FantasyServiceWeekly();
@@ -157,6 +169,12 @@ class GamesController
   public function saveLineUp()
   {
     $title = 'Change LineUp';
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
     $fsw = new FantasyServiceWeekly();
     $fst = new FantasyServiceTeams();
@@ -221,6 +239,12 @@ class GamesController
   public function simulateDay()
   {
     $title = "Simulate";
+
+    if(!isset($_SESSION['id_user']) || !isset($_SESSION['id_league']))
+    {
+      header('Location: index.php?rt=teams');
+      exit();
+    }
 
 //     Možemo hvatati usere po parovima iz weekly_mathcup
 //

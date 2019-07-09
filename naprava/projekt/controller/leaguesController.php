@@ -57,6 +57,12 @@ class LeaguesController
   {
     $fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
+
 		if(isset($_SESSION['id_league']))
 		{
 			unset($_SESSION['id_league']);
@@ -95,6 +101,11 @@ class LeaguesController
 
 	public function createNew()
 	{
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
 		$title = 'Create new League';
 
 		require_once __DIR__.'/../view/leagues_newLeague.php';
@@ -108,7 +119,7 @@ class LeaguesController
 
 		if(!isset($_SESSION['id_user']))
 		{
-			header('Location: index.php?rt=leagues/newLeague');
+			header('Location: index.php?rt=leagues/createNew');
 			exit();
 		}
 
@@ -122,7 +133,7 @@ class LeaguesController
 		|| !preg_match('/^[a-zA-Z0-9 ,.]+$/',$_POST['leagueName'])
 		|| !preg_match('/^[1-9]0*$/',(int)$_POST['leagueNumber']))
 		{
-			header('Location: index.php?rt=leagues/newLeague');
+			header('Location: index.php?rt=leagues/createNew');
 			exit();
 		}
 
@@ -143,13 +154,18 @@ class LeaguesController
 
 		$fs->initializeLeague($targetLeague->id,$id_user);
 
-		header('Location: index.php?rt=leagues/newLeague');
+		header('Location: index.php?rt=leagues/createNew');
 		exit();
 
 	}
 
 	public function pendingApplications()
 	{
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
 		 	$fs = new FantasyService();
 
 			$title = 'Pending applications';
@@ -195,10 +211,16 @@ class LeaguesController
 	{
 		$fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
+
 
 		if(!isset($_POST['league_id']))
 		{
-			header('Location: index.php?rt=leagues/newLeague');
+			header('Location: index.php?rt=leagues/createNew');
 			exit();
 		}
 
@@ -237,6 +259,12 @@ class LeaguesController
 	public function acceptOrRejectApplicants()
 	{
 		$fs = new FantasyService();
+
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
 
 		if(isset($_POST['league_id']))
 		{
@@ -342,6 +370,12 @@ class LeaguesController
 	{
 		$fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
+
 		if(!isset($_POST['id_league_apply']) && !isset($_POST['id_league_enter']))
 		{
 			header('Location: index.php?rt=leagues/showInformation');
@@ -440,6 +474,12 @@ class LeaguesController
 	{
 		$fs = new FantasyService();
 
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
+
 		//zelimo skupiti sve pozivnice gdje smo mi pozvani
 		$title = 'Pending Invitations';
 
@@ -472,6 +512,12 @@ class LeaguesController
 	{
 
 		$fs = new FantasyService();
+
+    if(!isset($_SESSION['id_user']))
+    {
+      header('Location: index.php?rt=users/login');
+      exit();
+    }
 
 			//zelimo ovisno o stisnutom gumbu podesiti podatke u bazi
 
@@ -548,6 +594,12 @@ class LeaguesController
 	 public function inviteSomeone()
 	 {
 		 $fs = new FantasyService();
+
+     if(!isset($_SESSION['id_user']))
+     {
+       header('Location: index.php?rt=users/login');
+       exit();
+     }
 
 
 		 if(isset($_POST['id_league_invite']))
@@ -649,6 +701,12 @@ class LeaguesController
 
 	 public function checkIfClosed()
 	 {
+
+     if(!isset($_SESSION['id_user']))
+     {
+       header('Location: index.php?rt=users/login');
+       exit();
+     }
 
 		 $fs = new FantasyService();
 		 $message = [];

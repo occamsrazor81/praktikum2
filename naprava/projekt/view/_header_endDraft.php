@@ -20,8 +20,14 @@
 	<h1><?php echo $title; ?></h1>
 
   <p>
-    User: <span id="nick"><?php if(isset($_SESSION['name'])) echo $_SESSION['name']; ?></span> <br>
-    League: <span id="ln"><?php if(isset($_SESSION['league_title']) )  echo $_SESSION['league_title']; ?></span><br>
+    User: <span id="nick">
+			<?php
+			if(isset($_SESSION['name'])) echo $_SESSION['name'];
+		?></span> <br>
+    League: <span id="ln">
+			<?php
+			if(isset($_SESSION['league_title']) )  echo $_SESSION['league_title'];
+			 ?></span><br>
 
   </p>
 
