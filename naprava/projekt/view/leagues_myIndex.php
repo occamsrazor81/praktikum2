@@ -26,7 +26,7 @@ echo "<span>".$league['id']."</span>";
 				echo '<td><button class="league" type="submit" name="league_id" value="'.
 				$league['id'].'">'.$league['title'].'</button></td>';
         echo '<td>'.$league['league_type'].'</td>';
-        echo '<td>'.$league['status'].'</td>';
+        echo '<td class="st">'.$league['status'].'</td>';
 
         echo '<td><ul class="apps">';
         if( strcmp($_SESSION['name'], $league['admin']) === 0 &&
@@ -71,56 +71,92 @@ $(document).ready(function()
 });
 
 
+var idovi = $("#idovi span");
+
+var allLeagueIds = [];
+var idsLen = $("#idovi span").length;
+
+for(var i = 0; i < idsLen; ++i)
+{
+
+  var id = $("#idovi span").eq(i);
+
+  allLeagueIds.push(id.html());
+
+}
+
 function checkClosed()
 {
-	var idovi = $("#idovi span");
 
-	var allLeagueIds = [];
-	var idsLen = $("#idovi span").length;
 
-	for(var i = 0; i < idsLen; ++i)
-	{
 
-		var id = $("#idovi span").eq(i);
+	$.ajax(
+    {
+      url: "index.php?rt=leagues/checkIfClosed",
+      data:
+      { allLeagueIds: allLeagueIds},
+      method: "POST",
+      dataType:"json",
+      success: function( data )
+      {
 
-		allLeagueIds.push(id.html());
+        if( typeof(data.error) !== 'undefined')
+        {
+          console.log( "checkClosed :: success :: server javio grešku " + data.error );
+          checkClosed();
+        }
 
-	}
+        else
+        {
+					// console.log(data.leagues.length);
+          console.log("uspjeh");
 
-	// $.ajax(
-  //   {
-  //     url: "index.php?rt=leagues/checkIfClosed",
-  //     data:
-  //     { allLeagueIds: allLeagueIds},
-  //     method: "POST",
-  //     dataType:"json",
-  //     success: function( data )
-  //     {
-	//
-  //       if( typeof(data.error) !== 'undefined')
-  //       {
-  //         console.log( "checkClosed :: success :: server javio grešku " + data.error );
-  //         checkClosed();
-  //       }
-	//
-  //       else
-  //       {
-	// 				console.log(data.status);
-	//
-  //       }
-  //     },
-  //     error: function(xhr, status)
-  //     {
-  //       console.log( "checkClosed :: error :: status = " + status );
-  //           // Nešto je pošlo po krivu...
-  //           // Ako se dogodio timeout, tj. server nije ništa poslao u zadnjih XY sekundi,
-  //           // pozovi ponovno cekajPoruku.
-  //            // if( status === "timeout" )
-  //               checkClosed();
-  //     }
-	//
-	//
-  //   });
+          var l = $(".st");
+
+          // console.log(l.length);
+          // console.log(data.leagues.length);
+
+          for(var i = 0; i < data.leagues.length; ++i)
+          {
+            //console.log(data.leagues[i].status);
+            //console.log(l.eq(i).html());
+            l.eq(i).html(data.leagues[i].status);
+
+            if(l.eq(i).html() == 'closed')
+            l.eq(i).css("color","red").css("font-weight","800");
+          }
+
+          // var reg_closed = /closed/;
+          // var cnt = 0;
+          // var tdovi = $("td");
+          //
+        	// for(var i = 0; i < tdovi.length; ++i)
+        	// {
+          //   var td = tdovi.eq(i);
+          //   if(reg_closed.test(td.html()))
+          //   cnt++;
+          // }
+          //
+          // if(cnt != data.leagues.length)
+          // checkClosed();
+
+
+        }
+
+      },
+      error: function(xhr, status)
+      {
+        console.log( "checkClosed :: error :: status = " + status );
+        // console.log(allLeagueIds);
+            // Nešto je pošlo po krivu...
+            // Ako se dogodio timeout, tj. server nije ništa poslao u zadnjih XY sekundi,
+            // pozovi ponovno cekajPoruku.
+             if( status === "timeout" )
+                checkClosed();
+      }
+
+
+    });
 }
 
 function uredi()

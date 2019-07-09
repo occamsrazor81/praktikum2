@@ -702,22 +702,42 @@ class LeaguesController
 	 public function checkIfClosed()
 	 {
 
+
+
      if(!isset($_SESSION['id_user']))
      {
        header('Location: index.php?rt=users/login');
        exit();
      }
 
+
 		 $fs = new FantasyService();
 		 $message = [];
 
+     //print_r($_POST['allLeagueIds']);
+
 		 $leagueIds = $_POST['allLeagueIds'];
 
-		 $message['status'] = $league->status;
+     $message['leagues'] = [];
 
-		 //print_r($leagueIds);
+     foreach($leagueIds as $id)
+     {
+       $league = $fs->getLeagueById($id);
 
-		 //usleep(10000000);
+       // if(strcmp($league->status, 'closed') === 0)
+       // continue;
+
+       $message['leagues'][] = array('id' => $id, 'status' => $league->status);
+
+     }
+
+
+
+		 sendJSONandExit($message);
+
+     usleep(10000000);
+
+
 
 	 }
 
