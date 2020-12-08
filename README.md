@@ -6,7 +6,7 @@ PHP and Javascript
   <li><b>kol1zad1</b> -> restaurant orders</li>
   <li><b>kol1zad2</b> -> formula racing simulation</li>
   <li><b>kol1zad2</b> -> formula racing simulation</li>
-  <li><b>kol2<b> -> 
+  <li><b>kol2</b> -> 
     <ul>
       <li><i>zadatak1</i> - voting and coalitions</li>
       <li><i>zadatak2</i> - mini hangman game using ajax</li>
